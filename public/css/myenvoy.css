@@ -1,0 +1,27 @@
+*, html, body {margin: 0px;padding: 0px;position: relative;background-color: white;font-family: 'helvetica', 'Arial';font-size: 12px;}
+
+h1, h2, h3, h4, h5, h6, [class*='ash'] {font-weight: bold;display: block;margin-top: 10px;margin-bottom: 5px;}
+h1, .ash1 {font-size: 35px;}
+h2, .ash2 {font-size: 30px;}
+h3, .ash3 {font-size: 25px;}
+h4, .ash4 {font-size: 20px;}
+h5, .ash5 {font-size: 15px;}
+h6, .ash6 {font-size: 12px;}
+
+div.row {width: 100%;max-width: 100%;box-sizing: border-box;position: relative;margin: 0px auto;}
+div.row:before, div.row:after {content: ' ';display: table;}
+div.row:after {clear: both;}
+
+div.col {box-sizing: border-box;float: left;min-height: 1px;}
+div.col.one {width: 10%;}
+div.col.two {width: 20%;}
+div.col.three {width: 30%;}
+div.col.four {width: 40%;}
+div.col.five {width: 50%;}
+div.col.six {width: 60%;}
+div.col.seven {width: 70%;}
+div.col.eight {width: 80%;}
+div.col.nine {width: 90%;}
+div.col.ten {width: 100%;}
+
+p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
