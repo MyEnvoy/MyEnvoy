@@ -1,4 +1,5 @@
-*, html, body {margin: 0px;padding: 0px;position: relative;background-color: white;font-family: 'helvetica', 'Arial';font-size: 12px;}
+*, html, body {margin: 0px;padding: 0px;position: relative;font-family: 'helvetica', 'Arial';font-size: 12px;color:#333;}
+body {background-color: #fefefe;}
 
 h1, h2, h3, h4, h5, h6, [class*='ash'] {font-weight: bold;display: block;margin-top: 10px;margin-bottom: 5px;}
 h1, .ash1 {font-size: 35px;}
@@ -25,3 +26,30 @@ div.col.nine {width: 90%;}
 div.col.ten {width: 100%;}
 
 p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
+input {outline: 0;}
+
+div.form_group {position: relative;display: block;margin-top: 10px;}
+div.form_group:after {clear: both;}
+div.form_group label{display: block;font-size: 14px;font-weight: 700;margin-bottom: 5px;}
+
+input:not([type=submit]) {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
+input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
+
+.btn {cursor: pointer;display: inline-block;padding: 6px 12px;font-size: 14px;font-weight: 400;line-height: 1.43;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;border-radius: 4px;}
+.btn.btn_default {color: #333;background-color: #fff;border-color: #ccc;}
+.btn.btn_default:hover {color: #333;background-color: #e6e6e6;border-color: #adadad;}
+.btn.btn_primary {color: #fff;background-color: #337ab7;border-color: #2e6da4;}
+.btn.btn_primary:hover {color: #fff;background-color: #286090;border-color: #204d74;}
+.btn.btn_danger {color: #fff;background-color: #d9534f;border-color: #d43f3a;}
+.btn.btn_danger:hover {color: #fff;background-color: #c9302c;border-color: #ac2925;}
+.btn.btn_success {color: #fff;background-color: #5cb85c;border-color: #4cae4c;}
+.btn.btn_success:hover {color: #fff;background-color: #449d44;border-color: #398439;}
+
+.center {margin: 0px auto;}
+.center_txt {text-align: center;}
+.right {float: right;}
+
+div#page_title_myenvoy {position: relative;padding-left: 30px;}
+div#page_title_myenvoy h1 {color: #999;}
+
+div#center_content {width: 300px;margin-top: 30px;}

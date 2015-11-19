@@ -1,26 +1,24 @@
-<div class="row">
-    <div class="col five">
-        <h1>Überschrift</h1>
+<div id="center_content" class="center">
+    <div class="row">
+        <div class="col ten center_txt">
+            <img width="256" height="256" src="/img/profile256.png" alt="MyEnvoy Profile">
+        </div>
     </div>
-    <div class="col five">
-        <h2>Überschrift</h2>
-    </div>
-</div>
-<div class="row">
-    <div class="col four">
-        <h3>Überschrift</h3>
-    </div>
-    <div class="col three">
-        <h4>Überschrift</h4>
-    </div>
-    <div class="col three">
-        <h5>Überschrift</h5>
-        <h6>Überschrift</h6>
-        <p>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-        </p>
+    <div class="row">
+        <form>
+            <div class="col ten">
+                <div class="form_group">
+                    <label for="name">Nutzer ID</label>
+                    <input type="text" id="name" name="name" placeholder="Nuter ID" autofocus>
+                </div>
+                <div class="form_group">
+                    <label for="pwd">Passwort</label>
+                    <input type="password" id="pwd" name="pwd" placeholder="Passwort">
+                </div>
+                <div class="form_group">
+                    <input class="btn btn_success right" type="submit" value="Login">
+                </div>
+            </div>
+        </form>
     </div>
 </div>

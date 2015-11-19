@@ -8,7 +8,7 @@ use Famework\Config\Famework_Config;
 use Famework\Registry\Famework_Registry;
 
 define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
-define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']));
+define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/');
 define('VIEW_PATH', APPLICATION_PATH . 'view');
 
 Famework::registerDeafaultHandler();

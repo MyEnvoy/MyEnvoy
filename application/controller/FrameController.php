@@ -11,13 +11,15 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
 
     public function renderTop() {
         ?>
-        <h1>MyEnvoy</h1>
+        <div id="page_title_myenvoy">
+            <h1>MyEnvoy</h1>
+        </div>
         <?php
     }
 
     public function renderBottom() {
         ?>
-        <footer>Copyright 2015 Fabian Maier</footer>
+        <footer></footer>
         <?php
     }
 
