@@ -22,6 +22,9 @@ if ($config->getValue('myenvoy', 'env') === 'dev') {
 }
 
 $famwork = new Famework($config, $routes);
+
+require '../application/globalfunctions.php';
+
 $famwork->handleRequest();
 $famwork->loadController();
 

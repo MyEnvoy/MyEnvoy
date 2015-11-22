@@ -32,6 +32,8 @@ div.form_group {position: relative;display: block;margin-top: 10px;}
 div.form_group:after {clear: both;}
 div.form_group label{display: block;font-size: 14px;font-weight: 700;margin-bottom: 5px;}
 
+pre.var_dump {margin: 10px;background-color: #eee;border: 1px solid #ccc;padding: 10px;font-family: monospace;font-size: 11pt;border-radius: 5px;}
+
 input:not([type=submit]) {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
 input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
 

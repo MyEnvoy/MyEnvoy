@@ -8,15 +8,15 @@
         <form>
             <div class="col ten">
                 <div class="form_group">
-                    <label for="name">Nutzer ID</label>
-                    <input type="text" id="name" name="name" placeholder="Nuter ID" autofocus>
+                    <label for="name"><?php echo t('login_user_id'); ?></label>
+                    <input type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus>
                 </div>
                 <div class="form_group">
-                    <label for="pwd">Passwort</label>
-                    <input type="password" id="pwd" name="pwd" placeholder="Passwort">
+                    <label for="pwd"><?php echo t('login_user_pwd'); ?></label>
+                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>">
                 </div>
                 <div class="form_group">
-                    <input class="btn btn_success right" type="submit" value="Login">
+                    <input class="btn btn_success right" type="submit" value="<?php echo t('login_btn_login'); ?>">
                 </div>
             </div>
         </form>
