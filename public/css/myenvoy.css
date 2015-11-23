@@ -12,6 +12,8 @@ h6, .ash6 {font-size: 12px;}
 div.row {width: 100%;max-width: 100%;box-sizing: border-box;position: relative;margin: 0px auto;}
 div.row:before, div.row:after {content: ' ';display: table;}
 div.row:after {clear: both;}
+div.row.margin {margin-top: 10px;}
+div.row.margin2 {margin-top: 20px;}
 
 div.col {box-sizing: border-box;float: left;min-height: 1px;}
 div.col.one {width: 10%;}
@@ -26,6 +28,8 @@ div.col.nine {width: 90%;}
 div.col.ten {width: 100%;}
 
 p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
+a {text-decoration: none;font-weight: 400;color: #337ab7;}
+a:hover {text-decoration: underline;}
 input {outline: 0;}
 
 div.form_group {position: relative;display: block;margin-top: 10px;}
@@ -37,7 +41,7 @@ pre.var_dump {margin: 10px;background-color: #eee;border: 1px solid #ccc;padding
 input:not([type=submit]) {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
 input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
 
-.btn {cursor: pointer;display: inline-block;padding: 6px 12px;font-size: 14px;font-weight: 400;line-height: 1.43;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;border-radius: 4px;}
+.btn {cursor: pointer;display: inline-block;padding: 6px 12px;font-size: 14px;font-weight: 400;line-height: 1.43;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;border-radius: 4px;text-decoration: none;}
 .btn.btn_default {color: #333;background-color: #fff;border-color: #ccc;}
 .btn.btn_default:hover {color: #333;background-color: #e6e6e6;border-color: #adadad;}
 .btn.btn_primary {color: #fff;background-color: #337ab7;border-color: #2e6da4;}
@@ -50,6 +54,8 @@ input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1p
 .center {margin: 0px auto;}
 .center_txt {text-align: center;}
 .right {float: right;}
+.left {float: left;}
+.fullsize {width: 100%;box-sizing: border-box;}
 
 div#page_title_myenvoy {position: relative;padding-left: 30px;}
 div#page_title_myenvoy h1 {color: #999;}

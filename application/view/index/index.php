@@ -21,4 +21,12 @@
             </div>
         </form>
     </div>
+    <div class="row margin">
+        <div class="col five">
+            <a href="#" class="ash5"><?php echo t('login_link_register') ?></a>
+        </div>
+        <div class="col five">
+            <a href="#" class="right ash5"><?php echo t('login_link_pwdrecover') ?></a>
+        </div>
+    </div>
 </div>
