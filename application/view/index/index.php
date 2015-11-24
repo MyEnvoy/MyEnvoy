@@ -23,7 +23,7 @@
     </div>
     <div class="row margin">
         <div class="col five">
-            <a href="#" class="ash5"><?php echo t('login_link_register') ?></a>
+            <a href="/<?php echo APPLICATION_LANG ?>/register" class="ash5"><?php echo t('login_link_register') ?></a>
         </div>
         <div class="col five">
             <a href="#" class="right ash5"><?php echo t('login_link_pwdrecover') ?></a>

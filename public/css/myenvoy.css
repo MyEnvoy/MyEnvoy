@@ -28,9 +28,11 @@ div.col.nine {width: 90%;}
 div.col.ten {width: 100%;}
 
 p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
-a {text-decoration: none;font-weight: 400;color: #337ab7;}
-a:hover {text-decoration: underline;}
+a:not([class=noa]) {text-decoration: none;font-weight: 400;color: #337ab7;}
+a:hover:not([class=noa]) {text-decoration: underline;}
 input {outline: 0;}
+
+a.noa {font-size: inherit;color: inherit;font-weight: inherit;text-decoration: inherit;}
 
 div.form_group {position: relative;display: block;margin-top: 10px;}
 div.form_group:after {clear: both;}

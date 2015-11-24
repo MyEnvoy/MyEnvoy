@@ -12,7 +12,7 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
     public function renderTop() {
         ?>
         <div id="page_title_myenvoy">
-            <h1>MyEnvoy</h1>
+            <h1><a href="/<?php echo APPLICATION_LANG ?>" class="noa">MyEnvoy</a></h1>
         </div>
         <?php
     }
