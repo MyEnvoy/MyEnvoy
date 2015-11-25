@@ -1,6 +1,7 @@
 <?php
 
 use Famework\LaCodon\Param\Paramhandler;
+use Famework\Request\Famework_Request;
 
 class RegisterController extends Controller {
 
@@ -13,6 +14,13 @@ class RegisterController extends Controller {
 
     public function indexAction() {
         $this->_view->title(t('register_title'));
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/picturepreview.js');
+    }
+
+    public function registerDoAction() {
+        Famework_Request::redirect('/' . APPLICATION_LANG);
     }
 
 }

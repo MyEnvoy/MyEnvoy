@@ -9,7 +9,8 @@
             <div class="col ten">
                 <div class="form_group">
                     <label for="name"><?php echo t('login_user_id'); ?></label>
-                    <input type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus>
+                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus>
+                    <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
                     <label for="pwd"><?php echo t('login_user_pwd'); ?></label>

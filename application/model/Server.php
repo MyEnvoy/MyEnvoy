@@ -17,4 +17,12 @@ class Server {
         return $this->_host;
     }
 
+    public static function getMyHost() {
+        $host = $_SERVER['HTTP_HOST'];
+        if (empty($host)) {
+            return NULL;
+        }
+        return $host;
+    }
+
 }
