@@ -82,3 +82,7 @@ input#input_user_id {border-radius: 4px 0px 0px 4px;}
 
 img.profile_pic {border-radius: 900px;}
 div#pic_prev_holder {width: 256px;height: 256px;margin:0px auto;overflow: hidden;margin-bottom: 10px;border-radius: 900px;}
+
+div#social_icons {position: absolute;right: 5px;top:0px;}
+div#social_icons a {opacity: 0.5;}
+div#social_icons a:hover {opacity: 1;}

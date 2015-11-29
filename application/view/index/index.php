@@ -1,3 +1,12 @@
+<div id="social_icons">
+    <div class="row">
+        <div class="col ten">
+            <a href="https://github.com/LaCodon/MyEnvoy" target="_blank" class="noa">
+                <img src="/img/github-square-social-media.png" width="48" height="48" alt="MyEnvoy on GitHub">
+            </a>
+        </div>
+    </div>
+</div>
 <div id="center_content" class="center">
     <div class="row">
         <div class="col ten center_txt">

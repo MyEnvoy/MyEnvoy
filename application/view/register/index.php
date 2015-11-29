@@ -20,13 +20,18 @@
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
+                    <label for="email"><?php echo t('register_user_email'); ?></label>
+                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>" required autocomplete="off"
+                           data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_email_hint'); ?>">
+                </div>
+                <div class="form_group">
                     <label for="pwd"><?php echo t('login_user_pwd'); ?></label>
-                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>" pattern=".{8,50}" required autocomplete="off"
+                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>" pattern=".{8,}" required autocomplete="off"
                            data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_pwd_hint'); ?>">
                 </div>
                 <div class="form_group">
                     <label for="pwdrepeat"><?php echo t('register_user_pwd_repeat'); ?></label>
-                    <input type="password" id="pwdrepeat" name="pwdrepeat" placeholder="<?php echo t('register_user_pwd_repeat'); ?>" required autocomplete="off">
+                    <input type="password" id="pwdrepeat" name="pwdrepeat" placeholder="<?php echo t('register_user_pwd_repeat'); ?>" pattern=".{8,}" required autocomplete="off">
                 </div>
                 <div class="form_group">
                     <input class="btn btn_success right" type="submit" value="<?php echo t('register_btn_register'); ?>">

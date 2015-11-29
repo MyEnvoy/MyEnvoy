@@ -9,7 +9,8 @@ function t($var) {
         throw new Exception('Misuse of t function.');
     }
 
-    $value = apc_fetch('me_lang_' . APPLICATION_LANG . '_' . $var);
+    $apcKey = 'me_lang_' . APPLICATION_LANG . '_' . $var;
+    $value = apc_fetch($apcKey);
 
     if ($value === FALSE) {
         $applang = APPLICATION_LANG;
@@ -31,7 +32,7 @@ function t($var) {
             $value = $var;
         } else {
             $value = $value['value'];
-            apc_store('me_lang_' . APPLICATION_LANG . '_' . $var, $value);
+            apc_store($apcKey, $value, 1800);
         }
     }
 
@@ -45,7 +46,8 @@ function var_dump_pre($var) {
 }
 
 function getLangs() {
-    $value = apc_fetch('me_available_langs');
+    $apcKey = 'me_available_langs';
+    $value = apc_fetch($apcKey);
 
     if ($value === FALSE) {
         $db = Famework_Registry::getDb();
@@ -56,6 +58,8 @@ function getLangs() {
         foreach ($stm->fetchAll() as $row) {
             $value[$row['lang']] = $row['id'];
         }
+
+        apc_store($apcKey, $value, 1800);
     }
 
     return $value;
