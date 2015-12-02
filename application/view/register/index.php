@@ -1,4 +1,11 @@
 <div id="center_content" class="center">
+    <?php if (!empty($this->hint)): ?>
+        <div class="row">
+            <div class="col ten">
+                <div class="alert alert_danger"><b><?php echo t('register_errorhint_' . (int) $this->hint); ?></b></div>
+            </div>
+        </div>
+    <?php endif; ?>
     <form action="/<?php echo APPLICATION_LANG; ?>/register/register.do" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col ten center_txt">
@@ -7,7 +14,7 @@
                 </div>
                 <div class="btn btn_default btn_file" data-placement="left" data-toggle="popover" data-trigger="hover" data-content="<?php echo t('register_picture_hint'); ?>">
                     <?php echo t('register_upload_pic'); ?> <input name="profilepic" type="file" onchange="picturePreview(this);">
-                    <input type="hidden" name="MAX_FILE_SIZE" value="3145728" /> 
+                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo Picture::MAX_FILE_SIZE; ?>" /> 
                 </div>
             </div>
         </div>
@@ -15,13 +22,13 @@
             <div class="col ten">
                 <div class="form_group">
                     <label for="name"><?php echo t('login_user_id'); ?></label>
-                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" pattern=".{3,40}" required
+                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" pattern="[a-z0-9.]{3,40}" required
                            data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_userid_hint'); ?>">
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
                     <label for="email"><?php echo t('register_user_email'); ?></label>
-                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>" required autocomplete="off"
+                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>" required
                            data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_email_hint'); ?>">
                 </div>
                 <div class="form_group">

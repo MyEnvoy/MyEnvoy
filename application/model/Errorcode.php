@@ -1,0 +1,14 @@
+<?php
+
+class Errorcode {
+
+    const EMAIL_NO_RECIPIENT = 10000;
+    const NEWUSER_REGISTER_MISUSED = 10001;
+    
+    const PICTURE_INVALID_PATH = 10002;
+    const PICTURE_DISALLOWED_OPERATION = 10003;
+    const PICTURE_FILE_IS_NO_PIC = 10004;
+    const PICTURE_FILE_TOO_BIG = 10005;
+    const PICTURE_NO_JPEG = 10006;
+
+}

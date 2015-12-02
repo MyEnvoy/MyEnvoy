@@ -5,11 +5,12 @@ use Famework\Request\Famework_Request;
 
 class RegisterController extends Controller {
 
-    const ERR_PWD_NOT_EQUALS = 0;
     const ERR_EMAIL_INVALID = 1;
-    const ERR_NAME_USED = 2;
-    const ERR_EMAIL_USED = 3;
-    const SUCCESSFUL = 4;
+    const ERR_NAME_INVALID = 2;
+    const ERR_NAME_USED = 3;
+    const ERR_EMAIL_USED = 4;
+    const ERR_PWD_NOT_EQUALS = 5;
+    const SUCCESSFUL = 6;
 
     private $_paramHandler;
 
@@ -23,6 +24,8 @@ class RegisterController extends Controller {
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/picturepreview.js');
+
+        $this->_view->hint = $this->_paramHandler->getInt('stat', FALSE, 1, 5);
     }
 
     public function registerDoAction() {
@@ -38,7 +41,12 @@ class RegisterController extends Controller {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/register/?err=' . self::ERR_EMAIL_INVALID);
         }
 
-        // check if name and email still free
+        // validate username
+        if (preg_match('/^[a-z0-9.]{3,40}$/', $name) !== 1) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/register/?err=' . self::ERR_NAME_INVALID);
+        }
+
+        // check if name and email are still unused
         $newuser = Newuser::initUserIfPossible($name, $email);
         if ($newuser === Newuser::EMAIL_USED) {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/register/?err=' . self::ERR_EMAIL_USED);
@@ -51,8 +59,11 @@ class RegisterController extends Controller {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/register/?err=' . self::ERR_PWD_NOT_EQUALS);
         }
 
-        // finally register
-        $newuser->register();
+        // register user
+        $userid = $newuser->register();
+
+        // set picture
+        $newuser->setPicture('profilepic', $userid);
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . self::SUCCESSFUL);
     }

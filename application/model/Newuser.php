@@ -17,7 +17,7 @@ class Newuser extends User {
 
     /**
      * Get instance of Newuser
-     * @param string $name The username
+     * @param string $name The <b>checked</b> username
      * @param string $email The <b>checked</b> mail address
      * @return Newuser if name and email still unused else int
      */
@@ -62,7 +62,7 @@ class Newuser extends User {
      */
     public function register() {
         if ($this->_password === NULL) {
-            throw new Exception('Newuser::register() misused!');
+            throw new Exception('Newuser::register() misused!', Errorcode::NEWUSER_REGISTER_MISUSED);
         }
 
         $name = $this->_username;
@@ -83,6 +83,32 @@ class Newuser extends User {
         $stm->bindParam(':salt', $salt);
         $stm->bindParam(':hash', $hash);
         $stm->execute();
+
+        // get new user's ID
+        $idstm = $db->prepare('SELECT id FROM user WHERE name = ? AND email = ?');
+        $idstm->execute(array($name, $email));
+
+        // send activation mail
+        $this->sendActivationEmail($email, $name, $hash);
+
+        return (int) $idstm->fetch()['id'];
+    }
+
+    private function sendActivationEmail($email, $name, $hash) {
+        $mail = new Email();
+        $mail->setTo($email);
+        $hashlink = Server::getRootLink() . APPLICATION_LANG . '/register/activate/?hash=' . urlencode($hash);
+        $message = sprintf(t('register_mail_body'), $name, $hashlink);
+        $mail->send(t('register_mail_subject'), $message);
+    }
+
+    public function setPicture($htmlname, $userid) {
+        $pic = Picture::getFromUpload($htmlname);
+        if ($pic === NULL) {
+            return FALSE;
+        }
+        $pic->makeProfilePics($userid);
+        $pic->remove();
     }
 
 }

@@ -8,7 +8,8 @@
 /*!
 * MyEnvoy CSS form here on.
 */
-*, html, body {margin: 0px;padding: 0px;position: relative;font-family: 'helvetica', 'Arial';font-size: 12px;color:#333;}
+*, html, body {margin: 0px;padding: 0px;position: relative;}
+body {color:#333;font-family: 'helvetica', 'Arial';font-size: 12px;}
 body {background-color: #fefefe;}
 
 h1, h2, h3, h4, h5, h6, [class*='ash'] {font-weight: bold;display: block;margin-top: 10px;margin-bottom: 5px;}
@@ -62,6 +63,10 @@ input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1p
 .btn.btn_danger:hover {color: #fff;background-color: #c9302c;border-color: #ac2925;}
 .btn.btn_success {color: #fff;background-color: #5cb85c;border-color: #4cae4c;}
 .btn.btn_success:hover {color: #fff;background-color: #449d44;border-color: #398439;}
+
+.alert {padding: 15px;margin-bottom: 20px;border: 1px solid transparent;border-radius: 4px;}
+.alert.alert_success {color: #3c763d !important;background-color: #dff0d8;border-color: #d6e9c6;}
+.alert.alert_danger {color: #a94442 !important;background-color: #f2dede;border-color: #ebccd1;}
 
 .center {margin: 0px auto;}
 .center_txt {text-align: center;}

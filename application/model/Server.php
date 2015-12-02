@@ -25,4 +25,12 @@ class Server {
         return $host;
     }
 
+    public static function getRootLink() {
+        $protocoll = 'http://';
+        if (APPLICATION_HTTPS === TRUE) {
+            $protocoll = 'https://';
+        }
+        return $protocoll . self::getMyHost() . '/';
+    }
+
 }

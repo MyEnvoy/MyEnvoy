@@ -8,6 +8,13 @@
     </div>
 </div>
 <div id="center_content" class="center">
+    <?php if (!empty($this->success)): ?>
+        <div class="row">
+            <div class="col ten">
+                <div class="alert alert_success"><b><?php echo t('login_register_success'); ?></b></div>
+            </div>
+        </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col ten center_txt">
             <img width="256" height="256" src="/img/profile256.png" alt="MyEnvoy Profile">

@@ -28,4 +28,34 @@ class Email {
                 !isset($matches[1][64]) && !isset($matches[0][254]));
     }
 
+    private $_myaddress = NULL;
+    private $_to = NULL;
+
+    /**
+     * Always validate E-Mail addresses with Email::validate($email) !!!
+     */
+    public function __construct() {
+        $host = Server::getMyHost();
+        $host = ($host === NULL ? 'localhost' : $host);
+        $this->_myaddress = 'noreply@' . $host;
+    }
+
+    public function setTo($address) {
+        $this->_to = $address;
+    }
+
+    public function send($subject, $message) {
+        if ($this->_to === NULL) {
+            throw new Exception('No E-Mail recipient is set!', Errorcode::EMAIL_NO_RECIPIENT);
+        }
+
+        $headers = array();
+        $headers[] = 'MIME-Version: 1.0';
+        $headers[] = 'Content-type: text/plain; charset=UTF-8';
+        $headers[] = 'From: ' . $this->_myaddress;
+        $headers[] = 'Subject: ' . $subject;
+
+        mail($this->_to, $subject, $message, implode("\r\n", $headers));
+    }
+
 }

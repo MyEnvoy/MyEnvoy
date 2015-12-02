@@ -45,6 +45,12 @@ if ($lang !== NULL) {
     }
 }
 
+if ($config->getValue('myenvoy', 'support_https') == 1) {
+    define('APPLICATION_HTTPS', TRUE);
+} else {
+    define('APPLICATION_HTTPS', FALSE);
+}
+
 $famework->loadController();
 
 

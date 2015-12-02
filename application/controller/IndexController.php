@@ -14,8 +14,9 @@ class IndexController extends Controller {
 
     public function indexAction() {
         $this->_view->title('Startseite');
+        $this->_view->success = $this->_paramHandler->getValue('stat', FALSE);
     }
-    
+
     /**
      * @todo REMOVE
      */
