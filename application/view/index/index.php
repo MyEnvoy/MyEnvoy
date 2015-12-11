@@ -8,10 +8,12 @@
     </div>
 </div>
 <div id="center_content" class="center">
-    <?php if (!empty($this->success)): ?>
+    <?php if (!empty($this->hint)): ?>
         <div class="row">
             <div class="col ten">
-                <div class="alert alert_success"><b><?php echo t('login_register_success'); ?></b></div>
+                <div class="alert <?php echo ($this->hint > 11 ? 'alert_danger' : 'alert_success') ?>">
+                    <b><?php echo t('login_hint_' . (int) $this->hint); ?></b>
+                </div>
             </div>
         </div>
     <?php endif; ?>
@@ -21,16 +23,16 @@
         </div>
     </div>
     <div class="row">
-        <form>
+        <form action="/<?php echo APPLICATION_LANG . '/index/login.do' ?>" method="post">
             <div class="col ten">
                 <div class="form_group">
                     <label for="name"><?php echo t('login_user_id'); ?></label>
-                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus>
+                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus required pattern="[a-z0-9.]{3,40}">
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
                     <label for="pwd"><?php echo t('login_user_pwd'); ?></label>
-                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>">
+                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>" required pattern=".{8,}">
                 </div>
                 <div class="form_group">
                     <input class="btn btn_success right" type="submit" value="<?php echo t('login_btn_login'); ?>">

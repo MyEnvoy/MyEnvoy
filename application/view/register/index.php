@@ -22,14 +22,16 @@
             <div class="col ten">
                 <div class="form_group">
                     <label for="name"><?php echo t('login_user_id'); ?></label>
-                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" pattern="[a-z0-9.]{3,40}" required
-                           data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_userid_hint'); ?>">
+                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" pattern="[a-z0-9.]{3,40}" 
+                           required <?php echo ($this->hint !== RegisterController::ERR_EMAIL_USED ? ($this->hint !== NULL ? 'autofocus' : '') : ''); ?> data-placement="left" data-toggle="popover"
+                           data-trigger="focus" data-content="<?php echo t('register_userid_hint'); ?>" value="<?php echo $this->name; ?>">
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
                     <label for="email"><?php echo t('register_user_email'); ?></label>
-                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>" required
-                           data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_email_hint'); ?>">
+                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>"
+                           required  <?php echo ($this->hint !== RegisterController::ERR_NAME_USED ? ($this->hint !== NULL ? 'autofocus' : '') : ''); ?>
+                           data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<?php echo t('register_email_hint'); ?>" value="<?php echo $this->email; ?>">
                 </div>
                 <div class="form_group">
                     <label for="pwd"><?php echo t('login_user_pwd'); ?></label>

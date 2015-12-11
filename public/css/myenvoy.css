@@ -39,7 +39,7 @@ div.col.nine {width: 90%;}
 div.col.ten {width: 100%;}
 
 p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
-a:not([class=noa]) {text-decoration: none;font-weight: 400;color: #337ab7;}
+a:not([class=noa]) {text-decoration: none;font-weight: inherit;color: #337ab7;}
 a:hover:not([class=noa]) {text-decoration: underline;}
 input {outline: 0;}
 

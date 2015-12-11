@@ -7,6 +7,7 @@ use Famework\Famework;
 use Famework\Config\Famework_Config;
 use Famework\Registry\Famework_Registry;
 use Famework\Request\Famework_Request;
+use Famework\Session\Famework_Session;
 
 define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
 define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/');
@@ -50,6 +51,8 @@ if ($config->getValue('myenvoy', 'support_https') == 1) {
 } else {
     define('APPLICATION_HTTPS', FALSE);
 }
+
+Famework_Session::start(APPLICATION_HTTPS);
 
 $famework->loadController();
 

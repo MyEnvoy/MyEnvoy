@@ -41,6 +41,54 @@ class Newuser extends User {
         return $user;
     }
 
+    public static function activate($name, $hash) {
+        $db = Famework_Registry::getDb();
+        $stm = $db->prepare('SELECT id FROM user WHERE name = :name AND hash = :hash LIMIT 1');
+        $stm->bindParam(':name', $name);
+        $stm->bindParam(':hash', $hash);
+        $stm->execute();
+
+        $uid = NULL;
+        foreach ($stm->fetchAll() as $row) {
+            $uid = $row['id'];
+        }
+
+        if ($uid === NULL) {
+            return FALSE;
+        }
+
+        $upd = $db->prepare('UPDATE user SET activated = 1, hash = NULL WHERE id = :id');
+        $upd->bindParam(':id', $uid, PDO::PARAM_INT);
+        $upd->execute();
+
+        return TRUE;
+    }
+
+    public static function validatePassword($pwd, $name) {
+        // https://www.youtube.com/watch?v=zUM7i8fsf0g
+        // prevents from worst pattern
+        if (preg_match("/^([A-Z][a-z]+[0-9]+)$/", $pwd)) {
+            return FALSE;
+        }
+
+        // name shouldn't be part of password
+        if (strpos($pwd, $name) !== FALSE) {
+            return FALSE;
+        }
+        
+        // MyEnvoy shouldn't be part of password
+        if (strpos(strtolower($pwd), 'myenvoy')) {
+            return FALSE;
+        }
+
+        // not only digits
+        if (ctype_digit($pwd) === TRUE) {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
     /**
      * Set password if both are equals
      * @param string $pwd The password
@@ -71,7 +119,7 @@ class Newuser extends User {
         // use 32 bit salt
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         // generate password hash
-        $pwdAsHash = hash_pbkdf2('sha256', $this->_password, $salt, 1000, 64);
+        $pwdAsHash = self::generatePasswordHash($this->_password, $salt);
         // generate activation hash
         $hash = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
 
@@ -97,18 +145,25 @@ class Newuser extends User {
     private function sendActivationEmail($email, $name, $hash) {
         $mail = new Email();
         $mail->setTo($email);
-        $hashlink = Server::getRootLink() . APPLICATION_LANG . '/register/activate/?hash=' . urlencode($hash);
+        $hashlink = Server::getRootLink() . APPLICATION_LANG . '/register/activate/?hash=' . urlencode($hash) . '&name=' . urlencode($name);
         $message = sprintf(t('register_mail_body'), $name, $hashlink);
         $mail->send(t('register_mail_subject'), $message);
     }
 
     public function setPicture($htmlname, $userid) {
-        $pic = Picture::getFromUpload($htmlname);
-        if ($pic === NULL) {
-            return FALSE;
+        try {
+            $pic = Picture::getFromUpload($htmlname);
+            if ($pic === NULL) {
+                return FALSE;
+            }
+            $pic->makeProfilePics($userid);
+            $pic->remove();
+        } catch (Exception $e) {
+            // catch if no picture was uploaded
+            if ($e->getCode() !== Errorcode::PICTURE_DISALLOWED_OPERATION) {
+                throw $e;
+            }
         }
-        $pic->makeProfilePics($userid);
-        $pic->remove();
     }
 
 }

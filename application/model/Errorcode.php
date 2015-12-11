@@ -10,5 +10,7 @@ class Errorcode {
     const PICTURE_FILE_IS_NO_PIC = 10004;
     const PICTURE_FILE_TOO_BIG = 10005;
     const PICTURE_NO_JPEG = 10006;
+    
+    const USER_ACCESS_DENIED = 10007;
 
 }
