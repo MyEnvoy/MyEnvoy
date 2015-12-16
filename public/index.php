@@ -13,7 +13,7 @@ define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPA
 define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/');
 define('VIEW_PATH', APPLICATION_PATH . 'view');
 
-Famework::registerDeafaultHandler();
+Famework::registerDefaultHandler();
 
 $config = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
 $routes = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'routes.ini');
