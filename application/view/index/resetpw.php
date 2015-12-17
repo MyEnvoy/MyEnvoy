@@ -11,19 +11,19 @@
     <?php if (!empty($this->hint)): ?>
         <div class="row">
             <div class="col ten">
-                <div class="alert <?php echo ($this->hint > 11 ? 'alert_danger' : 'alert_success') ?>">
-                    <b><?php echo t('login_hint_' . (int) $this->hint); ?></b>
+                <div class="alert alert_success">
+                    <b><?php echo t('resetpw_hint'); ?></b>
                 </div>
             </div>
         </div>
     <?php endif; ?>
     <div class="row">
         <div class="col ten center_txt">
-            <img width="256" height="256" src="/img/profile256.png" alt="MyEnvoy Profile">
+            <h2><?php echo t('resetpw_h2'); ?></h2>
         </div>
     </div>
     <div class="row">
-        <form action="/<?php echo APPLICATION_LANG . '/index/login.do' ?>" method="post">
+        <form action="/<?php echo APPLICATION_LANG . '/index/resetpw.do' ?>" method="post">
             <div class="col ten">
                 <div class="form_group">
                     <label for="name"><?php echo t('login_user_id'); ?></label>
@@ -31,21 +31,21 @@
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">
-                    <label for="pwd"><?php echo t('login_user_pwd'); ?></label>
-                    <input type="password" id="pwd" name="pwd" placeholder="<?php echo t('login_user_pwd'); ?>" required pattern=".{8,}">
+                    <label for="email"><?php echo t('register_user_email'); ?></label>
+                    <input type="email" id="email" name="email" placeholder="<?php echo t('register_user_email'); ?>" required>
                 </div>
                 <div class="form_group">
-                    <input class="btn btn_success right" type="submit" value="<?php echo t('login_btn_login'); ?>">
+                    <input class="btn btn_success right" type="submit" value="<?php echo t('resetpw_btn_reset'); ?>">
                 </div>
             </div>
         </form>
     </div>
     <div class="row margin">
         <div class="col five">
-            <a href="/<?php echo APPLICATION_LANG ?>/register" class="ash5"><?php echo t('login_link_register') ?></a>
+            <a href="/<?php echo APPLICATION_LANG ?>" class="ash5"><?php echo t('register_link_login') ?></a>
         </div>
         <div class="col five">
-            <a href="/<?php echo APPLICATION_LANG ?>/index/resetpw" class="right ash5"><?php echo t('login_link_pwdrecover') ?></a>
+            <a href="/<?php echo APPLICATION_LANG ?>/register" class="right ash5"><?php echo t('login_link_register') ?></a>
         </div>
     </div>
 </div>

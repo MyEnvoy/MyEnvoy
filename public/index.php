@@ -21,6 +21,8 @@ $routes = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR 
 if ($config->getValue('myenvoy', 'env') === 'dev') {
     Famework_Registry::setEnv(Famework::ENV_DEV);
     error_reporting(E_ALL | E_STRICT);
+} else {
+    error_reporting(0);
 }
 
 $famework = new Famework($config, $routes);

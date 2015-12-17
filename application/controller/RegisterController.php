@@ -1,6 +1,7 @@
 <?php
 
 use Famework\LaCodon\Param\Paramhandler;
+use Famework\LaCodon\Param\Exception_Param;
 use Famework\Request\Famework_Request;
 
 class RegisterController extends Controller {
@@ -11,10 +12,12 @@ class RegisterController extends Controller {
     const ERR_EMAIL_USED = 4;
     const ERR_PWD_NOT_EQUALS = 5;
     const ERR_BAD_PASSWORD = 6;
+    const RESET_PWD_SUCCESSFUL = 9;
     const SUCCESSFUL = 10;
     const ACTIVATED = 11;
     const NOT_ACTIVATED = 12;
     const LOGIN_ERROR = 13;
+    const RESET_PWD_FAIL = 14;
 
     private $_paramHandler;
 
@@ -24,7 +27,7 @@ class RegisterController extends Controller {
     }
 
     public function indexAction() {
-        $this->_view->title(t('register_title'));
+        $this->_view->title(t('html_title_register_index'));
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/picturepreview.js');
@@ -40,10 +43,14 @@ class RegisterController extends Controller {
     public function registerDoAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
-        $name = $this->_paramHandler->getValue('name', TRUE, 3, 40);
-        $pwd = $this->_paramHandler->getValue('pwd', TRUE, 8);
-        $pwdrepeat = $this->_paramHandler->getValue('pwdrepeat', TRUE, 8);
-        $email = $this->_paramHandler->getValue('email');
+        try {
+            $name = $this->_paramHandler->getValue('name', TRUE, 3, 40);
+            $pwd = $this->_paramHandler->getValue('pwd', TRUE, 8);
+            $pwdrepeat = $this->_paramHandler->getValue('pwdrepeat', TRUE, 8);
+            $email = $this->_paramHandler->getValue('email');
+        } catch (Exception_Param $e) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/register/?err=' . self::ERR_EMAIL_INVALID);
+        }
 
         $email = strtolower($email);
         // validate E-Mail

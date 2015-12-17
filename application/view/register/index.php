@@ -53,7 +53,7 @@
             <a href="/<?php echo APPLICATION_LANG ?>" class="ash5"><?php echo t('register_link_login') ?></a>
         </div>
         <div class="col five">
-            <a href="#" class="right ash5"><?php echo t('login_link_pwdrecover') ?></a>
+            <a href="/<?php echo APPLICATION_LANG ?>/index/resetpw" class="right ash5"><?php echo t('login_link_pwdrecover') ?></a>
         </div>
     </div>
 </div>

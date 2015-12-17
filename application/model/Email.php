@@ -12,9 +12,6 @@ class Email {
         $localpart = substr($email, 0, $atpos);
         $hostpart = substr($email, $atpos + 1);
 
-        var_dump_pre($localpart);
-        var_dump_pre($hostpart);
-
         $localpartlen = strlen($localpart);
         $hostpartlen = strlen($hostpart);
 
