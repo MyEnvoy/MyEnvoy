@@ -6,6 +6,7 @@
 class Picture {
 
     const MAX_FILE_SIZE = 3145728;
+    const PROFILEPIC_PATH = APPLICATION_PATH . '../work/pic/';
 
     /**
      * @param string $name HTML element name
@@ -36,6 +37,10 @@ class Picture {
             }
         }
         return $pic;
+    }
+
+    public static function getUserPicName($userid, $size) {
+        return str_pad($userid, 11, '0', STR_PAD_LEFT) . '-' . $size . '.jpg';
     }
 
     private $_path = NULL;
@@ -85,7 +90,7 @@ class Picture {
         foreach ($finalSizes as $newsize) {
             $imFinish = imagecreatetruecolor($newsize, $newsize);
             imagecopyresampled($imFinish, $imSquare, 0, 0, 0, 0, $newsize, $newsize, $originSize, $originSize);
-            imagejpeg($imFinish, APPLICATION_PATH . '../work/pic/' . str_pad($userid, 11, '0', STR_PAD_LEFT) . '-' . $newsize . '.jpg', 100);
+            imagejpeg($imFinish, self::PROFILEPIC_PATH . self::getUserPicName($userid, $newsize), 100);
         }
     }
 

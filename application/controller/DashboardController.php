@@ -9,7 +9,7 @@ class DashboardController extends Controller {
         parent::init();
         $this->auth();
         $this->_paramHandler = new Paramhandler();
-        $this->_view->title('MyEnvoy');
+        $this->_view->title($this->_view->user->getName() . '@MyEnvoy');
     }
 
     private function auth() {
@@ -21,7 +21,12 @@ class DashboardController extends Controller {
     }
 
     public function indexAction() {
+        
+    }
+
+    public function logoutAction() {
         $this->_view->user->logout();
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/');
     }
 
 }

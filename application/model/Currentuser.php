@@ -5,6 +5,9 @@ use Famework\Session\Famework_Session;
 
 class Currentuser extends User {
 
+    const PIC_LARGE = 256;
+    const PIC_SMALL = 32;
+
     public static function getUserFromLogin($name, $pwd) {
         $db = Famework_Registry::getDb();
         $stm = $db->prepare('SELECT id, salt, pwd FROM user WHERE name = :name AND activated = 1 LIMIT 1');
@@ -64,7 +67,7 @@ class Currentuser extends User {
     }
 
     public function getId() {
-        return $this->_id;
+        return (int) $this->_id;
     }
 
     public function generateAuthSession() {
@@ -79,6 +82,18 @@ class Currentuser extends User {
 
     public function getEmail() {
         return $this->getWhatever('email');
+    }
+
+    public function getPictureUrl($size) {
+        $size = intval($size);
+        $filename = Picture::getUserPicName($this->getId(), $size);
+        $path = Picture::PROFILEPIC_PATH . $filename;
+
+        if (is_readable($path) === TRUE) {
+            return '/' . APPLICATION_LANG . '/upload/userpic/?id=' . $this->getId() . '&size=' . $size;
+        }
+
+        return NULL;
     }
 
     public function loadMeta() {
