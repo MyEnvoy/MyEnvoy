@@ -10,6 +10,9 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
     }
 
     public function renderTop() {
+        ?>
+        <div class="overlay"></div>
+        <?php
         if (!isset($this->_view->user)) :
             ?>
             <div id="page_title_myenvoy">

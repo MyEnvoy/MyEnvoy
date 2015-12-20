@@ -2,6 +2,7 @@
 
 use Famework\Registry\Famework_Registry;
 use Famework\Session\Famework_Session;
+use Famework\Request\Famework_Request;
 
 class Currentuser extends User {
 
@@ -51,6 +52,16 @@ class Currentuser extends User {
         }
 
         return new Currentuser($uid);
+    }
+
+    public static function auth() {
+        $user = self::getEnsureLoggedInUser(FALSE);
+
+        if ($user === NULL) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/');
+        } else {
+            return $user;
+        }
     }
 
     /**

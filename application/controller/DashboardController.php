@@ -7,17 +7,12 @@ class DashboardController extends Controller {
 
     public function init() {
         parent::init();
-        $this->auth();
+        $this->_view->user = Currentuser::auth();
         $this->_paramHandler = new Paramhandler();
         $this->_view->title($this->_view->user->getName() . '@MyEnvoy');
-    }
-
-    private function auth() {
-        $this->_view->user = Currentuser::getEnsureLoggedInUser(FALSE);
-
-        if ($this->_view->user === NULL) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/');
-        }
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
     }
 
     public function indexAction() {

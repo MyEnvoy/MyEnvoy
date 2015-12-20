@@ -1,22 +1,13 @@
 <?php
 
 use Famework\LaCodon\Param\Paramhandler;
-use Famework\Request\Famework_Request;
 
 class UploadController extends Controller {
 
     public function init() {
         parent::init();
-        $this->auth();
+        $this->_view->user = Currentuser::auth();
         $this->_paramHandler = new Paramhandler();
-    }
-
-    private function auth() {
-        $this->_view->user = Currentuser::getEnsureLoggedInUser(FALSE);
-
-        if ($this->_view->user === NULL) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/');
-        }
     }
 
     public function userpicAction() {
