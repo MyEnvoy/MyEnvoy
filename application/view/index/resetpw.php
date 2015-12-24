@@ -45,7 +45,7 @@
             <a href="/<?php echo APPLICATION_LANG ?>" class="ash5"><?php echo t('register_link_login') ?></a>
         </div>
         <div class="col five">
-            <a href="/<?php echo APPLICATION_LANG ?>/register" class="right ash5"><?php echo t('login_link_register') ?></a>
+            <a href="/<?php echo APPLICATION_LANG ?>/register" class="ash5 right"><?php echo t('login_link_register') ?></a>
         </div>
     </div>
 </div>

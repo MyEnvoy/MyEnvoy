@@ -39,8 +39,8 @@ class Picture {
         return $pic;
     }
 
-    public static function getUserPicName($userid, $size) {
-        return str_pad($userid, 11, '0', STR_PAD_LEFT) . '-' . $size . '.jpg';
+    public static function getUserPicName($userid, $size, $groupId = 'default') {
+        return str_pad($userid, 11, '0', STR_PAD_LEFT) . '-' . $size . '-' . $groupId . '.jpg';
     }
 
     private $_path = NULL;

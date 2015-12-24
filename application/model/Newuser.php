@@ -75,7 +75,7 @@ class Newuser extends User {
         if (strpos($pwd, $name) !== FALSE) {
             return FALSE;
         }
-        
+
         // MyEnvoy shouldn't be part of password
         if (strpos(strtolower($pwd), 'myenvoy')) {
             return FALSE;
@@ -136,10 +136,27 @@ class Newuser extends User {
         $idstm = $db->prepare('SELECT id FROM user WHERE name = ? AND email = ?');
         $idstm->execute(array($name, $email));
 
+        $myid = (int) $idstm->fetch()['id'];
+
+        // setup dependencies
+        $this->createDependencies($myid);
+
         // send activation mail
         $this->sendActivationEmail($email, $name, $hash);
 
-        return (int) $idstm->fetch()['id'];
+        return $myid;
+    }
+
+    private function createDependencies($myid) {
+        $this->createDefaultGroup($myid);
+    }
+
+    private function createDefaultGroup($myid) {
+        $stm = Famework_Registry::getDb()->prepare('INSERT INTO user_groups (user_id, name, isdefault) VALUES (:id, :name, 1)');
+        $stm->bindParam(':id', $myid, PDO::PARAM_INT);
+        $groupname = t('user_defaultgroup_name');
+        $stm->bindParam(':name', $groupname);
+        $stm->execute();
     }
 
     private function sendActivationEmail($email, $name, $hash) {

@@ -16,7 +16,7 @@ class DashboardController extends Controller {
     }
 
     public function indexAction() {
-        
+
     }
 
     public function logoutAction() {

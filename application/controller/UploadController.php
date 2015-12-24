@@ -4,9 +4,14 @@ use Famework\LaCodon\Param\Paramhandler;
 
 class UploadController extends Controller {
 
+    /**
+     * @var Currentuser
+     */
+    private $_user;
+
     public function init() {
         parent::init();
-        $this->_view->user = Currentuser::auth();
+        $this->_user = Currentuser::auth();
         $this->_paramHandler = new Paramhandler();
     }
 
@@ -16,8 +21,12 @@ class UploadController extends Controller {
         $userid = $this->_paramHandler->getInt('id');
         $size = $this->_paramHandler->getInt('size');
 
-        $filename = Picture::getUserPicName($userid, $size);
-        $path = Picture::PROFILEPIC_PATH . $filename;
+        if ($userid !== $this->_user->getId()) {
+            $other = new Otheruser($userid, $this->_user->getId());
+            $path = $other->getPicturePath($size);
+        } else {
+            $path = $this->_user->getPicturePath($size);
+        }
 
         if (is_readable($path) === TRUE) {
             header('Content-type: image/jpeg');
@@ -25,6 +34,7 @@ class UploadController extends Controller {
         } else {
             header('HTTP/1.0 404 Not Found', TRUE, 404);
         }
+        // prevent from rendering view
         exit();
     }
 

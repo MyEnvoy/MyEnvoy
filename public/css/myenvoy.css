@@ -40,7 +40,8 @@ div.col.ten {width: 100%;}
 p {display: block;text-indent: 15px;line-height: 1.5;hyphens: auto; text-align: justify}
 a:not([class=noa]) {text-decoration: none;font-weight: inherit;color: #337ab7;}
 a:hover:not([class=noa]) {text-decoration: underline;}
-input {outline: 0;}
+input, textarea, select {outline: 0;}
+hr {height: 1px;margin: 18px 8px;background-color: #e5e5e5;border: none;}
 
 a.noa {font-size: inherit;color: inherit;font-weight: inherit;text-decoration: inherit;}
 
@@ -50,11 +51,14 @@ div.form_group label{display: block;font-size: 14px;font-weight: 700;margin-bott
 
 pre.var_dump {margin: 10px;background-color: #eee;border: 1px solid #ccc;padding: 10px;font-family: monospace;font-size: 11pt;border-radius: 5px;}
 
-input:not([type=submit]) {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
-input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
+input:not([type=submit]), textarea, select {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
+input:not([type=submit]):focus, textarea:focus, select:focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
+textarea {resize: vertical;height: 90px;max-height: 150px;color:#333;font-family: 'helvetica', 'Arial';font-size: 15px;font-weight: normal;}
+select {display: inline-block;width: fit-content;}
 
 .small_input {width: 300px !important;height: 29px !important;padding: 3px 6px !important;font-size: 12px !important;line-height: 2 !important;}
 .inline_input {margin: 0px;}
+.inline_margin_inverse {margin-right: 10px;}
 
 .btn {cursor: pointer;display: inline-block;padding: 6px 12px;font-size: 14px;font-weight: 400;line-height: 1.43;text-align: center;white-space: nowrap;vertical-align: middle;border: 1px solid transparent;border-radius: 4px;text-decoration: none;}
 .btn.btn_default {color: #333;background-color: #fff;border-color: #ccc;}
@@ -72,9 +76,11 @@ input:not([type=submit]):focus {border-color: #66afe9;box-shadow: inset 0 1px 1p
 
 .center {margin: 0px auto;}
 .center_txt {text-align: center;}
+.right_txt {text-align: right;}
 .right {float: right;}
 .left {float: left;}
 .fullsize {width: 100%;box-sizing: border-box;}
+.text_light {color: #666;}
 
 .overlay {display: none;height: 100%;width: 100%;position: fixed;top: 0px;bottom: 0px;left: 0px;right: 0px;z-index: 10;}
 
@@ -118,3 +124,11 @@ div#dashboard_header_usermenu:hover, div#dashboard_header_usermenu:hover * {curs
 div#dashboard_header_usermenu:hover div.dropdown {cursor: default;border-top-color: rgba(0,0,0,.15);}
 
 div.dashboard_realsize_container {width: 1100px;margin: 0px auto;}
+
+div#dashboard_central_container {margin-top: 30px;}
+div#dashboard_userinfo_container {padding-right: 20px;}
+div#dashboard_username_container {margin-top: 20px;font-size: 22px;font-weight: bold;}
+div#dashboard_registered_since {font-size: 16px;}
+div#dashboard_registered_since .genericon {font-size: 18px;color: #999;margin-right: 5px;}
+
+label#dashboard_postit_tolabel {margin-top: 11px;color: #767676;font-weight: bold;font-size: 13px;}

@@ -64,71 +64,49 @@ class Currentuser extends User {
         }
     }
 
-    /**
-     * @var PDO
-     */
-    private $_db;
-    private $_id;
-    private $_meta = NULL;
-
     // Singleton pattern
     private function __construct($id) {
-        $this->_db = Famework_Registry::getDb();
+        $this->initDb();
         $this->_id = $id;
-    }
-
-    public function getId() {
-        return (int) $this->_id;
+        $this->loadMeta();
     }
 
     public function generateAuthSession() {
         $session = new Famework_Session();
+        $session->regenerateId(TRUE);
         $session->setNamespace('user');
         $session->set('uid', $this->getId());
-    }
-
-    public function getName() {
-        return $this->getWhatever('name');
     }
 
     public function getEmail() {
         return $this->getWhatever('email');
     }
 
-    public function getPictureUrl($size) {
+    public function getAddDate() {
+        return $this->getWhatever('adddate');
+    }
+
+    public function getPicturePath($size) {
         $size = intval($size);
         $filename = Picture::getUserPicName($this->getId(), $size);
-        $path = Picture::PROFILEPIC_PATH . $filename;
-
-        if (is_readable($path) === TRUE) {
-            return '/' . APPLICATION_LANG . '/upload/userpic/?id=' . $this->getId() . '&size=' . $size;
-        }
-
-        return NULL;
-    }
-
-    public function loadMeta() {
-        $id = $this->_id;
-        $stm = $this->_db->prepare('SELECT * FROM user WHERE id = :id LIMIT 1');
-        $stm->bindParam(':id', $id);
-        $stm->execute();
-
-        $this->_meta = $stm->fetch();
-
-        $this->_email = $this->_meta['email'];
-        $this->_username = $this->_meta['name'];
-    }
-
-    private function getWhatever($key) {
-        if (!isset($this->_meta[$key])) {
-            $this->loadMeta();
-        }
-
-        return $this->_meta[$key];
+        return Picture::PROFILEPIC_PATH . $filename;
     }
 
     public function logout() {
         Famework_Session::destroySession();
+    }
+
+    public function getGroupOverview() {
+        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY id ASC');
+        $stm->execute(array($this->getId()));
+
+        $data = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $data[$row['id']] = $row['name'];
+        }
+
+        return $data;
     }
 
 }
