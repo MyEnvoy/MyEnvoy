@@ -46,7 +46,7 @@
                 <div class="col seven">
                     <div class="row">
                         <div id="dashboard_postit">
-                            <form method="post">
+                            <form method="post" action="/<?php echo APPLICATION_LANG; ?>/post/add">
                                 <div class="col ten">
                                     <div class="row">
                                         <div class="col ten">
@@ -58,13 +58,13 @@
                                     </div>
                                     <div class="row margin">
                                         <div class="col ten">
-                                            <input type="submit" class="btn btn_primary right">
+                                            <input id="dashboard_postit_btn" type="submit" class="btn btn_primary right" value="<?php echo t('dashboard_post_btn_send'); ?>">
                                             <select id="dashboard_postit_group" name="group" class="right inline_margin_inverse">
                                                 <?php foreach ($this->user->getGroupOverview() as $key => $value) : ?>
                                                     <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                            <label class="right inline_margin_inverse" id="dashboard_postit_tolabel"><?php echo t('dashboard_post_recipient'); ?></label>
+                                            <label class="right inline_margin_inverse text_light" id="dashboard_postit_tolabel"><?php echo t('dashboard_post_recipient'); ?></label>
                                         </div>
                                     </div>
                                 </div>
@@ -73,9 +73,68 @@
                     </div>
                     <hr>
                     <div class="row">
-                        - POSTS WILL COME HERE - 
+                        <div class="col six">
+
+                            <?php
+                            $posts = $this->user->getWall();
+
+                            foreach ($posts as $post) :
+                                ?>
+                                <div class="row dashboard_post_container" post-id="<?php echo $post['post']->getId(); ?>">
+                                    <div class="col ten">
+                                        <?php $post['post']->render($this->user); ?>
+
+                                        <div class="row dashboard_post_comments">
+                                            <div class="col ten">
+
+                                                <?php foreach ($post['comments'] as $comment): ?>
+                                                    <div class="onecomment" post-id="<?php echo $comment['comment']->getId(); ?>">
+                                                        <?php $comment['comment']->render($this->user); ?>
+                                                        <?php
+                                                        foreach ($comment['subcomments'] as $subcomment) {
+                                                            $subcomment->render($this->user);
+                                                        }
+                                                        ?>
+                                                        <div class="row dashboard_post_comments_newsub" style="display: none;">
+                                                            <div class="col one">
+                                                                <img src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="20" height="20" alt="Posting user picture">
+                                                            </div>
+                                                            <div class="col nine">
+                                                                <div class="row">
+                                                                    <div class="col ten">
+                                                                        <input type="text" class="newsubcomment small_input" placeholder="<?php echo t('dashboard_post_comment_placeholder'); ?>">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+
+                                                <div class="row dashboard_post_comments_new">
+                                                    <div class="col one">
+                                                        <img src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="<?php echo Currentuser::PIC_SMALL; ?>" height="<?php echo Currentuser::PIC_SMALL; ?>" alt="Posting user picture">
+                                                    </div>
+                                                    <div class="col nine">
+                                                        <div class="row dashboard_post_user">
+                                                            <div class="col ten">
+                                                                <input type="text" class="newcomment small_input" placeholder="<?php echo t('dashboard_post_comment_placeholder'); ?>">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+
+                        </div>
+                        <div class="col four inline_padding">
+                            Some widgets
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

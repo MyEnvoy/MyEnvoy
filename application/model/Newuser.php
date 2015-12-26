@@ -182,5 +182,9 @@ class Newuser extends User {
             }
         }
     }
+    
+    private function getPicturePath($size) {
+        return NULL;
+    }
 
 }

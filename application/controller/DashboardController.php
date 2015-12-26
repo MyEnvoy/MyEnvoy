@@ -16,7 +16,7 @@ class DashboardController extends Controller {
     }
 
     public function indexAction() {
-
+        $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
     }
 
     public function logoutAction() {

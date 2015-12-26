@@ -109,4 +109,61 @@ class Currentuser extends User {
         return $data;
     }
 
+    /**
+     * Return the IDs of all groups from which the user is allowd to read posts
+     */
+    public function getMyMemberships() {
+        $stm = $this->_db->prepare('SELECT grp.id id FROM user_groups grp
+                                        LEFT JOIN user_groups_members grpmbr ON grpmbr.user_id = :userid AND grpmbr.group_id = grp.id
+                                    WHERE grp.user_id = :userid OR grpmbr.user_id = :userid
+                                    GROUP BY grp.id');
+        $id = $this->getId();
+        $stm->bindParam(':userid', $id, PDO::PARAM_INT);
+        $stm->execute();
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = (int) $row['id'];
+        }
+
+        return $res;
+    }
+
+    public function getWall($page = 0, $limit = 10) {
+        $offset = $page * $limit;
+
+        $allowedGroups = $this->getMyMemberships();
+        $sql = 'SELECT * FROM user_posts WHERE group_id IN (' . implode(',', $allowedGroups) . ') AND post_id IS NULL ORDER BY user_posts.datetime DESC LIMIT :offset, :limit';
+        $stm = $this->_db->prepare($sql);
+        $stm->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stm->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stm->execute();
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $post = Post::getFromId($row['id']);
+            $comments = $post->getEntireComments();
+            $res[] = array('post' => $post, 'comments' => $comments);
+        }
+
+        return $res;
+    }
+
+    public function hasFavourised($postID) {
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT * FROM user_posts_favs WHERE post_id = ? AND user_id = ? GROUP BY post_id) x');
+        $stm->execute(array($postID, $this->getId()));
+
+        return (bool) $stm->fetch()['count'];
+    }
+
+    public function canSeePost($postID) {
+        $allowedGroups = $this->getMyMemberships();
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT * FROM user_posts WHERE group_id IN (' . implode(',', $allowedGroups) . ') AND id = :pid) x LIMIT 1');
+        $stm->bindParam(':pid', $postID, PDO::PARAM_INT);
+        $stm->execute();
+
+        return (bool) $stm->fetch()['count'];
+    }
+
 }

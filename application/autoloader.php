@@ -5,6 +5,7 @@ spl_autoload_register(function ($class) {
 
     $paths[] = APPLICATION_PATH . 'controller' . DIRECTORY_SEPARATOR;
     $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR;
+    $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR . 'traits' . DIRECTORY_SEPARATOR;
     
     $class = ucfirst(strtolower($class));
     
