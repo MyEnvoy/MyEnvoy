@@ -1,3 +1,9 @@
+var applang;
+
+function setapplang(lang) {
+    applang = lang;
+}
+
 $(window).load(function () {
     $('div.dashboard_post_footer a.noa').on('click', function () {
         $(this).parent().parent().parent().find('.newcomment').focus();
@@ -11,7 +17,8 @@ $(window).load(function () {
     $('.newcomment').on('keydown', function (e) {
         if (e.keyCode === 13) {
             var postID = $(this).closest('.dashboard_post_container').attr('post-id');
-
+            var content = $(this).val();
+            commitComment(postID, content);
             $(this).val('');
         }
     });
@@ -19,8 +26,22 @@ $(window).load(function () {
     $('.newsubcomment').on('keydown', function (e) {
         if (e.keyCode === 13) {
             var postID = $(this).closest('.onecomment').attr('post-id');
-
+            var content = $(this).val();
+            commitComment(postID, content);
             $(this).val('');
         }
     });
+
+    function commitComment(postID, content) {
+        $('#dashboard_post_comment_id').val(postID);
+        $('#dashboard_post_comment_content').val(content);
+        
+        $('#dashboard_post_comment_form').submit();
+    }
 });
+
+function jsconfirm(url, text) {
+    if (confirm(text) === true) {
+        window.location.href = url;
+    }
+}

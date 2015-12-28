@@ -7,6 +7,9 @@ use Famework\Request\Famework_Request;
 
 class PostController extends Controller {
 
+    const MAX_POST_SIZE = 10000;
+    const MAX_COMMENT_SIZE = 5000;
+
     public function init() {
         parent::init();
         $this->_view->user = Currentuser::auth();
@@ -16,7 +19,7 @@ class PostController extends Controller {
     public function addAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
-        $content = $this->_paramHandler->getValue('post');
+        $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_POST_SIZE);
         $group = $this->_paramHandler->getInt('group');
 
         // validate group
@@ -33,9 +36,21 @@ class PostController extends Controller {
     }
 
     public function removeAction() {
-        $this->_paramHandler->bindMethods(Paramhandler::POST);
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
 
-        // TODO: code it!
+        $postID = $this->_paramHandler->getInt('id');
+
+        $post = Post::getFromId($postID);
+
+        if (empty($post)) {
+            throw new Exception('Post not availabel.');
+        }
+
+        if ($post->getOwnerId() !== $this->_view->user->getId()) {
+            throw new Exception('Disallowed action.');
+        }
+
+        $post->remove();
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }
@@ -44,8 +59,8 @@ class PostController extends Controller {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
 
         $postID = $this->_paramHandler->getInt('id');
-
         $post = Post::getFromId($postID);
+
         if (empty($post)) {
             throw new Exception('Post not availabel.');
         }
@@ -66,6 +81,30 @@ class PostController extends Controller {
     public function defavAction() {
         $post = $this->validatePostForFavAction();
         $post->defav($this->_view->user);
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+    }
+
+    public function commentAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
+
+        $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_COMMENT_SIZE);
+        $tmpID = $this->_paramHandler->getInt('id');
+        $post = Post::getFromId($tmpID);
+
+        if (empty($post)) {
+            throw new Exception('Post not availabel.');
+        }
+
+        if ($this->_view->user->canSeePost($post->getId()) !== TRUE || $post->isSubComment() === TRUE) {
+            throw new Exception('Disallowed action.');
+        }
+
+        $groupID = $post->getGroupId();
+        $postID = $post->getId();
+        $content = Security::trim($content);
+
+        Post::insert($this->_view->user->getId(), $groupID, $content, $postID);
+
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }
 

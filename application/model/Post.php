@@ -22,10 +22,11 @@ class Post {
         return new Post($row['id'], $row);
     }
 
-    public static function insert($userID, $groupID, $content) {
-        $stm = Famework_Registry::getDb()->prepare('INSERT INTO user_posts (user_id, group_id, content) VALUES (:uid, :gid, :content)');
+    public static function insert($userID, $groupID, $content, $postID = NULL) {
+        $stm = Famework_Registry::getDb()->prepare('INSERT INTO user_posts (user_id, group_id, post_id, content) VALUES (:uid, :gid, :pid, :content)');
         $stm->bindParam(':uid', $userID, PDO::PARAM_INT);
         $stm->bindParam(':gid', $groupID, PDO::PARAM_INT);
+        $stm->bindParam(':pid', $postID, PDO::PARAM_INT);
         $stm->bindParam(':content', $content);
         $stm->execute();
     }
@@ -86,7 +87,7 @@ class Post {
     }
 
     public function countFavs() {
-        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT * FROM user_posts_favs WHERE post_id = ? GROUP BY post_id) x');
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT * FROM user_posts_favs WHERE post_id = ?) x');
         $stm->execute(array($this->getId()));
 
         return (int) $stm->fetch()['count'];
@@ -97,7 +98,7 @@ class Post {
     }
 
     public function getOwnerId() {
-        return $this->getWhatever('user_id');
+        return (int) $this->getWhatever('user_id');
     }
 
     public function getCreationTime() {
@@ -106,6 +107,10 @@ class Post {
 
     public function getContent() {
         return $this->getWhatever('content');
+    }
+
+    public function getGroupId() {
+        return (int) $this->getWhatever('group_id');
     }
 
     public function getEntireComments() {
@@ -136,6 +141,11 @@ class Post {
         }
 
         return $res;
+    }
+
+    public function remove() {
+        $stm = $this->_db->prepare('DELETE FROM user_posts WHERE id = ? LIMIT 1');
+        $stm->execute(array($this->getId()));
     }
 
     public function render(Currentuser $user) {

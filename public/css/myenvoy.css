@@ -160,4 +160,11 @@ div.dashboard_post_subcomment, div.dashboard_post_comments_newsub {margin-left: 
 div.dashboard_post_subcomment {margin-bottom: 0px !important;padding-top: 8px;}
 div.dashboard_post_comments_newsub {padding-top: 8px;}
 div.dashboard_post_comments_newsub input {width: 92.5% !important;height: 20px !important;padding: 3px 6px !important;font-size: 12px !important;line-height: 1.4 !important;}
+div.dashboard_post_comment .inline_margin, div.dashboard_post_subcomment .inline_margin {margin-left: 5px;}
 div.dashboard_post_subcomment:nth-child(2) {padding-top: 0px;}
+div.dashboard_post_remove {position: absolute;right: 10px;top: 10px;z-index: 1;color: #9197a3;}
+div.dashboard_post_remove:hover {color: #666;}
+div.dashboard_post_remove a {cursor: pointer;}
+div.dashboard_post_remove .genericon {font-size: 22px;}
+
+div#dashboard_weather_temp {padding-top: 50px;font-size: 25px;font-weight: bold;}
