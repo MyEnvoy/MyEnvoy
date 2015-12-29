@@ -58,6 +58,7 @@ textarea {resize: vertical;height: 90px;min-height: 90px;max-height: 150px;color
 select {display: inline-block;box-sizing: border-box;width: fit-content;width: -moz-fit-content;height: 36px;}
 
 .small_input {width: 300px !important;height: 29px !important;padding: 3px 6px !important;font-size: 12px !important;line-height: 2 !important;}
+.large_input {height: 40px !important;padding: 3px 6px !important;font-size: 20px !important;line-height: 2 !important;}
 .inline_input {margin: 0px;}
 .inline_padding {padding-left: 10px;}
 .inline_margin {margin-left: 10px;}
@@ -155,6 +156,7 @@ div.onecomment {margin-bottom: 8px;}
 input.newcomment, input.newsubcomment {width: 98% !important;border-radius: 0px;}
 div.dashboard_post_footer a.noa, div.dashboard_post_comment a.noa {cursor: pointer;}
 div.dashboard_post_comment_content {margin-bottom: 2px !important;}
+div.dashboard_post_subcomment_content {width: 92% !important;margin-left: 0px;}
 div.dashboard_post_comment_info .genericon-star {margin-top: -2px;}
 div.dashboard_post_subcomment, div.dashboard_post_comments_newsub {margin-left: 25px;border-left: 3px solid #9197a3;padding-left: 10px;}
 div.dashboard_post_subcomment {margin-bottom: 0px !important;padding-top: 8px;}
@@ -162,9 +164,22 @@ div.dashboard_post_comments_newsub {padding-top: 8px;}
 div.dashboard_post_comments_newsub input {width: 92.5% !important;height: 20px !important;padding: 3px 6px !important;font-size: 12px !important;line-height: 1.4 !important;}
 div.dashboard_post_comment .inline_margin, div.dashboard_post_subcomment .inline_margin {margin-left: 5px;}
 div.dashboard_post_subcomment:nth-child(2) {padding-top: 0px;}
-div.dashboard_post_remove {position: absolute;right: 10px;top: 10px;z-index: 1;color: #9197a3;}
-div.dashboard_post_remove:hover {color: #666;}
-div.dashboard_post_remove a {cursor: pointer;}
+div.dashboard_post_remove, div#dashboard_weather_settings  {position: absolute;right: 10px;top: 10px;z-index: 1;color: #9197a3;}
+div.dashboard_post_remove:hover, div#dashboard_weather_settings :hover {color: #666;}
+div.dashboard_post_remove a, div#dashboard_weather_settings  a {cursor: pointer;}
 div.dashboard_post_remove .genericon {font-size: 22px;}
+div.dashboard_post_header .genericon-reply {margin-top: -3px;}
 
+div#dashboard_weather_widget h3 {margin-top: 0px;}
+div#dashboard_weather_info {margin-bottom: 0px;}
 div#dashboard_weather_temp {padding-top: 50px;font-size: 25px;font-weight: bold;}
+span.weathericon {margin-top: -1px;}
+div#dashboard_weather_settings {top: 16px;}
+
+div#loading {position: fixed;left: 0px;right: 0px;width: 100%;height: 100%;z-index: 5;text-align: center;padding-top: 10%;display: none;}
+div#loading img {box-shadow: 0 3px 12px 0px rgba(0,0,0,.15);border-radius: 4px;}
+
+div.dashboard_search_resultcontainer {padding: 10px;width: 33.3%;}
+div.dashboard_search_resultwrapper {border: 1px solid rgba(0,0,0,.15);box-shadow: 0 3px 12px 0px rgba(0,0,0,.15);border-radius: 4px;padding: 10px;}
+div.dashboard_search_username {font-size: 16px;margin-top: 8px;padding-left: 10px;}
+div.dashboard_search_username span {font-size: 10px;padding-left: 10px;}

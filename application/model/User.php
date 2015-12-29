@@ -3,9 +3,9 @@
 use Famework\Registry\Famework_Registry;
 
 abstract class User {
-    
+
     const DB_TABLE = 'user';
-    
+
     use Hasmeta;
 
     public static function generatePasswordHash($pwd, $salt) {

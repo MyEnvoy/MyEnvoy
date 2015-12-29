@@ -1,6 +1,18 @@
 <?php
 
+use Famework\Registry\Famework_Registry;
+
 class Otheruser extends User {
+
+    public static function getByName($name, $callerId) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? LIMIT 1');
+        $stm->execute(array($name));
+        $res = $stm->fetch();
+        if (!empty($res)) {
+            return new Otheruser($res['id'], $callerId);
+        }
+        return NULL;
+    }
 
     private $_callerID;
 
@@ -34,6 +46,27 @@ class Otheruser extends User {
         }
 
         return $path;
+    }
+
+    public function getPublicPosts() {
+        $groupID = $this->getDefaultGroupId();
+        $stm = $this->_db->prepare('SELECT id FROM user_posts WHERE user_id = ? AND group_id = ? AND post_id IS NULL');
+        $stm->execute(array($this->getId(), $groupID));
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = Post::getFromId($row['id']);
+        }
+
+        return $res;
+    }
+
+    public function getDefaultGroupId() {
+        $stm = $this->_db->prepare('SELECT MIN(id) id FROM user_groups WHERE user_id = ? LIMIT 1');
+        $stm->execute(array($this->getId()));
+        $res = $stm->fetch();
+        return (int) $res['id'];
     }
 
 }

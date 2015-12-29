@@ -11,7 +11,7 @@ trait Hasmeta {
         $stm->execute();
 
         $this->_meta = $stm->fetch();
-
+        
         if (empty($this->_meta)) {
             throw new Exception('Data not found.');
         }

@@ -97,7 +97,7 @@ class Currentuser extends User {
     }
 
     public function getGroupOverview() {
-        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY id ASC');
+        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY id DESC');
         $stm->execute(array($this->getId()));
 
         $data = array();
@@ -124,9 +124,31 @@ class Currentuser extends User {
         $res = array();
 
         foreach ($stm->fetchAll() as $row) {
+            // normal memberships
             $res[] = (int) $row['id'];
         }
 
+        foreach ($this->getMyFriends() as $friend) {
+            // public group of friends
+            $res[] = $friend->getDefaultGroupId();
+        }
+
+        return array_unique($res);
+    }
+
+    /**
+     * Get who this user is following
+     */
+    public function getMyFriends() {
+        $stm = $this->_db->prepare('SELECT ug.user_id id FROM user_groups_members ugm
+                                        JOIN user_groups ug ON ug.id = ugm.group_id
+                                    WHERE ugm.user_id = ?');
+        $stm->execute(array($this->getId()));
+
+        $res = array();
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = new Otheruser($row['id'], $this->getId());
+        }
         return $res;
     }
 

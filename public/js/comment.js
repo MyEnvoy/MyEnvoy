@@ -9,7 +9,7 @@ $(window).load(function () {
         $(this).parent().parent().parent().find('.newcomment').focus();
     });
 
-    $('div.dashboard_post_comment a.noa').on('click', function () {
+    $('div.dashboard_post_comment a.noa.comment_commentit').on('click', function () {
         $(this).parent().parent().parent().parent().parent().parent().find('.dashboard_post_comments_newsub').show();
         $(this).parent().parent().parent().parent().parent().parent().find('.newsubcomment').focus();
     });

@@ -56,6 +56,7 @@ if ($config->getValue('myenvoy', 'support_https') == 1) {
 
 Famework_Session::start(APPLICATION_HTTPS);
 Famework_Registry::set('\famework_config', $config);
+Famework_Registry::set('\famework_sys', $famework);
 
 $famework->loadController();
 

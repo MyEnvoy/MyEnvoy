@@ -1,27 +1,7 @@
 <div id="dashboard_content">
-    <div id="dashboard_header_container">
-        <div class="dashboard_realsize_container">
-            <div id="dashboard_header_homelink" class="left">
-                <a href="/<?php echo APPLICATION_LANG; ?>/dashboard/index" class="noa"><img src="/img/logo32bw.png" alt="MyEnvoy Logo" width="32" height="32"></a>
-            </div>
-            <div id="dashboard_header_searchbox" class="left">
-                <form>
-                    <input type="text" class="small_input inline_input" name="search" placeholder="<?php echo t('dashboard_index_search'); ?>">
-                </form>
-            </div>
-            <div id="dashboard_header_usermenu" class="right" data-toggle="tooltip" data-placement="bottom" title="<?php echo t('dashboard_profile_tooltip'); ?>">
-                <img alt="Small Profile Picture" src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_SMALL) ?>" width="<?php echo Currentuser::PIC_SMALL; ?>" height="<?php echo Currentuser::PIC_SMALL; ?>">
-                <span class="dropdown_arrow"></span>
-            </div>
-            <div class="dropdown">
-                <ul class="dropdown_list">
-                    <li><span class="greyspan"><?php echo t('dashboard_dropdown_title') ?> <b><?php echo $this->user->getName(); ?></b></span></li>
-                    <hr>
-                    <li><a href="/<?php echo APPLICATION_LANG; ?>/dashboard/logout"><?php echo t('dashboard_dropdown_logout'); ?></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+
+    <?php require APPLICATION_PATH . 'view/dashboard/helper/menubar.php'; ?>
+
     <div id="dashboard_central_container">
 
         <form id="dashboard_post_comment_form" method="post" action="/<?php echo APPLICATION_LANG; ?>/post/comment" style="display: none;">
@@ -39,7 +19,7 @@
                     </div>
                     <div class="row" id="dashboard_username_container">
                         <div class="col ten">
-                            <span><?php echo $this->user->getName(); ?></span><span class="text_light"><wbr>@<?php echo Server::getMyHost(); ?></span>
+                            <span><?php echo Security::wbrusername($this->user->getName(), TRUE); ?></span><span class="text_light"><wbr>@<?php echo Server::getMyHost(); ?></span>
                         </div>
                     </div>
                     <hr>
@@ -145,16 +125,20 @@
                         </div>
                         <?php if (isset($this->weather_city)) : ?>
                             <div class="col four inline_padding">
-                                <div class="row dashboard_post_container">
+                                <div class="row dashboard_post_container" id="dashboard_weather_widget">
+                                    <div id="dashboard_weather_settings">
+                                        <a class="noa"><span class="genericon genericon-cog"></span></a>
+                                    </div>
                                     <div class="col ten">
                                         <div class="row">
                                             <div class="col ten">
                                                 <h3><?php echo t('dashboard_widget_weather_heading'); ?></h3>
+                                                <span class="genericon genericon-location text_light weathericon"></span><span class="text_light"><?php echo Security::htmloutput($this->weather_city); ?></span>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row" id="dashboard_weather_info">
                                             <div class="col six">
-                                                <div class="center_txt">
+                                                <div class="center_txt" data-toggle="tooltip" data-placement="top" title="<?php echo Security::htmloutput($this->weather_desc); ?>">
                                                     <img src="<?php echo $this->weather_icon; ?>" alt="Weather icon">
                                                 </div>
                                             </div>

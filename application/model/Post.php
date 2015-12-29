@@ -158,9 +158,13 @@ class Post {
         }
     }
 
-    private function renderAsPost(Currentuser $thisuser) {
-        $user = new Otheruser($this->getOwnerId(), $this->getId());
-        $datetime = Dateutils::formatDateTime(new DateTime($this->getCreationTime()));
+    public function renderPublic(Currentuser $user) {
+        $this->renderAsPost($user, TRUE);
+    }
+
+    private function renderAsPost(Currentuser $thisuser, $public = FALSE) {
+        $user = new Otheruser($this->getOwnerId(), $thisuser->getId());
+        $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_header">
             <div class="col one">
@@ -168,10 +172,18 @@ class Post {
             </div>
             <div class="col nine">
                 <div class="row dashboard_post_user">
-                    <div class="col ten"><a href="#"><?php echo $user->getName(); ?></a></div>
+                    <div class="col ten"><a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getName(); ?>"><?php echo Security::wbrusername($user->getName(), TRUE); ?></a></div>
                 </div>
                 <div class="row dashboard_post_time">
-                    <div class="col ten text_light"><span class="genericon genericon-time"></span> <?php echo $datetime; ?></div>
+                    <div class="col ten text_light">
+                        <div class="left text_light"><span class="genericon genericon-time"></span> <?php echo $datetime; ?></div>
+                        <?php if ($thisuser->getId() === $user->getId()) : ?>
+                            <div class="left text_light inline_margin">&middot;</div>
+                            <div class="left text_light inline_margin">
+                                <span class="genericon genericon-reply"></span> <?php echo Group::getNameById($this->getGroupId()); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -186,24 +198,28 @@ class Post {
         </div>
         <hr>
         <div class="row dashboard_post_footer">
-            <div class="left text_light">
-                <span class="genericon genericon-comment"></span> <a class="noa"><?php echo t('dashboard_post_commentit'); ?></a>
-            </div>
-            <div class="left text_light inline_margin">&middot;</div>
+            <?php if ($public === FALSE): ?>
+                <div class="left text_light">
+                    <span class="genericon genericon-comment"></span> <a class="noa"><?php echo t('dashboard_post_commentit'); ?></a>
+                </div>
+                <div class="left text_light inline_margin">&middot;</div>
+            <?php endif; ?>
             <div class="left text_light inline_margin" data-toggle="tooltip" data-placement="top" title="<?php echo t('dashboard_post_fav_tooltip'); ?>">
                 <?php echo $this->countFavs(); ?> <span class="genericon genericon-star"></span>
             </div>
-            <div class="left text_light inline_margin">&middot;</div>
-            <div class="left text_light inline_margin">
-                <a class="noa" href="<?php echo $this->getFavData($thisuser)['link'] ?>"><?php echo t($this->getFavData($thisuser)['txt']); ?></a>
-            </div>
+            <?php if ($public === FALSE): ?>
+                <div class="left text_light inline_margin">&middot;</div>
+                <div class="left text_light inline_margin">
+                    <a class="noa" href="<?php echo $this->getFavData($thisuser)['link'] ?>"><?php echo t($this->getFavData($thisuser)['txt']); ?></a>
+                </div>
+            <?php endif; ?>
         </div>
         <?php
     }
 
     private function renderAsComment(Currentuser $thisuser) {
         $user = new Otheruser($this->getOwnerId(), $this->getId());
-        $datetime = Dateutils::formatDateTime(new DateTime($this->getCreationTime()));
+        $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_comment">
             <div class="col one">
@@ -212,7 +228,7 @@ class Post {
             <div class="col nine">
                 <div class="row dashboard_post_comment_content">
                     <div class="col ten">
-                        <a href="#" class="text_bold"><?php echo $user->getName(); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getName(); ?>" class="text_bold"><?php echo Security::wbrusername($user->getName()); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">
@@ -230,7 +246,7 @@ class Post {
                         </div>
                         <div class="left text_light inline_margin">&middot;</div>
                         <div class="left text_light inline_margin">
-                            <span class="genericon genericon-comment"></span> <a class="noa"><?php echo t('dashboard_post_commentit'); ?></a>
+                            <span class="genericon genericon-comment"></span> <a class="noa comment_commentit"><?php echo t('dashboard_post_commentit'); ?></a>
                         </div>
                     </div>
                 </div>
@@ -241,16 +257,16 @@ class Post {
 
     private function renderAsSubcomment(Currentuser $thisuser) {
         $user = new Otheruser($this->getOwnerId(), $this->getId());
-        $datetime = Dateutils::formatDateTime(new DateTime($this->getCreationTime()));
+        $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_subcomment">
             <div class="col one">
                 <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="20" height="20" alt="Posting user picture">
             </div>
             <div class="col nine">
-                <div class="row dashboard_post_comment_content">
+                <div class="row dashboard_post_comment_content dashboard_post_subcomment_content">
                     <div class="col ten">
-                        <a href="#" class="text_bold"><?php echo $user->getName(); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getName(); ?>" class="text_bold"><?php echo Security::wbrusername($user->getName()); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">
