@@ -177,7 +177,7 @@ class Post {
                 <div class="row dashboard_post_time">
                     <div class="col ten text_light">
                         <div class="left text_light"><span class="genericon genericon-time"></span> <?php echo $datetime; ?></div>
-                        <?php if ($thisuser->getId() === $user->getId()) : ?>
+                        <?php if ($thisuser->getId() === $user->getId() && $public === FALSE) : ?>
                             <div class="left text_light inline_margin">&middot;</div>
                             <div class="left text_light inline_margin">
                                 <span class="genericon genericon-reply"></span> <?php echo Group::getNameById($this->getGroupId()); ?>

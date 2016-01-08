@@ -188,4 +188,8 @@ class Currentuser extends User {
         return (bool) $stm->fetch()['count'];
     }
 
+    public function getFriendshipWith(Otheruser $otheruser) {
+        
+    }
+
 }

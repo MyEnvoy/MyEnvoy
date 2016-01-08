@@ -60,6 +60,10 @@ abstract class User {
         return $this->getWhatever('name');
     }
 
+    public function getStatus() {
+        return $this->getWhatever('status');
+    }
+
     public function getPictureUrl($size) {
         $path = $this->getPicturePath($size);
 
@@ -68,6 +72,33 @@ abstract class User {
         }
 
         return '/img/profile256.png';
+    }
+
+    public function countFollowers() {
+        $stm = $this->_db->prepare('SELECT count(1) count FROM user_groups grp
+                                        JOIN user_groups_members grpmbr ON grpmbr.group_id = grp.id
+                                    WHERE grp.user_id = ?
+                                    GROUP BY grpmbr.user_id');
+        $stm->execute(array($this->getId()));
+        $res = $stm->fetch();
+
+        if (empty($res)) {
+            return 0;
+        }
+
+        return (int) $res['count'];
+    }
+
+    public function countPosts() {
+        $stm = $this->_db->prepare('SELECT count(1) count FROM user_posts WHERE user_id = ? AND post_id IS NULL');
+        $stm->execute(array($this->getId()));
+        $res = $stm->fetch();
+
+        if (empty($res)) {
+            return 0;
+        }
+
+        return (int) $res['count'];
     }
 
     protected abstract function getPicturePath($size);

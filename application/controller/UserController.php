@@ -28,11 +28,17 @@ class UserController extends Controller {
 
         $this->_view->otheruser = Otheruser::getByName($username, $this->_view->user->getId());
 
+        $this->_view->status = NULL;
         if (empty($this->_view->otheruser)) {
             $this->_view->error = TRUE;
         } else {
             $this->_view->title(sprintf(t('user_index_title'), $this->_view->otheruser->getName()));
             $this->_view->posts = $this->_view->otheruser->getPublicPosts();
+            $this->_view->status = $this->_view->otheruser->getStatus();
+        }
+
+        if (empty($this->_view->status)) {
+            $this->_view->status = t('user_index_emptystatus');
         }
     }
 

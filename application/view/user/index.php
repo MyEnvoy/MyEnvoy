@@ -29,7 +29,34 @@
                         </div>
                         <hr>
                         <div class="row">
-                            SHOW # FOLLOWERS AND STUFF
+                            <div class="col five center_txt colwithborderright">
+                                <div class="row">
+                                    <div class="col ten user_info_count">
+                                        <?php echo $this->otheruser->countFollowers(); ?>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col ten">
+                                        <span class="text_light">Follower</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col five center_txt">
+                                <div class="row">
+                                    <div class="col ten user_info_count">
+                                        <?php echo $this->otheruser->countPosts(); ?>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col ten">
+                                        <span class="text_light">Posts</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            FREUNDSCHAFTSSTATUS MIT DIESEM NUTZER
                         </div>
                     </div>
                     <div class="col seven">
@@ -43,8 +70,23 @@
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            <div class="col four">
-                                STATUS, ETC
+                            <div class="col four inline_padding">
+                                <div class="row dashboard_post_container" id="dashboard_weather_widget">
+                                    <div class="col ten">
+                                        <div class="row">
+                                            <div class="col ten">
+                                                <h3><?php echo t('user_index_status'); ?></h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col ten">
+                                                <p id="user_status">
+                                                    <?php echo $this->status; ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
