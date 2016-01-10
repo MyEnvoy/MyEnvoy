@@ -122,14 +122,17 @@ class Newuser extends User {
         $pwdAsHash = self::generatePasswordHash($this->_password, $salt);
         // generate activation hash
         $hash = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+        // generate gid
+        $gid = hash('sha512', $name . '@' . Server::getMyHost());
 
         $db = Famework_Registry::getDb();
-        $stm = $db->prepare('INSERT INTO user (name, email, pwd, salt, hash) VALUES (:name, :email, :pwd, :salt, :hash)');
+        $stm = $db->prepare('INSERT INTO user (name, email, pwd, salt, hash, gid) VALUES (:name, :email, :pwd, :salt, :hash, :gid)');
         $stm->bindParam(':name', $name);
         $stm->bindParam(':email', $email);
         $stm->bindParam(':pwd', $pwdAsHash);
         $stm->bindParam(':salt', $salt);
         $stm->bindParam(':hash', $hash);
+        $stm->bindParam(':gid', $gid);
         $stm->execute();
 
         // get new user's ID
@@ -182,7 +185,7 @@ class Newuser extends User {
             }
         }
     }
-    
+
     private function getPicturePath($size) {
         return NULL;
     }
