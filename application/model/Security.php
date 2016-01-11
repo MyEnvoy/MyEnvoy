@@ -19,6 +19,7 @@ class Security {
             }
 
             $str = str_replace('.', '.<wbr>', $str);
+            $str = str_replace('@', '<wbr>@', $str);
         }
 
         return $str;
@@ -30,6 +31,23 @@ class Security {
             $float = str_replace('.', ',', $float);
         }
         return $float;
+    }
+
+    public static function getRealEnvoyDomain($url) {
+        // add http if no protocoll is set
+        if (!preg_match('/^(http:\/\/)|^(https:\/\/)/ui', $url)) {
+            $url = 'http://' . $url;
+        }
+
+        $parts = parse_url($url);
+        if (empty($parts)) {
+            return NULL;
+        }
+
+        // rearrange domain
+        $url = (isset($parts['host']) ? $parts['host'] : NULL);
+
+        return $url;
     }
 
 }

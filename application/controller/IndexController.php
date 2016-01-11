@@ -15,7 +15,7 @@ class IndexController extends Controller {
 
     public function indexAction() {
         $this->_view->title(t('html_title_index_index'));
-        $this->_view->hint = $this->_paramHandler->getInt('stat', FALSE, 9, 14);
+        $this->_view->hint = $this->_paramHandler->getInt('stat', FALSE, 9, 15);
 
         // redirect logged in users
         if (Currentuser::getEnsureLoggedInUser(FALSE) !== NULL) {
@@ -31,13 +31,28 @@ class IndexController extends Controller {
 
         $name = strtolower($name);
 
+        $idbyname = Currentuser::getIdByName($name);
+
+        // check against brute force attack
+        if ($idbyname !== NULL && Userinfo::isAccountLocked($idbyname) === TRUE) {
+            Userinfo::log($idbyname, Userinfo::MESSAGE_LOGIN_BLOCKED);
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::LOGIN_BLOCKED);
+        }
+
         $user = Currentuser::getUserFromLogin($name, $pwd);
 
         if ($user === NULL || !($user instanceof Currentuser)) {
+            if ($idbyname !== NULL) {
+                Userinfo::log($idbyname, Userinfo::MESSAGE_LOGIN_FAIL);
+            }
             Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::LOGIN_ERROR);
         }
 
         $user->generateAuthSession();
+
+        if ($idbyname !== NULL) {
+            Userinfo::log($idbyname, Userinfo::MESSAGE_LOGIN_SUCCESS);
+        }
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }

@@ -12,5 +12,10 @@ class Errorcode {
     const PICTURE_NO_JPEG = 10006;
     
     const USER_ACCESS_DENIED = 10007;
+    
+    const ENVOY_WRONG_PUBKEY_FORMAT = 10008;
+    const ENVOY_CANT_OVERWRITE_KNOWN_HOST = 10009;
+    
+    const DATABASE_STRUCTURE_ERROR = 10010;
 
 }

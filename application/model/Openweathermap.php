@@ -15,6 +15,10 @@ class Openweathermap {
     }
 
     public function getCurrentWeather($lat = 49.45, $lon = 11.08) {
+        // there may be no api key set on some envoys
+        if (empty($this->_apikey)) {
+            return NULL;
+        }
         $apc_key = 'me_weather_' . $lat . '_' . $lon;
         $result = apc_fetch($apc_key);
 

@@ -18,6 +18,7 @@ class RegisterController extends Controller {
     const NOT_ACTIVATED = 12;
     const LOGIN_ERROR = 13;
     const RESET_PWD_FAIL = 14;
+    const LOGIN_BLOCKED = 15;
 
     private $_paramHandler;
 

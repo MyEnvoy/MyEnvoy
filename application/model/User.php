@@ -60,6 +60,45 @@ abstract class User {
         return $this->getWhatever('name');
     }
 
+    public function getFullQualifiedName() {
+        $name = $this->getName();
+        $host = $this->getHost();
+
+        if ($host === NULL) {
+            return $name;
+        }
+
+        return $name . '@' . $host->getDomain();
+    }
+
+    private $_host = NULL;
+
+    /**
+     * @return Envoy
+     * @throws Exception
+     */
+    public function getHost() {
+        if ($this->_host === NULL) {
+            $host_gid = $this->getWhatever('host_gid');
+            if (empty($host_gid)) {
+                return NULL;
+            }
+
+            $stm = $this->_db->prepare('SELECT gid FROM hosts WHERE gid = ? LIMIT 1');
+            $stm->execute(array($host_gid));
+
+            $data = $stm->fetch();
+
+            if (empty($data)) {
+                throw new Exception('Error in database!', Errorcode::DATABASE_STRUCTURE_ERROR);
+            }
+
+            $this->_host = Envoy::getByGid($data['gid']);
+        }
+
+        return $this->_host;
+    }
+
     public function getStatus() {
         return $this->getWhatever('status');
     }

@@ -147,6 +147,8 @@ class Newuser extends User {
         // send activation mail
         $this->sendActivationEmail($email, $name, $hash);
 
+        Userinfo::log($myid, Userinfo::MESSAGE_REGISTER);
+
         return $myid;
     }
 

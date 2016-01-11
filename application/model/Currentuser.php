@@ -11,7 +11,7 @@ class Currentuser extends User {
 
     public static function getUserFromLogin($name, $pwd) {
         $db = Famework_Registry::getDb();
-        $stm = $db->prepare('SELECT id, salt, pwd FROM user WHERE name = :name AND activated = 1 LIMIT 1');
+        $stm = $db->prepare('SELECT id, salt, pwd FROM user WHERE name = :name AND activated = 1 AND host_gid IS NULL LIMIT 1');
         $stm->bindParam(':name', $name);
         $stm->execute();
 
@@ -36,6 +36,16 @@ class Currentuser extends User {
         }
 
         return new Currentuser($uid);
+    }
+
+    public static function getIdByName($name) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? AND host_gid IS NULL LIMIT 1');
+        $stm->execute(array($name));
+        $data = $stm->fetch();
+        if (empty($data)) {
+            return NULL;
+        }
+        return (int) $data['id'];
     }
 
     public static function getEnsureLoggedInUser($strict = TRUE) {
