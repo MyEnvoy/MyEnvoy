@@ -8,6 +8,7 @@ class Newuser extends User {
     const NAME_USED = 3;
 
     private $_password = NULL;
+    private $_username = NULL;
 
     // Singleton pattern
     private function __construct($name, $email) {
@@ -23,7 +24,9 @@ class Newuser extends User {
      */
     public static function initUserIfPossible($name, $email) {
         $db = Famework_Registry::getDb();
-        $smt = $db->prepare('SELECT name FROM user WHERE name = :name OR email = :email LIMIT 1');
+        $smt = $db->prepare('SELECT name FROM user '
+                . 'JOIN user_data ud ON ud.user_id = user.id '
+                . 'WHERE name = :name OR email = :email LIMIT 1');
         $smt->bindParam(':name', $name);
         $smt->bindParam(':email', $email);
         $smt->execute();
@@ -43,7 +46,9 @@ class Newuser extends User {
 
     public static function activate($name, $hash) {
         $db = Famework_Registry::getDb();
-        $stm = $db->prepare('SELECT id FROM user WHERE name = :name AND hash = :hash LIMIT 1');
+        $stm = $db->prepare('SELECT id FROM user '
+                . 'JOIN user_data ud ON ud.user_id = user.id '
+                . 'WHERE name = :name AND hash = :hash LIMIT 1');
         $stm->bindParam(':name', $name);
         $stm->bindParam(':hash', $hash);
         $stm->execute();
@@ -57,7 +62,7 @@ class Newuser extends User {
             return FALSE;
         }
 
-        $upd = $db->prepare('UPDATE user SET activated = 1, hash = NULL WHERE id = :id');
+        $upd = $db->prepare('UPDATE user_data SET activated = 1, hash = NULL WHERE user_id = :id');
         $upd->bindParam(':id', $uid, PDO::PARAM_INT);
         $upd->execute();
 
@@ -123,23 +128,28 @@ class Newuser extends User {
         // generate activation hash
         $hash = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         // generate gid
-        $gid = hash('sha512', $name . '@' . Server::getMyHost());
+        $gid = User::generateGid($name, Server::getMyHost());
+        // generate public and private key
+        $keypair = Rsa::getNewKeyPair($this->_password);
+        $priv_key_enc = $keypair[RSA::RSA_PRIV_KEY];
+        $pub_key = $keypair[RSA::RSA_PUB_KEY];
 
         $db = Famework_Registry::getDb();
-        $stm = $db->prepare('INSERT INTO user (name, email, pwd, salt, hash, gid) VALUES (:name, :email, :pwd, :salt, :hash, :gid)');
+        $stm = $db->prepare('INSERT INTO user (name, gid, pub_key) VALUES (:name, :gid, :pub_key)');
         $stm->bindParam(':name', $name);
-        $stm->bindParam(':email', $email);
-        $stm->bindParam(':pwd', $pwdAsHash);
-        $stm->bindParam(':salt', $salt);
-        $stm->bindParam(':hash', $hash);
         $stm->bindParam(':gid', $gid);
+        $stm->bindParam(':pub_key', $pub_key);
         $stm->execute();
 
         // get new user's ID
-        $idstm = $db->prepare('SELECT id FROM user WHERE name = ? AND email = ?');
-        $idstm->execute(array($name, $email));
-
+        $idstm = $db->prepare('SELECT id FROM user WHERE name = ? AND gid = ?');
+        $idstm->execute(array($name, $gid));
         $myid = (int) $idstm->fetch()['id'];
+
+        $stm1 = $db->prepare('INSERT INTO user_data (user_id, email, pwd, salt, hash, priv_key_enc) VALUES (?, ?, ?, ?, ?, ?)');
+        $stm1->execute(array(
+            $myid, $email, $pwdAsHash, $salt, $hash, $priv_key_enc
+        ));
 
         // setup dependencies
         $this->createDependencies($myid);
@@ -188,7 +198,39 @@ class Newuser extends User {
         }
     }
 
-    private function getPicturePath($size) {
+    protected function getPicturePath($size) {
+        return NULL;
+    }
+
+    public function getPictureUrl($size) {
+        return NULL;
+    }
+
+    public function countFollowers() {
+        return NULL;
+    }
+
+    public function countPosts() {
+        return NULL;
+    }
+
+    public function getFullQualifiedName() {
+        return NULL;
+    }
+
+    public function getHost() {
+        return NULL;
+    }
+
+    public function getId() {
+        return NULL;
+    }
+
+    public function getName() {
+        return $this->_username;
+    }
+
+    public function getStatus() {
         return NULL;
     }
 

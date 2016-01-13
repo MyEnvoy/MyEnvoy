@@ -38,6 +38,10 @@ abstract class User {
         return ($count === 1 ? TRUE : FALSE);
     }
 
+    public static function generateGid($name, $host) {
+        return hash('sha512', $name . '@' . $host);
+    }
+
     /**
      * @var PDO
      */

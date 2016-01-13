@@ -94,4 +94,7 @@
             </div>
         </div>
     </div>
-</div>
+</div><img src="/img/link-empty.png" style="transform: rotate(-45deg);" height="30"><br>
+</div><img src="/img/link-right.png" style="transform: rotate(135deg);" height="30"><br>
+</div><img src="/img/link-right.png" style="transform: rotate(-45deg);" height="30"><br>
+</div><img src="/img/link-rounded.png" style="transform: rotate(-45deg);" height="30">

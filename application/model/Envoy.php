@@ -89,7 +89,7 @@ class Envoy {
     }
 
     public function setPub_key($pub_key) {
-        if (RSA::validatePublicKey($pub_key) === FALSE) {
+        if (Rsa::validatePublicKey($pub_key) === FALSE) {
             throw new Exception('Incorrect Public Key format!', Errorcode::ENVOY_WRONG_PUBKEY_FORMAT);
         }
         $this->_pub_key = $pub_key;

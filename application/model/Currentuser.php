@@ -11,7 +11,9 @@ class Currentuser extends User {
 
     public static function getUserFromLogin($name, $pwd) {
         $db = Famework_Registry::getDb();
-        $stm = $db->prepare('SELECT id, salt, pwd FROM user WHERE name = :name AND activated = 1 AND host_gid IS NULL LIMIT 1');
+        $stm = $db->prepare('SELECT id, salt, pwd FROM user '
+                . ' JOIN user_data ud ON ud.user_id = user.id '
+                . 'WHERE name = :name AND activated = 1 AND host_gid IS NULL LIMIT 1');
         $stm->bindParam(':name', $name);
         $stm->execute();
 
@@ -162,6 +164,19 @@ class Currentuser extends User {
         return $res;
     }
 
+    public function getMyFollowers() {
+        $stm = $this->_db->prepare('SELECT grpmbr.user_id id FROM user_groups grp	
+                                        JOIN user_groups_members grpmbr ON grpmbr.group_id = grp.id
+                                    WHERE grp.user_id = ?');
+        $stm->execute(array($this->getId()));
+
+        $res = array();
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = new Otheruser($row['id'], $this->getId());
+        }
+        return $res;
+    }
+
     public function getWall($page = 0, $limit = 10) {
         $offset = $page * $limit;
 
@@ -198,8 +213,25 @@ class Currentuser extends User {
         return (bool) $stm->fetch()['count'];
     }
 
-    public function getFriendshipWith(Otheruser $otheruser) {
-        
+    const I_AM_FOLLOWING = 1;
+    const FOLLOWS_ME = 2;
+    const NO_CONNECTION = 4;
+
+    public function getConnectionWith(Otheruser $otheruser) {
+        $friends = $this->getMyFriends();
+        $followers = $this->getMyFollowers();
+
+        foreach ($friends as $friend) {
+            if ($otheruser->getId() === $friend->getId()) {
+                $res = self::I_AM_FOLLOWING;
+            }
+        }
+
+        foreach ($followers as $follower) {
+            if ($otheruser->getId() === $follower->getId()) {
+                $res = self::FOLLOWS_ME;
+            }
+        }
     }
 
 }
