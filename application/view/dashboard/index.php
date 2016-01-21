@@ -25,7 +25,7 @@
                     <hr>
                     <div class="row">
                         <div class="col ten" id="dashboard_registered_since">
-                            <span class="genericon genericon-time"></span><?php echo t('dashboard_registered_since') . ' ' . Dateutils::formatDateWithTextMonth(new DateTime($this->user->getAddDate())); ?>
+                            <span class="genericon genericon-time"></span><?php echo t('dashboard_registered_since') . ' ' . Dateutils::formatDateWithTextMonth($this->user->getAddDate()); ?>
                         </div>
                     </div>
                 </div>

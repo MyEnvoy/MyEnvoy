@@ -91,11 +91,15 @@ class Currentuser extends User {
     }
 
     public function getEmail() {
-        return $this->getWhatever('email');
+        return $this->getWhatever('email', self::DB_USER_DATA);
     }
 
+    /**
+     * Gets the register datetime of the user
+     * @return \DateTime
+     */
     public function getAddDate() {
-        return $this->getWhatever('adddate');
+        return Userinfo::getDateTime($this->getId(), Userinfo::MESSAGE_REGISTER, 1);
     }
 
     public function getPicturePath($size) {
@@ -104,10 +108,17 @@ class Currentuser extends User {
         return Picture::PROFILEPIC_PATH . $filename;
     }
 
+    /**
+     * Logout the user: destroy session
+     */
     public function logout() {
         Famework_Session::destroySession();
     }
 
+    /**
+     * Get all groups of this user
+     * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
+     */
     public function getGroupOverview() {
         $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY id DESC');
         $stm->execute(array($this->getId()));
@@ -177,6 +188,12 @@ class Currentuser extends User {
         return $res;
     }
 
+    /**
+     * 
+     * @param type $page
+     * @param type $limit
+     * @return array <b>array(array('post' => Post, 'comments' => array('comment' => Post, 'subcomments' => array(Post))))</b>
+     */
     public function getWall($page = 0, $limit = 10) {
         $offset = $page * $limit;
 

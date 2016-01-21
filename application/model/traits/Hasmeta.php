@@ -2,27 +2,27 @@
 
 trait Hasmeta {
 
-    protected $_meta = NULL;
+    protected $_meta = array();
 
-    protected function loadMeta() {
+    protected function loadMeta($table = self::DB_TABLE) {
         $id = $this->_id;
-        $stm = $this->_db->prepare('SELECT * FROM ' . self::DB_TABLE . ' WHERE id = :id LIMIT 1');
+        $stm = $this->_db->prepare('SELECT * FROM ' . $table . ' WHERE id = :id LIMIT 1');
         $stm->bindParam(':id', $id);
         $stm->execute();
 
-        $this->_meta = $stm->fetch();
-        
-        if (empty($this->_meta)) {
+        $this->_meta[$table] = $stm->fetch();
+
+        if (empty($this->_meta[$table])) {
             throw new Exception('Data not found.');
         }
     }
 
-    protected function getWhatever($key) {
-        if (!isset($this->_meta[$key])) {
+    protected function getWhatever($key, $table = self::DB_TABLE) {
+        if (!isset($this->_meta[$table][$key])) {
             $this->loadMeta();
         }
 
-        return $this->_meta[$key];
+        return $this->_meta[$table][$key];
     }
 
 }

@@ -5,6 +5,7 @@ use Famework\Registry\Famework_Registry;
 abstract class User {
 
     const DB_TABLE = 'user';
+    const DB_USER_DATA = 'user_data';
 
     use Hasmeta;
 
