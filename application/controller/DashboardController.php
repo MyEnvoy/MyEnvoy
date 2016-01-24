@@ -40,14 +40,31 @@ class DashboardController extends Controller {
         $query = $this->_paramHandler->getValue('s');
 
         // username pattern
-        if (preg_match('/^[a-z0-9.]{3,40}$/', $query) !== 1) {
-            echo json_encode(array());
-            exit();
+        if (preg_match('/^[a-z0-9.]{3,40}$/i', $query) !== 1) {
+            // maybe it's a full qualified username
+            if (preg_match('/^[a-z0-9.]{3,40}@[^\s]{3,100}$/i', $query)) {
+                // get name and host
+                $parts = explode('@', $query);
+                $name = strtolower($parts[0]);
+                $domain = $parts[1];
+                if (Security::getRealEnvoyDomain($domain) === Server::getMyHost()) {
+                    // maybe the user is from this host
+                    $query = $name;
+                } else {
+                    // it's a foreign user
+                    $envoy = Envoy::getByDomain($domain);
+                    
+                }
+            } else {
+                // no result
+                echo json_encode(array());
+                exit();
+            }
         }
 
-        $query = '%' . $query . '%';
+        $query = '%' . strtolower($query) . '%';
 
-        $stm = Famework_Registry::getDb()->prepare('SELECT name, id FROM user WHERE name LIKE ?');
+        $stm = Famework_Registry::getDb()->prepare('SELECT name, id FROM user WHERE host_gid IS NULL AND name LIKE ?');
         $stm->execute(array($query));
 
         $result = array();

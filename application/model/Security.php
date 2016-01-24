@@ -45,9 +45,9 @@ class Security {
         }
 
         // rearrange domain
-        $url = (isset($parts['host']) ? $parts['host'] : NULL);
+        $domain = (isset($parts['host']) ? $parts['host'] : NULL);
 
-        return $url;
+        return $domain;
     }
 
 }

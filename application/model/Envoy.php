@@ -35,6 +35,11 @@ class Envoy {
         return TRUE;
     }
 
+    public static function getByDomain($domain) {
+        $gid = self::calculateGid($domain);
+        return self::getByGid($gid);
+    }
+
     public static function calculateGid($domain) {
         $domain = Security::getRealEnvoyDomain($domain);
         return hash('sha512', $domain . '@myenvoy');
@@ -101,6 +106,19 @@ class Envoy {
 
     public function setVerified($verified) {
         $this->_verified = (bool) $verified;
+    }
+
+    /**
+     * move this to otheruser
+     */
+    public function getUserMeta($user_gid) {
+        // search local database
+        $stm = $this->_db->prepare('SELECT * FROM user WHERE gid = ? LIMIT 1');
+        $stm->execute(array($user_gid));
+        $res = $stm->fetch();
+        if (!empty($res)) {
+            // retutrn Otheruser
+        }
     }
 
 }

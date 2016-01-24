@@ -39,8 +39,9 @@ abstract class User {
         return ($count === 1 ? TRUE : FALSE);
     }
 
-    public static function generateGid($name, $host) {
-        return hash('sha512', $name . '@' . $host);
+    public static function generateGid($name, $domain) {
+        $domain = Security::getRealEnvoyDomain($domain);
+        return hash('sha512', $name . '@' . $domain);
     }
 
     /**

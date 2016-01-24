@@ -1,7 +1,7 @@
 <div id="dashboard_header_container">
     <div class="dashboard_realsize_container">
         <div id="dashboard_header_homelink" class="left">
-            <a href="/<?php echo APPLICATION_LANG; ?>/dashboard/index" class="noa"><img src="/img/logo/logo32.png" alt="MyEnvoy Logo" width="32" height="32"></a>
+            <a href="/<?php echo APPLICATION_LANG; ?>/dashboard/index" class="noa"><img src="/img/logo/logo128.png" alt="MyEnvoy Logo" width="32" height="32"></a>
         </div>
         <?php if (!isset($this->disable_searchbar)) : ?>
             <div id="dashboard_header_searchbox" class="left">
