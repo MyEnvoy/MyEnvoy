@@ -39,6 +39,11 @@ class Security {
             $url = 'http://' . $url;
         }
 
+        // validate URL
+        if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+            throw new Exception('Error while parsing evnoy domain!', Errorcode::ENVOY_DOMAIN_INVALID);
+        }
+
         $parts = parse_url($url);
         if (empty($parts)) {
             return NULL;

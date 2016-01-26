@@ -35,9 +35,15 @@ class Envoy {
         return TRUE;
     }
 
-    public static function getByDomain($domain) {
+    public static function getByDomain($domain, $import = FALSE) {
         $gid = self::calculateGid($domain);
-        return self::getByGid($gid);
+        $envoy = self::getByGid($gid);
+
+        if ($envoy === NULL && $import === TRUE) {
+            $communicator = new Envoycommunicator($domain);
+        }
+
+        return $envoy;
     }
 
     public static function calculateGid($domain) {

@@ -15,7 +15,11 @@ class Errorcode {
     
     const ENVOY_WRONG_PUBKEY_FORMAT = 10008;
     const ENVOY_CANT_OVERWRITE_KNOWN_HOST = 10009;
+    const ENVOY_DOMAIN_INVALID = 10010;
     
-    const DATABASE_STRUCTURE_ERROR = 10010;
+    const DATABASE_STRUCTURE_ERROR = 10011;
+    
+    const RSA_INVALID_PUB_KEY = 10012;
+    
 
 }

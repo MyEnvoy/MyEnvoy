@@ -26,7 +26,7 @@ class UserController extends Controller {
             $this->_view->error = TRUE;
         }
 
-        $this->_view->otheruser = Otheruser::getByName($username, $this->_view->user->getId());
+        $this->_view->otheruser = Otheruser::getLocalByName($username, $this->_view->user->getId());
 
         $this->_view->status = NULL;
         if (empty($this->_view->otheruser)) {

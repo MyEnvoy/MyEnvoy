@@ -1,5 +1,7 @@
 <?php
 
+use Famework\Registry\Famework_Registry;
+
 class Rsa {
 
     const RSA_PRIV_KEY = 0;
@@ -37,6 +39,15 @@ class Rsa {
         return array(
             self::RSA_PRIV_KEY => $pkGeneratePrivate,
             self::RSA_PUB_KEY => $pkGeneratePublic);
+    }
+
+    public static function getMyPubKey() {
+        $path = Famework_Registry::get('\famework_config')->getValue('myenvoy', 'public_key');
+        $key = file_get_contents($path);
+        if (self::validatePublicKey($key) === FALSE) {
+            throw new Exception('FATAL RSA ERROR!', Errorcode::RSA_INVALID_PUB_KEY);
+        }
+        return $key;
     }
 
 }

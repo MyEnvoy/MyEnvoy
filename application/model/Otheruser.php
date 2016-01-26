@@ -4,9 +4,19 @@ use Famework\Registry\Famework_Registry;
 
 class Otheruser extends User {
 
-    public static function getByName($name, $callerId) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? LIMIT 1');
+    public static function getLocalByName($name, $callerId) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? AND host_gid IS NULL LIMIT 1');
         $stm->execute(array($name));
+        $res = $stm->fetch();
+        if (!empty($res)) {
+            return new Otheruser($res['id'], $callerId);
+        }
+        return NULL;
+    }
+
+    public static function getByGid($gid, $callerId) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE gid = ? LIMIT 1');
+        $stm->execute(array($gid));
         $res = $stm->fetch();
         if (!empty($res)) {
             return new Otheruser($res['id'], $callerId);

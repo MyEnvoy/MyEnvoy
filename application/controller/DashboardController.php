@@ -27,6 +27,8 @@ class DashboardController extends Controller {
             $this->_view->weather_temp = Security::htmloutput($data['temp']);
             $this->_view->weather_desc = Security::htmloutput($data['desc']);
         }
+        
+        var_dump_pre(Rsa::getMyPubKey());
     }
 
     public function searchAction() {
@@ -46,14 +48,11 @@ class DashboardController extends Controller {
                 // get name and host
                 $parts = explode('@', $query);
                 $name = strtolower($parts[0]);
-                $domain = $parts[1];
-                if (Security::getRealEnvoyDomain($domain) === Server::getMyHost()) {
-                    // maybe the user is from this host
-                    $query = $name;
-                } else {
-                    // it's a foreign user
+                $domain = Security::getRealEnvoyDomain($parts[1]);
+                $otheruser = Otheruser::getByGid(User::generateGid($name, $domain), $this->_view->user->getId());
+                if($otheruser === NULL) {
+                    // no userdata yet!
                     $envoy = Envoy::getByDomain($domain);
-                    
                 }
             } else {
                 // no result
