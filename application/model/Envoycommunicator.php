@@ -4,8 +4,8 @@ use Famework\Registry\Famework_Registry;
 
 class Envoycommunicator {
 
-    const TIMEOUT = 4;
-    const URL_GET_PUBKEY = 'http://%s/federation/getpubkey';
+    const TIMEOUT = 8;
+    const URL_GET_PUBKEY = 'https://%s/federation/getpubkey';
 
     /**
      * @var PDO 
@@ -19,13 +19,18 @@ class Envoycommunicator {
         $this->_domain = Security::getRealEnvoyDomain($domain);
     }
 
+    /**
+     * Request the public key of the envoy
+     * @return string The key in PEM format or NULL on error
+     */
     public function getPubKey() {
         $url = sprintf(self::URL_GET_PUBKEY, $this->_domain);
 
         $this->initCurl($url);
+        $result = json_decode($this->fetchCurl());
+        $httpcode = $this->getInfo(CURLINFO_HTTP_CODE);
 
-        if ($this->getInfo(CURLINFO_HTTP_CODE) === 200) {
-            $result = json_decode($this->fetchCurl());
+        if ($httpcode === 200) {
             $pub_key = $result->pub_key;
             $domain = Security::getRealEnvoyDomain($result->host);
             if ($domain === $this->_domain && Rsa::validatePublicKey($pub_key) === TRUE) {
@@ -35,6 +40,12 @@ class Envoycommunicator {
                 $this->finishCurl();
                 return $pub_key;
             }
+        } elseif (empty(curl_error($this->_curl))) {
+            // server gave wrong answer
+            Log::err('[Envoycommunicator] Failed to retriev public key from ' . $this->_domain . ' HTTP status ' . $httpcode);
+        } else {
+            // an error occured
+            Log::err('[Envoycommunicator] cUrl Error #' . curl_errno($this->_curl) . ': ' . curl_error($this->_curl));
         }
 
         $this->finishCurl();
@@ -47,6 +58,9 @@ class Envoycommunicator {
         curl_setopt($this->_curl, CURLOPT_FOLLOWLOCATION, FALSE);
         curl_setopt($this->_curl, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($this->_curl, CURLOPT_TIMEOUT, self::TIMEOUT);
+        curl_setopt($this->_curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($this->_curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+        curl_setopt($this->_curl, CURLOPT_ENCODING, 'gzip');
     }
 
     private function postCurl($data) {

@@ -4,6 +4,11 @@ use Famework\Registry\Famework_Registry;
 
 class Envoy {
 
+    /**
+     * Get an envoy from the local db
+     * @param string $gid
+     * @return \Envoy A already known envoy
+     */
     public static function getByGid($gid) {
         $stm = Famework_Registry::getDb()->prepare('SELECT * FROM hosts WHERE gid = ? LIMIT 1');
         $stm->execute(array($gid));
@@ -22,6 +27,11 @@ class Envoy {
         return $envoy;
     }
 
+    /**
+     * Checks whether an envoy has a local db entry
+     * @param string $gid
+     * @return boolean
+     */
     public static function isKnownHost($gid) {
         $stm = Famework_Registry::getDb()->prepare('SELECT domain FROM hosts WHERE gid = ? LIMIT 1');
         $stm->execute(array($gid));
@@ -35,17 +45,30 @@ class Envoy {
         return TRUE;
     }
 
-    public static function getByDomain($domain, $import = FALSE) {
+    public static function getByDomain($domain, $import = TRUE) {
+        $domain = Security::getRealEnvoyDomain($domain);
         $gid = self::calculateGid($domain);
         $envoy = self::getByGid($gid);
 
         if ($envoy === NULL && $import === TRUE) {
+            // import enovoy
             $communicator = new Envoycommunicator($domain);
+            $pub_key = $communicator->getPubKey();
+            if (empty($pub_key)) {
+                return NULL;
+            } else {
+                $envoy = self::getByGid($gid);
+            }
         }
 
         return $envoy;
     }
 
+    /**
+     * Calculate the unique gid for an envoy domain
+     * @param string $domain
+     * @return string
+     */
     public static function calculateGid($domain) {
         $domain = Security::getRealEnvoyDomain($domain);
         return hash('sha512', $domain . '@myenvoy');
@@ -96,35 +119,42 @@ class Envoy {
     }
 
     public function setGid($gid) {
-        $this->_gid = $gid;
+        if ($this->_gid === NULL) {
+            $this->_gid = $gid;
+        }
     }
 
     public function setPub_key($pub_key) {
-        if (Rsa::validatePublicKey($pub_key) === FALSE) {
-            throw new Exception('Incorrect Public Key format!', Errorcode::ENVOY_WRONG_PUBKEY_FORMAT);
+        if ($this->_pub_key === NULL) {
+            if (Rsa::validatePublicKey($pub_key) === FALSE) {
+                throw new Exception('Incorrect Public Key format!', Errorcode::ENVOY_WRONG_PUBKEY_FORMAT);
+            }
+            $this->_pub_key = $pub_key;
         }
-        $this->_pub_key = $pub_key;
     }
 
     public function setDomain($domain) {
-        $this->_domain = Security::getRealEnvoyDomain($domain);
+        if ($this->_domain === NULL) {
+            $this->_domain = Security::getRealEnvoyDomain($domain);
+        }
     }
 
     public function setVerified($verified) {
-        $this->_verified = (bool) $verified;
+        if ($this->_verified === NULL) {
+            $this->_verified = (bool) $verified;
+        }
     }
 
-    /**
-     * move this to otheruser
-     */
-    public function getUserMeta($user_gid) {
+    public function getOtherUser($user_gid) {
         // search local database
         $stm = $this->_db->prepare('SELECT * FROM user WHERE gid = ? LIMIT 1');
         $stm->execute(array($user_gid));
         $res = $stm->fetch();
         if (!empty($res)) {
-            // retutrn Otheruser
+            // retutrn Envoyotheruser (should inherit from Otheruser)
         }
+
+        // get userdata from envoy
     }
 
 }

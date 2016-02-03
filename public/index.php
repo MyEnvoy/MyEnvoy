@@ -13,8 +13,6 @@ define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPA
 define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/');
 define('VIEW_PATH', APPLICATION_PATH . 'view');
 
-Famework::registerDefaultHandler();
-
 $config = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
 $routes = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'routes.ini');
 
@@ -57,6 +55,10 @@ if ($config->getValue('myenvoy', 'support_https') == 1) {
 Famework_Session::start(APPLICATION_HTTPS);
 Famework_Registry::set('\famework_config', $config);
 Famework_Registry::set('\famework_sys', $famework);
+
+Log::init();
+
+Errorhandler::registerDefaultHandler();
 
 $famework->loadController();
 
