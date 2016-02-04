@@ -38,6 +38,7 @@ class DashboardController extends Controller {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
         $query = $this->_paramHandler->getValue('s');
+        $otheruser = NULL;
 
         // username pattern
         if (preg_match('/^[a-z0-9.]{3,40}$/i', $query) !== 1) {
@@ -49,17 +50,22 @@ class DashboardController extends Controller {
                 $domain = Security::getRealEnvoyDomain($parts[1]);
                 $otheruser = Otheruser::getByGid(User::generateGid($name, $domain), $this->_view->user->getId());
                 if ($otheruser === NULL) {
-                    // no userdata yet!
-                    $envoy = Envoy::getByDomain($domain);
-                    if ($envoy !== NULL) {
-                        // search user
-                    }
+                    // no userdata yet, try to import it
+                    $otheruser = Foreignotheruser::getForeignByName($name, $domain, $this->_view->user->getId(), TRUE);
                 }
+            }
+
+            if ($otheruser !== NULL) {
+                // got a user
+                echo json_encode(array(array('name' => Security::wbrusername($otheruser->getName(), TRUE),
+                        'icon' => $otheruser->getPictureUrl(Currentuser::PIC_SMALL),
+                        'server' => $otheruser->getHost(),
+                        'url' => '/' . APPLICATION_LANG . '/user/' . $otheruser->getName())));
             } else {
                 // no result
                 echo json_encode(array());
-                exit();
             }
+            exit();
         }
 
         $query = '%' . strtolower($query) . '%';

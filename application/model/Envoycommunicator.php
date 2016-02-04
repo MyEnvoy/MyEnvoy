@@ -4,8 +4,9 @@ use Famework\Registry\Famework_Registry;
 
 class Envoycommunicator {
 
-    const TIMEOUT = 8;
+    const TIMEOUT = 4;
     const URL_GET_PUBKEY = 'https://%s/federation/getpubkey';
+    const URL_GET_USER_META = 'https://%s/federation/getusermeta';
 
     /**
      * @var PDO 
@@ -20,35 +21,53 @@ class Envoycommunicator {
     }
 
     /**
-     * Request the public key of the envoy
-     * @return string The key in PEM format or NULL on error
+     * Checks whether an envoy exists and imports it
+     * @return bool TRUE if it exists, else FALSE
      */
-    public function getPubKey() {
+    public function importEnvoy() {
         $url = sprintf(self::URL_GET_PUBKEY, $this->_domain);
 
         $this->initCurl($url);
-        $result = json_decode($this->fetchCurl());
+        $result = $this->fetchCurl();
         $httpcode = $this->getInfo(CURLINFO_HTTP_CODE);
 
         if ($httpcode === 200) {
-            $pub_key = $result->pub_key;
+            $result = json_decode($result);
             $domain = Security::getRealEnvoyDomain($result->host);
-            if ($domain === $this->_domain && Rsa::validatePublicKey($pub_key) === TRUE) {
-                $stm = $this->_db->prepare('INSERT INTO hosts (gid, domain, pub_key) VALUES (?, ?, ?)');
-                $stm->execute(array(Envoy::calculateGid($this->_domain), $this->_domain, $pub_key));
+            if ($domain === $this->_domain) {
+                $stm = $this->_db->prepare('INSERT INTO hosts (gid, domain) VALUES (?, ?)');
+                $stm->execute(array(Envoy::calculateGid($this->_domain), $this->_domain));
 
                 $this->finishCurl();
-                return $pub_key;
+                return TRUE;
             }
-        } elseif (empty(curl_error($this->_curl))) {
-            // server gave wrong answer
-            Log::err('[Envoycommunicator] Failed to retriev public key from ' . $this->_domain . ' HTTP status ' . $httpcode);
         } else {
-            // an error occured
-            Log::err('[Envoycommunicator] cUrl Error #' . curl_errno($this->_curl) . ': ' . curl_error($this->_curl));
+            // server gave wrong answer
+            $this->finishCurl();
+            return FALSE;
+        }
+    }
+
+    public function getUserMeta($gid) {
+        $url = sprintf(self::URL_GET_USER_META, $this->_domain);
+
+        $this->initCurl($url);
+        $this->postCurl(array('gid' => $gid));
+        $result = $this->fetchCurl();
+
+        if ($this->getInfo(CURLINFO_HTTP_CODE) === 200) {
+            $result = json_decode($result);
+            if (Rsa::validatePublicKey($result->pub_key) === TRUE && $result->gid === $gid) {
+                $meta = array();
+                $meta['gid'] = $gid;
+                $meta['name'] = $result->name;
+                $meta['status'] = substr(trim($result->status), 0, 140);
+                $meta['host_gid'] = Envoy::calculateGid($this->_domain);
+                $meta['pub_key'] = $result->pub_key;
+                return $meta;
+            }
         }
 
-        $this->finishCurl();
         return NULL;
     }
 
@@ -69,7 +88,8 @@ class Envoycommunicator {
     }
 
     private function fetchCurl() {
-        return curl_exec($this->_curl);
+        $res = curl_exec($this->_curl);
+        return $res;
     }
 
     private function getInfo($type) {

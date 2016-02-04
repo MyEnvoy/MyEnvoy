@@ -4,6 +4,12 @@ use Famework\Registry\Famework_Registry;
 
 class Otheruser extends User {
 
+    /**
+     * Get only local user by name
+     * @param string $name
+     * @param int $callerId
+     * @return \Otheruser
+     */
     public static function getLocalByName($name, $callerId) {
         $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? AND host_gid IS NULL LIMIT 1');
         $stm->execute(array($name));
@@ -14,12 +20,22 @@ class Otheruser extends User {
         return NULL;
     }
 
+    /**
+     * Get foreign or local user by gid
+     * @param string $gid
+     * @param int $callerId
+     * @return \Otheruser|\Foreignotheruser
+     */
     public static function getByGid($gid, $callerId) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE gid = ? LIMIT 1');
+        $stm = Famework_Registry::getDb()->prepare('SELECT id, host_gid FROM user WHERE gid = ? LIMIT 1');
         $stm->execute(array($gid));
         $res = $stm->fetch();
         if (!empty($res)) {
-            return new Otheruser($res['id'], $callerId);
+            if (empty($res['host_gid'])) {
+                return new Otheruser($res['id'], $callerId);
+            } else {
+                return new Foreignotheruser($res['id'], $callerId);
+            }
         }
         return NULL;
     }

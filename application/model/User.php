@@ -87,7 +87,7 @@ abstract class User {
         if ($this->_host === NULL) {
             $host_gid = $this->getWhatever('host_gid');
             if (empty($host_gid)) {
-                return NULL;
+                return Server::getMyHost();
             }
 
             $stm = $this->_db->prepare('SELECT gid FROM hosts WHERE gid = ? LIMIT 1');

@@ -19,7 +19,6 @@ class Envoy {
         }
 
         $envoy = new Envoy();
-        $envoy->setPub_key($data['pub_key']);
         $envoy->setDomain($data['domain']);
         $envoy->setVerified($data['verified']);
         $envoy->setGid($data['gid']);
@@ -53,11 +52,10 @@ class Envoy {
         if ($envoy === NULL && $import === TRUE) {
             // import enovoy
             $communicator = new Envoycommunicator($domain);
-            $pub_key = $communicator->getPubKey();
-            if (empty($pub_key)) {
-                return NULL;
-            } else {
+            if ($communicator->importEnvoy() === TRUE) {
                 $envoy = self::getByGid($gid);
+            } else {
+                return NULL;
             }
         }
 
@@ -83,6 +81,11 @@ class Envoy {
     private $_domain = NULL;
     private $_verified = NULL;
 
+    /**
+     * @var Envoycommunicator
+     */
+    private $_com = NULL;
+
     public function __construct($domain = NULL, $pub_key = NULL) {
         $this->_db = Famework_Registry::getDb();
         if ($domain !== NULL && $pub_key !== NULL) {
@@ -97,17 +100,14 @@ class Envoy {
             $this->setVerified(FALSE);
             $this->setPub_key($pub_key);
 
-            $stm = $this->_db->prepare('INSERT INTO hosts (gid, domain, pub_key, verified) VALUES (?,?,?)');
-            $stm->execute(array($this->getGid(), $this->getDomain(), $this->getPub_key()));
+            $stm = $this->_db->prepare('INSERT INTO hosts (gid, domain, verified) VALUES (?,?,0)');
+            $stm->execute(array($this->getGid(), $this->getDomain()));
+            $this->_com = new Envoycommunicator($domain);
         }
     }
 
     public function getGid() {
         return $this->_gid;
-    }
-
-    public function getPub_key() {
-        return $this->_pub_key;
     }
 
     public function getDomain() {
@@ -124,18 +124,10 @@ class Envoy {
         }
     }
 
-    public function setPub_key($pub_key) {
-        if ($this->_pub_key === NULL) {
-            if (Rsa::validatePublicKey($pub_key) === FALSE) {
-                throw new Exception('Incorrect Public Key format!', Errorcode::ENVOY_WRONG_PUBKEY_FORMAT);
-            }
-            $this->_pub_key = $pub_key;
-        }
-    }
-
     public function setDomain($domain) {
         if ($this->_domain === NULL) {
             $this->_domain = Security::getRealEnvoyDomain($domain);
+            $this->_com = new Envoycommunicator($this->_domain);
         }
     }
 
@@ -145,16 +137,16 @@ class Envoy {
         }
     }
 
-    public function getOtherUser($user_gid) {
-        // search local database
-        $stm = $this->_db->prepare('SELECT * FROM user WHERE gid = ? LIMIT 1');
-        $stm->execute(array($user_gid));
-        $res = $stm->fetch();
-        if (!empty($res)) {
-            // retutrn Envoyotheruser (should inherit from Otheruser)
-        }
+    public function importUser($user_gid) {
+        $meta = $this->_com->getUserMeta($user_gid);
 
-        // get userdata from envoy
+        if ($meta !== NULL && !empty($meta)) {
+            $stm = $this->_db->prepare('INSERT INTO user (gid, name, status, host_gid, pub_key) VALUES (:gid, :name, :status, :host_gid, :pub_key)');
+            foreach ($meta as $key => $value) {
+                $stm->bindParam(':' . $key, $value);
+            }
+            $stm->execute();
+        }
     }
 
 }

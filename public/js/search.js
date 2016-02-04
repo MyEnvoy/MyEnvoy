@@ -1,6 +1,16 @@
 $(window).load(function () {
-    $('input#search_box').bind("keyup", function () {
+
+    var is_searching = false;
+    var typed = false;
+
+    $('input#search_box').bind('keyup', function () {
+        if (is_searching === true) {
+            typed = true;
+            return;
+        }
+
         if ($('#search_box').val().length >= 3) {
+            is_searching = true;
             $('div#loading').show();
 
             $.ajax({
@@ -33,11 +43,20 @@ $(window).load(function () {
                     $('#results').append($item);
                 }
 
-                $('div#loading').hide();
+                finishRequest();
             }).fail(function () {
-                $('div#loading').hide();
+                finishRequest();
             });
         }
     });
+
+    function finishRequest() {
+        $('div#loading').hide();
+        is_searching = false;
+        if (typed) {
+            typed = false;
+            $('input#search_box').trigger('keyup');
+        }
+    }
 
 });
