@@ -10,7 +10,7 @@ use Famework\Request\Famework_Request;
 use Famework\Session\Famework_Session;
 
 define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
-define('HTTP_ROOT', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/');
+define('HTTP_ROOT', str_replace('//', '/', str_replace(basename(__FILE__), '', $_SERVER['PHP_SELF']) . '/'));
 define('VIEW_PATH', APPLICATION_PATH . 'view');
 
 $config = new Famework_Config(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.ini');
