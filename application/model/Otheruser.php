@@ -11,8 +11,13 @@ class Otheruser extends User {
      * @return \Otheruser
      */
     public static function getLocalByName($name, $callerId) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? AND host_gid IS NULL LIMIT 1');
-        $stm->execute(array($name));
+        $gid = User::generateGid($name, Security::getRealEnvoyDomain(Server::getMyHost()));
+        return self::getLocalByGid($gid, $callerId);
+    }
+
+    public static function getLocalByGid($gid, $callerId = NULL) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE gid = ? AND host_gid IS NULL LIMIT 1');
+        $stm->execute(array($gid));
         $res = $stm->fetch();
         if (!empty($res)) {
             return new Otheruser($res['id'], $callerId);

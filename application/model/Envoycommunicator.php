@@ -5,7 +5,7 @@ use Famework\Registry\Famework_Registry;
 class Envoycommunicator {
 
     const TIMEOUT = 4;
-    const URL_GET_PUBKEY = 'https://%s/federation/getpubkey';
+    const URL_GET_IDENTITY = 'https://%s/federation/getidentity';
     const URL_GET_USER_META = 'https://%s/federation/getusermeta';
 
     /**
@@ -25,7 +25,7 @@ class Envoycommunicator {
      * @return bool TRUE if it exists, else FALSE
      */
     public function importEnvoy() {
-        $url = sprintf(self::URL_GET_PUBKEY, $this->_domain);
+        $url = sprintf(self::URL_GET_IDENTITY, $this->_domain);
 
         $this->initCurl($url);
         $result = $this->fetchCurl();

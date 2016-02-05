@@ -61,9 +61,17 @@ abstract class User {
     public function getId() {
         return (int) $this->_id;
     }
+    
+    public function getGid() {
+        return $this->getWhatever('gid');
+    }
 
     public function getName() {
         return $this->getWhatever('name');
+    }
+    
+    public function getPubKey() {
+        return $this->getWhatever('pub_key');
     }
 
     public function getFullQualifiedName() {

@@ -42,7 +42,12 @@ if ($lang !== NULL) {
     if ($famework->getController() !== NULL) {
         $default = $config->getValue('myenvoy', 'default_lang');
         $default = ($default === NULL ? 'en' : $default);
-        Famework_Request::redirect('/' . $default, Famework_Request::CODE_TEMPORARYREDIRECT);
+        if ($famework->getController() !== 'FederationController') {
+            Famework_Request::redirect('/' . $default, Famework_Request::CODE_TEMPORARYREDIRECT);
+        } else {
+            // no language for federation controller required
+            define('APPLICATION_LANG', $default);
+        }
     }
 }
 
