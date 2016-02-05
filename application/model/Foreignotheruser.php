@@ -21,7 +21,6 @@ class Foreignotheruser extends Otheruser {
         if (!empty($res)) {
             return new Foreignotheruser($res['id'], $callerId);
         }
-
         if ($import === TRUE) {
             $envoy = Envoy::getByDomain($domain, TRUE);
             if ($envoy !== NULL) {

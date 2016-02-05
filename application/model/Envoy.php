@@ -142,9 +142,11 @@ class Envoy {
 
         if ($meta !== NULL && !empty($meta)) {
             $stm = $this->_db->prepare('INSERT INTO user (gid, name, status, host_gid, pub_key) VALUES (:gid, :name, :status, :host_gid, :pub_key)');
-            foreach ($meta as $key => $value) {
-                $stm->bindParam(':' . $key, $value);
-            }
+            $stm->bindParam(':gid', $meta['gid']);
+            $stm->bindParam(':name', $meta['name']);
+            $stm->bindParam(':status', $meta['status']);
+            $stm->bindParam(':host_gid', $meta['host_gid']);
+            $stm->bindParam(':pub_key', $meta['pub_key']);
             $stm->execute();
         }
     }

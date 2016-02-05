@@ -52,12 +52,12 @@ class Envoycommunicator {
         $url = sprintf(self::URL_GET_USER_META, $this->_domain);
 
         $this->initCurl($url);
-        $this->postCurl(array('gid' => $gid));
+        $this->postCurl(http_build_query(array('gid' => $gid)));
         $result = $this->fetchCurl();
 
         if ($this->getInfo(CURLINFO_HTTP_CODE) === 200) {
             $result = json_decode($result);
-            if (Rsa::validatePublicKey($result->pub_key) === TRUE && $result->gid === $gid) {
+            if (!empty($result) && Rsa::validatePublicKey($result->pub_key) === TRUE && $result->gid === $gid) {
                 $meta = array();
                 $meta['gid'] = $gid;
                 $meta['name'] = $result->name;
