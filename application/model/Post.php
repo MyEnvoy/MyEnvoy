@@ -5,6 +5,7 @@ use Famework\Registry\Famework_Registry;
 class Post {
 
     const DB_TABLE = 'user_posts';
+    const DB_POST_DATA = 'user_posts_data';
 
     use Hasmeta;
 
@@ -22,13 +23,44 @@ class Post {
         return new Post($row['id'], $row);
     }
 
-    public static function insert($userID, $groupID, $content, $postID = NULL) {
-        $stm = Famework_Registry::getDb()->prepare('INSERT INTO user_posts (user_id, group_id, post_id, content) VALUES (:uid, :gid, :pid, :content)');
+    public static function generateGid($usergid, $timestamp) {
+        return hash('sha512', $usergid . '@' . $timestamp);
+    }
+
+    /**
+     * Insert a post / comment
+     * @param Currentuser $user
+     * @param string $content
+     * @param array $groupIDs An array of groupIDs to post to
+     * @param int $postID The ID of the post to comment to
+     */
+    public static function insert(Currentuser $user, $content, array $groupIDs, $postID = NULL) {
+        $db = Famework_Registry::getDb();
+        $stm = $db->prepare('INSERT INTO user_posts (gid, user_id, post_id, content) VALUES (:gid, :uid, :pid, :content)');
+        $gid = self::generateGid($user->getGid(), time());
+        $userID = $user->getId();
+        $stm->bindParam(':gid', $gid);
         $stm->bindParam(':uid', $userID, PDO::PARAM_INT);
-        $stm->bindParam(':gid', $groupID, PDO::PARAM_INT);
         $stm->bindParam(':pid', $postID, PDO::PARAM_INT);
         $stm->bindParam(':content', $content);
         $stm->execute();
+
+        // public posts are sent to all groups
+        if (in_array($user->getPublicGroupId(), $groupIDs)) {
+            foreach ($user->getGroupOverview() as $id => $name) {
+                if (!in_array($id, $groupIDs)) {
+                    $groupIDs[] = $id;
+                }
+            }
+        }
+
+        $thisPostID = $db->lastInsertId();
+        $stmt = $db->prepare('INSERT IGNORE INTO user_posts_data (post_id, group_id) VALUES (:pid, :grip)');
+        foreach ($groupIDs as $grip) {
+            $stmt->bindParam(':pid', $thisPostID, PDO::PARAM_INT);
+            $stmt->bindParam(':grip', $grip, PDO::PARAM_INT);
+            $stmt->execute();
+        }
     }
 
     /**
@@ -110,7 +142,7 @@ class Post {
     }
 
     public function getGroupId() {
-        return (int) $this->getWhatever('group_id');
+        return (int) $this->getWhatever('group_id', self::DB_POST_DATA);
     }
 
     public function getEntireComments() {

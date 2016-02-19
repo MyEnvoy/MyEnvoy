@@ -7,6 +7,7 @@ class Envoycommunicator {
     const TIMEOUT = 4;
     const URL_GET_IDENTITY = 'https://%s/federation/getidentity';
     const URL_GET_USER_META = 'https://%s/federation/getusermeta';
+    const URL_GET_USER_PIC = 'https://%s/federation/getuserpic';
 
     /**
      * @var PDO 
@@ -69,6 +70,26 @@ class Envoycommunicator {
         }
 
         return NULL;
+    }
+
+    /**
+     * Cache a profile pic with given size
+     * @param string $gid
+     * @param Currentuser $caller
+     * @param int $size
+     */
+    public function cacheProfilePic($gid, $caller, $size) {
+        $url = sprintf(self::URL_GET_USER_PIC, $this->_domain);
+
+        $this->initCurl($url);
+
+        $data = array('gid' => $gid,
+            'size' => $size,
+            'caller_name' => $caller->getName(),
+            'caller_gid' => $caller->getGid());
+        $sign = Rsa::signData($caller->getPrivateKey(), User::generatePrivKeyPwd($caller->getPwdHash()), http_build_query($data));
+        $data['sign'] = $sign;
+        $this->postCurl(http_build_query($data));
     }
 
     private function initCurl($url) {

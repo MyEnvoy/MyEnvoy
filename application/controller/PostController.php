@@ -20,17 +20,17 @@ class PostController extends Controller {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
         $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_POST_SIZE);
-        $group = $this->_paramHandler->getInt('group');
+        $groupID = $this->_paramHandler->getInt('group');
 
         // validate group
         $possibleGroups = $this->_view->user->getGroupOverview();
-        if (!isset($possibleGroups[$group])) {
+        if (!isset($possibleGroups[$groupID])) {
             throw new Exception('Disallowed recipient detected.');
         }
 
         $content = Security::trim($content);
 
-        Post::insert($this->_view->user->getId(), $group, $content);
+        Post::insert($this->_view->user, $content, array($groupID));
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }
@@ -103,7 +103,7 @@ class PostController extends Controller {
         $postID = $post->getId();
         $content = Security::trim($content);
 
-        Post::insert($this->_view->user->getId(), $groupID, $content, $postID);
+        Post::insert($this->_view->user, $content, array($groupID), $postID);
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }

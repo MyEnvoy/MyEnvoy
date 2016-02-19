@@ -7,6 +7,7 @@ class Picture {
 
     const MAX_FILE_SIZE = 3145728;
     const PROFILEPIC_PATH = APPLICATION_PATH . '../work/pic/';
+    const PROFILEPIC_FOREIGN_CACHE = APPLICATION_PATH . '../work/pic/cache/';
 
     /**
      * @param string $name HTML element name

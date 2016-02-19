@@ -32,7 +32,7 @@ class Otheruser extends User {
      * @return \Otheruser|\Foreignotheruser
      */
     public static function getByGid($gid, $callerId) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT id, host_gid FROM user WHERE gid = ? LIMIT 1');
+        $stm = Famework_Registry::getDb()->prepare('SELECT u.id, u.host_gid FROM user u JOIN user_data d ON d.user_id = u.id WHERE u.gid = ? AND d.activated = 1 LIMIT 1');
         $stm->execute(array($gid));
         $res = $stm->fetch();
         if (!empty($res)) {
@@ -45,7 +45,7 @@ class Otheruser extends User {
         return NULL;
     }
 
-    private $_callerID;
+    protected $_callerID;
 
     public function __construct($id, $callerId) {
         $this->initDb();
@@ -80,7 +80,7 @@ class Otheruser extends User {
     }
 
     public function getPublicPosts() {
-        $groupID = $this->getDefaultGroupId();
+        $groupID = $this->getPublicGroupId();
         $stm = $this->_db->prepare('SELECT id FROM user_posts WHERE user_id = ? AND group_id = ? AND post_id IS NULL');
         $stm->execute(array($this->getId(), $groupID));
 
@@ -91,13 +91,6 @@ class Otheruser extends User {
         }
 
         return $res;
-    }
-
-    public function getDefaultGroupId() {
-        $stm = $this->_db->prepare('SELECT MIN(id) id FROM user_groups WHERE user_id = ? LIMIT 1');
-        $stm->execute(array($this->getId()));
-        $res = $stm->fetch();
-        return (int) $res['id'];
     }
 
 }

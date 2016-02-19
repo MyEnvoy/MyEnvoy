@@ -1,7 +1,5 @@
 <?php
 
-use Famework\Registry\Famework_Registry;
-
 class Rsa {
 
     const RSA_PRIV_KEY = 0;
@@ -41,13 +39,23 @@ class Rsa {
             self::RSA_PUB_KEY => $pkGeneratePublic);
     }
 
-    public static function getMyPubKey() {
-        $path = Famework_Registry::get('\famework_config')->getValue('myenvoy', 'public_key');
-        $key = file_get_contents($path);
-        if (self::validatePublicKey($key) === FALSE) {
-            throw new Exception('FATAL RSA ERROR!', Errorcode::RSA_INVALID_PUB_KEY);
+    /**
+     * Sign data with private key
+     * @param string $priv_key
+     * @param string $pwd The password which was used to encrypt the private key
+     * @param string $data
+     * @return string base64 encoded hash of $data
+     * @throws Exception
+     */
+    public static function signData($priv_key, $pwd, $data) {
+        $hash = hash('sha256', $data);                                  // hash data
+        $key = openssl_pkey_get_private($priv_key, $pwd);               // get private key
+
+        if (openssl_private_encrypt($hash, $crypted, $key) !== TRUE) {  // encrypt hash with private key
+            throw new Exception('Unable to sign data.', Errorcode::RSA_FAILED_TO_SIGN);
         }
-        return $key;
+
+        return base64_encode($crypted);
     }
 
 }

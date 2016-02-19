@@ -13,6 +13,12 @@ abstract class User {
         return hash_pbkdf2('sha256', $pwd, $salt, 1000, 64);
     }
 
+    public static function generatePrivKeyPwd($pwdHash) {
+        $salt = Famework_Registry::get('\famework_config')->getValue('myenvoy', 'unique_salt');
+
+        return hash_pbkdf2('sha256', $pwdHash, $salt, 1000, 64);
+    }
+
     public static function verifyMailAddress($name, $email) {
         $stm = Famework_Registry::getDb()->prepare('SELECT email FROM user WHERE name = ? AND email = ? AND activated = 1 LIMIT 1');
         $stm->execute(array($name, $email));
@@ -61,7 +67,7 @@ abstract class User {
     public function getId() {
         return (int) $this->_id;
     }
-    
+
     public function getGid() {
         return $this->getWhatever('gid');
     }
@@ -69,7 +75,7 @@ abstract class User {
     public function getName() {
         return $this->getWhatever('name');
     }
-    
+
     public function getPubKey() {
         return $this->getWhatever('pub_key');
     }
@@ -95,7 +101,7 @@ abstract class User {
         if ($this->_host === NULL) {
             $host_gid = $this->getWhatever('host_gid');
             if (empty($host_gid)) {
-                return Server::getMyHost();
+                return NULL;
             }
 
             $stm = $this->_db->prepare('SELECT gid FROM hosts WHERE gid = ? LIMIT 1');
@@ -155,4 +161,11 @@ abstract class User {
     }
 
     protected abstract function getPicturePath($size);
+    
+    public function getPublicGroupId() {
+        $stm = $this->_db->prepare('SELECT MIN(id) id FROM user_groups WHERE user_id = ? LIMIT 1');
+        $stm->execute(array($this->getId()));
+        $res = $stm->fetch();
+        return (int) $res['id'];
+    }
 }

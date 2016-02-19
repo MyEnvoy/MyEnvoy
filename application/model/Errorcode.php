@@ -22,5 +22,7 @@ class Errorcode {
     const RSA_INVALID_PUB_KEY = 10012;
     
     const COM_CURL_ERROR = 10013;
+    
+    const RSA_FAILED_TO_SIGN = 10014;
 
 }

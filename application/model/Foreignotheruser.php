@@ -32,4 +32,34 @@ class Foreignotheruser extends Otheruser {
         return NULL;
     }
 
+    /**
+     * @var Envoycommunicator
+     */
+    private $_com;
+
+    public function __construct($id, $callerId) {
+        parent::__construct($id, $callerId);
+        $this->_com = new Envoycommunicator($this->getHost()->getDomain());
+    }
+
+    public function getPictureUrl($size) {
+        return parent::getPictureUrl($size);
+    }
+
+    public function getPicturePath($size) {
+        $path = Picture::PROFILEPIC_FOREIGN_CACHE . $this->getGid() . '-' . $size . '-' . $this->_callerID . '.jpg';
+
+        if (is_readable($path)) {
+            return $path;
+        }
+        
+        // TODO: get picture via _com
+        
+        if (is_readable($path)) {
+            return $path;
+        }
+
+        return NULL;
+    }
+
 }

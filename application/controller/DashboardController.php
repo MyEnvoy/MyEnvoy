@@ -51,7 +51,7 @@ class DashboardController extends Controller {
                 $otheruser = Otheruser::getByGid(User::generateGid($name, $domain), $this->_view->user->getId());
                 if ($otheruser === NULL) {
                     // no userdata yet, try to import it
-                    $otheruser = Foreignotheruser::getForeignByName($name, $domain, $this->_view->user->getId(), TRUE);
+                    $otheruser = Foreignotheruser::getForeignByName($name, $domain, $this->_view->user->getId(), FALSE);
                 }
             }
 
@@ -59,7 +59,7 @@ class DashboardController extends Controller {
                 // got a user
                 echo json_encode(array(array('name' => Security::wbrusername($otheruser->getName(), TRUE),
                         'icon' => $otheruser->getPictureUrl(Currentuser::PIC_SMALL),
-                        'server' => $otheruser->getHost(),
+                        'server' => ($otheruser->getHost() === NULL ? Server::getMyHost() : $otheruser->getHost()->getDomain()),
                         'url' => '/' . APPLICATION_LANG . '/user/' . $otheruser->getName())));
             } else {
                 // no result
@@ -70,7 +70,9 @@ class DashboardController extends Controller {
 
         $query = '%' . strtolower($query) . '%';
 
-        $stm = Famework_Registry::getDb()->prepare('SELECT name, id FROM user WHERE host_gid IS NULL AND name LIKE ?');
+        $stm = Famework_Registry::getDb()->prepare('SELECT u.name, u.id FROM user u '
+                . 'JOIN user_data d ON d.user_id = u.id '
+                . 'WHERE u.host_gid IS NULL AND d.activated = 1 AND u.name LIKE ?');
         $stm->execute(array($query));
 
         $result = array();

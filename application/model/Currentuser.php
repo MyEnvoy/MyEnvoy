@@ -8,6 +8,7 @@ class Currentuser extends User {
 
     const PIC_LARGE = 256;
     const PIC_SMALL = 32;
+    const DB_USER_DATA = 'user_data';
 
     public static function getUserFromLogin($name, $pwd) {
         $db = Famework_Registry::getDb();
@@ -94,6 +95,18 @@ class Currentuser extends User {
         return $this->getWhatever('email', self::DB_USER_DATA);
     }
 
+    public function getPrivateKey() {
+        return $this->getWhatever('priv_key_enc', self::DB_USER_DATA);
+    }
+
+    public function getPwdHash() {
+        return $this->getWhatever('pwd', self::DB_USER_DATA);
+    }
+
+    public function getSalt() {
+        return $this->getWhatever('salt', self::DB_USER_DATA);
+    }
+
     /**
      * Gets the register datetime of the user
      * @return \DateTime
@@ -120,13 +133,13 @@ class Currentuser extends User {
      * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
      */
     public function getGroupOverview() {
-        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY id DESC');
+        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY isdefault DESC, id DESC');
         $stm->execute(array($this->getId()));
 
         $data = array();
 
         foreach ($stm->fetchAll() as $row) {
-            $data[$row['id']] = $row['name'];
+            $data[(int) $row['id']] = $row['name'];
         }
 
         return $data;
@@ -136,9 +149,9 @@ class Currentuser extends User {
      * Return the IDs of all groups from which the user is allowd to read posts
      */
     public function getMyMemberships() {
-        $stm = $this->_db->prepare('SELECT grp.id id FROM user_groups grp
-                                        LEFT JOIN user_groups_members grpmbr ON grpmbr.user_id = :userid AND grpmbr.group_id = grp.id
-                                    WHERE grp.user_id = :userid OR grpmbr.user_id = :userid
+        $stm = $this->_db->prepare('SELECT * FROM user_groups grp
+                                        LEFT JOIN user_to_groups utg ON utg.group_id = grp.id AND utg.user_id = :userid
+                                    WHERE grp.user_id = :userid OR utg.user_id = :userid
                                     GROUP BY grp.id');
         $id = $this->getId();
         $stm->bindParam(':userid', $id, PDO::PARAM_INT);
@@ -147,16 +160,10 @@ class Currentuser extends User {
         $res = array();
 
         foreach ($stm->fetchAll() as $row) {
-            // normal memberships
             $res[] = (int) $row['id'];
         }
 
-        foreach ($this->getMyFriends() as $friend) {
-            // public group of friends
-            $res[] = $friend->getDefaultGroupId();
-        }
-
-        return array_unique($res);
+        return $res;
     }
 
     /**
@@ -198,7 +205,12 @@ class Currentuser extends User {
         $offset = $page * $limit;
 
         $allowedGroups = $this->getMyMemberships();
-        $sql = 'SELECT * FROM user_posts WHERE group_id IN (' . implode(',', $allowedGroups) . ') AND post_id IS NULL ORDER BY user_posts.datetime DESC LIMIT :offset, :limit';
+        $sql = 'SELECT * FROM user_posts p
+                    JOIN user_posts_data d ON p.id = d.post_id
+                WHERE p.post_id IS NULL
+                GROUP BY p.id
+                HAVING d.group_id IN (' . implode(',', $allowedGroups) . ')
+                ORDER BY p.datetime DESC LIMIT :offset, :limit';
         $stm = $this->_db->prepare($sql);
         $stm->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stm->bindParam(':limit', $limit, PDO::PARAM_INT);

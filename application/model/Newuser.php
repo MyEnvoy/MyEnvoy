@@ -130,7 +130,7 @@ class Newuser extends User {
         // generate gid
         $gid = User::generateGid($name, Server::getMyHost());
         // generate public and private key
-        $keypair = Rsa::getNewKeyPair($this->_password);
+        $keypair = Rsa::getNewKeyPair(User::generatePrivKeyPwd($pwdAsHash));
         $priv_key_enc = $keypair[RSA::RSA_PRIV_KEY];
         $pub_key = $keypair[RSA::RSA_PUB_KEY];
 

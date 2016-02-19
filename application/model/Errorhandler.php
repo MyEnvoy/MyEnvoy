@@ -38,11 +38,11 @@ class Errorhandler {
             echo '<tr><td>Exception</td><td>&nbsp;&nbsp;&nbsp;&nbsp;Message</td></tr>';
             printf('<tr><td>%s:%d</td><td>&nbsp;&nbsp;&nbsp;&nbsp;%s</td></tr>', $exception->getFile(), $exception->getLine(), $exception->getMessage());
             echo '</table>';
-            Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
+            Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': #' . $exception->getCode() . ' "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
             die();
         }
 
-        Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
+        Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': #' . $exception->getCode() . ' "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
 
         header('Internal Server Error', TRUE, 500);
 

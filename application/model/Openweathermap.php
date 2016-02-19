@@ -27,7 +27,7 @@ class Openweathermap {
 
             $result = array();
 
-            if (!empty($data)) {
+            if (!empty($data) && isset($data->name)) {
                 $result['city'] = $data->name;
                 $result['icon'] = $this->getIconUrl($data->weather[0]->icon);
                 // from Kelvin to Celsius
@@ -44,7 +44,7 @@ class Openweathermap {
     }
 
     private function fetchCurrentData($lat, $lon) {
-        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&lat=%s&lon=%s&appid=%s', APPLICATION_LANG, $lat, $lon, $this->_apikey);
+        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&q=Nuremberg&lat=%s&lon=%s&appid=%s', APPLICATION_LANG, $lat, $lon, $this->_apikey);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

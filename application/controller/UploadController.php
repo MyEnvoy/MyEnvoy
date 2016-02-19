@@ -20,14 +20,18 @@ class UploadController extends Controller {
 
         $userid = $this->_paramHandler->getInt('id');
         $size = $this->_paramHandler->getInt('size');
-
-        if ($userid !== $this->_user->getId()) {
-            $other = new Otheruser($userid, $this->_user->getId());
-            $path = $other->getPicturePath($size);
-        } else {
-            $path = $this->_user->getPicturePath($size);
+        
+        try {
+            if ($userid !== $this->_user->getId()) {
+                $other = new Otheruser($userid, $this->_user->getId());
+                $path = $other->getPicturePath($size);
+            } else {
+                $path = $this->_user->getPicturePath($size);
+            }
+        } catch (Exception $e) {
+            $path = NULL;
         }
-
+        
         if (is_readable($path) === TRUE) {
             header('Content-type: image/jpeg');
             imagejpeg(imagecreatefromjpeg($path));
