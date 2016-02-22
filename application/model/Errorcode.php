@@ -26,5 +26,8 @@ class Errorcode {
     const RSA_FAILED_TO_SIGN = 10014;
     
     const HASMETA_NODATA = 10015;
+    
+    const POSTCONTROLLER_POST_NOT_AVAILABEL = 10016;
+    const POSTCONTROLLER_POST_DISALLOWED_ACTION = 10017;
 
 }

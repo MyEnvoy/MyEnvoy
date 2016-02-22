@@ -1,7 +1,6 @@
 <?php
 
 use Famework\LaCodon\Param\Paramhandler;
-use Famework\Request\Famework_Request;
 use Famework\Registry\Famework_Registry;
 
 class UserController extends Controller {
@@ -33,7 +32,13 @@ class UserController extends Controller {
             $this->_view->error = TRUE;
         } else {
             $this->_view->title(sprintf(t('user_index_title'), $this->_view->otheruser->getName()));
-            $this->_view->posts = $this->_view->otheruser->getPublicPosts();
+            $this->_view->connectionType = $this->_view->user->getConnectionWith($this->_view->otheruser);
+            if ($this->_view->connectionType & Currentuser::I_AM_FOLLOWING === Currentuser::I_AM_FOLLOWING) {
+                $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
+                $this->_view->posts = $this->_view->otheruser->getViewablePosts($this->_view->user);
+            } else {
+                $this->_view->posts = $this->_view->otheruser->getPublicPosts();
+            }
             $this->_view->status = $this->_view->otheruser->getStatus();
         }
 

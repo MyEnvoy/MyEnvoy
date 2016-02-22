@@ -134,10 +134,10 @@ abstract class User {
     }
 
     public function countFollowers() {
-        $stm = $this->_db->prepare('SELECT count(1) count FROM user_groups grp
-                                        JOIN user_groups_members grpmbr ON grpmbr.group_id = grp.id
-                                    WHERE grp.user_id = ?
-                                    GROUP BY grpmbr.user_id');
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (
+                                        SELECT utg.user_id id FROM user_groups g
+                                                JOIN user_to_groups utg ON utg.group_id = g.id
+                                        WHERE g.user_id = ? GROUP BY utg.user_id) x LIMIT 1');
         $stm->execute(array($this->getId()));
         $res = $stm->fetch();
 

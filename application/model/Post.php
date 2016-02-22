@@ -8,7 +8,7 @@ class Post {
 
     use Hasmeta;
 
-    public static function getFromId($postID) {
+    public static function getById($postID) {
         $stm = Famework_Registry::getDb()->prepare('SELECT * FROM user_posts WHERE id = ? LIMIT 1');
         $stm->execute(array($postID));
 
@@ -85,7 +85,7 @@ class Post {
 
     public function getMotherPost() {
         if (!isset($this->_motherpost) && !empty($this->getWhatever('post_id'))) {
-            $this->_motherpost = Post::getFromId($this->getWhatever('post_id'));
+            $this->_motherpost = Post::getById($this->getWhatever('post_id'));
         }
 
         return $this->_motherpost;
@@ -185,7 +185,7 @@ class Post {
         $res = array();
 
         foreach ($stm->fetchAll() as $row) {
-            $res[] = Post::getFromId($row['id']);
+            $res[] = Post::getById($row['id']);
         }
 
         return $res;
@@ -215,7 +215,7 @@ class Post {
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_header">
-            <div class="col one">
+            <div class="col one center_txt">
                 <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_LARGE); ?>" width="40" height="40" alt="Posting user picture">
             </div>
             <div class="col nine">
@@ -280,7 +280,7 @@ class Post {
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_comment">
-            <div class="col one">
+            <div class="col one center_txt">
                 <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="<?php echo Currentuser::PIC_SMALL; ?>" height="<?php echo Currentuser::PIC_SMALL; ?>" alt="Posting user picture">
             </div>
             <div class="col nine">
@@ -318,7 +318,7 @@ class Post {
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_subcomment">
-            <div class="col one">
+            <div class="col one center_txt">
                 <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="20" height="20" alt="Posting user picture">
             </div>
             <div class="col nine">
@@ -347,6 +347,73 @@ class Post {
         <?php
     }
 
+    /**
+     * Render given Post array as Wall
+     * @see Currentuser::getWall() for input array structure
+     * @param Currentuser $user
+     * @param array $posts
+     */
+    public static function renderLikeWall(Currentuser $user, array $posts) {
+        foreach ($posts as $post) :
+            ?>
+            <div class="row dashboard_post_container" post-id="<?php echo $post['post']->getId(); ?>">
+                <div class="col ten">
+
+                    <?php if ($post['post']->getOwnerId() === $user->getId()) : ?>
+                        <div class="dashboard_post_remove">
+                            <a onclick="jsconfirm('/<?php echo APPLICATION_LANG; ?>/post/remove/?id=<?php echo $post['post']->getId(); ?>', '<?php echo t('dashboard_post_delete_confirm'); ?>')" class="noa">
+                                <span class="genericon genericon-trash"></span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                    <?php $post['post']->render($user); ?>
+
+                    <div class="row dashboard_post_comments">
+                        <div class="col ten">
+
+                            <?php foreach ($post['comments'] as $comment): ?>
+                                <div class="onecomment" post-id="<?php echo $comment['comment']->getId(); ?>">
+                                    <?php $comment['comment']->render($user); ?>
+                                    <?php
+                                    foreach ($comment['subcomments'] as $subcomment) {
+                                        $subcomment->render($user);
+                                    }
+                                    ?>
+                                    <div class="row dashboard_post_comments_newsub" style="display: none;">
+                                        <div class="col one center_txt">
+                                            <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="20" height="20" alt="Posting user picture">
+                                        </div>
+                                        <div class="col nine">
+                                            <div class="row">
+                                                <div class="col ten">
+                                                    <input type="text" class="newsubcomment small_input" placeholder="<?php echo t('dashboard_post_comment_placeholder'); ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+
+                            <div class="row dashboard_post_comments_new">
+                                <div class="col one center_txt">
+                                    <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="<?php echo Currentuser::PIC_SMALL; ?>" height="<?php echo Currentuser::PIC_SMALL; ?>" alt="Posting user picture">
+                                </div>
+                                <div class="col nine">
+                                    <div class="row dashboard_post_user">
+                                        <div class="col ten">
+                                            <input type="text" class="newcomment small_input" placeholder="<?php echo t('dashboard_post_comment_placeholder'); ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        endforeach;
+    }
+
     private $_favdata = NULL;
 
     private function getFavData(Currentuser $user) {
@@ -364,7 +431,7 @@ class Post {
     }
 
     public function fav(Currentuser $user) {
-        $stm = $this->_db->prepare('INSERT INTO user_posts_favs (user_id, post_id) VALUES (?, ?)');
+        $stm = $this->_db->prepare('INSERT IGNORE INTO user_posts_favs (user_id, post_id) VALUES (?, ?)');
         $stm->execute(array($user->getId(), $this->getId()));
     }
 

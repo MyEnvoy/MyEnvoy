@@ -4,6 +4,11 @@
 
     <div id="dashboard_central_container">
 
+        <form id="dashboard_post_comment_form" method="post" action="/<?php echo APPLICATION_LANG; ?>/post/comment?redirectlocation=<?php echo $this->otheruser->getFullQualifiedName(); ?>" style="display: none;">
+            <input id="dashboard_post_comment_id" type="text" name="id" required>
+            <textarea id="dashboard_post_comment_content" name="post" required></textarea>
+        </form>
+
         <div class="dashboard_realsize_container">
             <div class="row">
                 <?php if (isset($this->error)): ?>
@@ -55,20 +60,55 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
-                            FREUNDSCHAFTSSTATUS MIT DIESEM NUTZER
-                        </div>
+                        <?php if ($this->user->getId() !== $this->otheruser->getId()) : ?>
+                            <div class="row">
+                                <?php
+                                if ($this->connectionType === Currentuser::NO_CONNECTION) {
+                                    $pic = 'src="/img/link-0.png" style="transform: rotate(-45deg);"';
+                                } elseif ($this->connectionType === Currentuser::FOLLOWS_ME) {
+                                    $pic = 'src="/img/link-2.png" style="transform: rotate(-45deg);"';
+                                } elseif ($this->connectionType === Currentuser::I_AM_FOLLOWING) {
+                                    $pic = 'src="/img/link-2.png" style="transform: rotate(135deg);"';
+                                } else {
+                                    $pic = 'src="/img/link-3.png" style="transform: rotate(-45deg);"';
+                                }
+                                ?>
+                                <div class="col three right_txt">
+                                    <img class="profile_pic" src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="32" height="32" alt="My profile picture">
+                                </div>
+                                <div class="col four center_txt">
+                                    <img <?php echo $pic; ?> height="30" alt="Connection type" data-toggle="tooltip" data-placement="bottom" title="<?php echo t('dashboard_connectionstatus_' . $this->connectionType); ?>">
+                                </div>
+                                <div class="col three">
+                                    <img class="profile_pic" src="<?php echo $this->otheruser->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="32" height="32" alt="Other user's profile picture">
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="col seven">
                         <div class="row">
                             <div class="col six">
-                                <?php foreach ($this->posts as $post): ?>
-                                    <div class="row dashboard_post_container">
-                                        <div class="col ten">
-                                            <?php $post->renderPublic($this->user); ?>
+                                <?php
+                                if ($this->connectionType & Currentuser::I_AM_FOLLOWING === Currentuser::I_AM_FOLLOWING) {
+                                    Post::renderLikeWall($this->user, $this->posts);
+                                } else {
+                                    foreach ($this->posts as $post):
+                                        ?>
+                                        <div class="row dashboard_post_container">
+                                            <div class="col ten">
+                                                <?php
+                                                if ($this->connectionType & Currentuser::I_AM_FOLLOWING === Currentuser::I_AM_FOLLOWING) {
+                                                    $post->render($this->user);
+                                                } else {
+                                                    $post->renderPublic($this->user);
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                        <?php
+                                    endforeach;
+                                }
+                                ?>
                             </div>
                             <div class="col four inline_padding">
                                 <div class="row dashboard_post_container" id="dashboard_weather_widget">
@@ -94,7 +134,4 @@
             </div>
         </div>
     </div>
-</div><img src="/img/link-empty.png" style="transform: rotate(-45deg);" height="30"><br>
-</div><img src="/img/link-right.png" style="transform: rotate(135deg);" height="30"><br>
-</div><img src="/img/link-right.png" style="transform: rotate(-45deg);" height="30"><br>
-</div><img src="/img/link-rounded.png" style="transform: rotate(-45deg);" height="30">
+</div>

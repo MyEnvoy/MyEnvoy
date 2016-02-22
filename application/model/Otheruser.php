@@ -47,6 +47,11 @@ class Otheruser extends User {
 
     protected $_callerID;
 
+    /**
+     * Construct Otheruser object
+     * @param int $id
+     * @param int $callerId
+     */
     public function __construct($id, $callerId) {
         $this->initDb();
         $this->_id = (int) $id;
@@ -81,13 +86,40 @@ class Otheruser extends User {
 
     public function getPublicPosts() {
         $groupID = $this->getPublicGroupId();
-        $stm = $this->_db->prepare('SELECT id FROM user_posts WHERE user_id = ? AND group_id = ? AND post_id IS NULL');
-        $stm->execute(array($this->getId(), $groupID));
+        $stm = $this->_db->prepare('SELECT p.id FROM user_posts p
+                                        JOIN user_posts_data d ON p.id = d.post_id AND d.group_id = ?
+                                    WHERE p.user_id = ?  AND p.post_id IS NULL
+                                    GROUP BY p.id LIMIT 30');
+        $stm->execute(array($groupID, $this->getId()));
 
         $res = array();
 
         foreach ($stm->fetchAll() as $row) {
-            $res[] = Post::getFromId($row['id']);
+            $res[] = Post::getById($row['id']);
+        }
+
+        return $res;
+    }
+
+    /**
+     * Get posts which are viewable by given user (only works if there is any kind of friendship/followership)
+     * @param Currentuser $user
+     * @return array <b>array(array('post' => Post, 'comments' => array('comment' => Post, 'subcomments' => array(Post))))</b>
+     */
+    public function getViewablePosts(Currentuser $user) {
+        $groups = $user->getMyMemberships();
+        $stm = $this->_db->prepare('SELECT p.id FROM user_posts p
+                                        JOIN user_posts_data d ON p.id = d.post_id AND p.user_id = ?
+                                    WHERE p.post_id IS NULL AND d.group_id IN (' . implode(',', $groups) . ')
+                                    GROUP BY p.id ORDER BY p.datetime DESC LIMIT 30');
+        $stm->execute(array($this->getId()));
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $post = Post::getById($row['id']);
+            $comments = $post->getEntireComments();
+            $res[] = array('post' => $post, 'comments' => $comments);
         }
 
         return $res;

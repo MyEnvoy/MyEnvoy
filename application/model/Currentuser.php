@@ -168,24 +168,29 @@ class Currentuser extends User {
 
     /**
      * Get who this user is following
+     * @return array(\Otheruser)
      */
     public function getMyFriends() {
-        $stm = $this->_db->prepare('SELECT ug.user_id id FROM user_groups_members ugm
-                                        JOIN user_groups ug ON ug.id = ugm.group_id
-                                    WHERE ugm.user_id = ?');
+        $stm = $this->_db->prepare('SELECT g.id FROM user_to_groups utg
+                                        JOIN user_groups g ON g.id = utg.group_id
+                                    WHERE utg.user_id = ? GROUP BY g.id');
         $stm->execute(array($this->getId()));
 
         $res = array();
         foreach ($stm->fetchAll() as $row) {
-            $res[] = new Otheruser($row['id'], $this->getId());
+            $res[] = Group::getOwnerById($row['id'], $this);
         }
         return $res;
     }
 
+    /**
+     * Get who follows this user
+     * @return array(\Otheruser)
+     */
     public function getMyFollowers() {
-        $stm = $this->_db->prepare('SELECT grpmbr.user_id id FROM user_groups grp	
-                                        JOIN user_groups_members grpmbr ON grpmbr.group_id = grp.id
-                                    WHERE grp.user_id = ?');
+        $stm = $this->_db->prepare('SELECT utg.user_id id FROM user_groups g
+                                        JOIN user_to_groups utg ON utg.group_id = g.id
+                                    WHERE g.user_id = ? GROUP BY utg.user_id');
         $stm->execute(array($this->getId()));
 
         $res = array();
@@ -196,20 +201,20 @@ class Currentuser extends User {
     }
 
     /**
-     * 
+     * Get posts for the wall
      * @param type $page
      * @param type $limit
      * @return array <b>array(array('post' => Post, 'comments' => array('comment' => Post, 'subcomments' => array(Post))))</b>
      */
-    public function getWall($page = 0, $limit = 10) {
+    public function getWall($page = 0, $limit = 20) {
         $offset = $page * $limit;
 
         $allowedGroups = $this->getMyMemberships();
         $sql = 'SELECT * FROM user_posts p
                     JOIN user_posts_data d ON p.id = d.post_id
                 WHERE p.post_id IS NULL
+                AND d.group_id IN (' . implode(',', $allowedGroups) . ')
                 GROUP BY p.id
-                HAVING d.group_id IN (' . implode(',', $allowedGroups) . ')
                 ORDER BY p.datetime DESC LIMIT :offset, :limit';
         $stm = $this->_db->prepare($sql);
         $stm->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -218,7 +223,7 @@ class Currentuser extends User {
         $res = array();
 
         foreach ($stm->fetchAll() as $row) {
-            $post = Post::getFromId($row['id']);
+            $post = Post::getById($row['id']);
             $comments = $post->getEntireComments();
             $res[] = array('post' => $post, 'comments' => $comments);
         }
@@ -246,25 +251,29 @@ class Currentuser extends User {
         return (bool) $stm->fetch()['count'];
     }
 
+    const NO_CONNECTION = 0;
     const I_AM_FOLLOWING = 1;
     const FOLLOWS_ME = 2;
-    const NO_CONNECTION = 4;
 
     public function getConnectionWith(Otheruser $otheruser) {
         $friends = $this->getMyFriends();
         $followers = $this->getMyFollowers();
 
+        $res = 0;
+
         foreach ($friends as $friend) {
             if ($otheruser->getId() === $friend->getId()) {
-                $res = self::I_AM_FOLLOWING;
+                $res = $res | self::I_AM_FOLLOWING;
             }
         }
 
         foreach ($followers as $follower) {
             if ($otheruser->getId() === $follower->getId()) {
-                $res = self::FOLLOWS_ME;
+                $res = $res | self::FOLLOWS_ME;
             }
         }
+
+        return $res;
     }
 
     /**

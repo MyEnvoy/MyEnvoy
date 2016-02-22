@@ -40,7 +40,7 @@ class PostController extends Controller {
 
         $postID = $this->_paramHandler->getInt('id');
 
-        $post = Post::getFromId($postID);
+        $post = Post::getById($postID);
 
         if (empty($post)) {
             throw new Exception('Post not availabel.');
@@ -59,14 +59,14 @@ class PostController extends Controller {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
 
         $postID = $this->_paramHandler->getInt('id');
-        $post = Post::getFromId($postID);
+        $post = Post::getById($postID);
 
         if (empty($post)) {
-            throw new Exception('Post not availabel.');
+            throw new Exception('Post not availabel.', Errorcode::POSTCONTROLLER_POST_NOT_AVAILABEL);
         }
 
         if ($this->_view->user->canSeePost($post->getId()) !== TRUE) {
-            throw new Exception('Disallowed action.');
+            throw new Exception('Disallowed action.', Errorcode::POSTCONTROLLER_POST_DISALLOWED_ACTION);
         }
 
         return $post;
@@ -85,11 +85,13 @@ class PostController extends Controller {
     }
 
     public function commentAction() {
-        $this->_paramHandler->bindMethods(Paramhandler::POST);
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+        $redirectAction = $this->_paramHandler->getValue('redirectlocation', FALSE, 3, 40);
 
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
         $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_COMMENT_SIZE);
         $tmpID = $this->_paramHandler->getInt('id');
-        $post = Post::getFromId($tmpID);
+        $post = Post::getById($tmpID);
 
         if (empty($post)) {
             throw new Exception('Post not availabel.');
@@ -105,7 +107,11 @@ class PostController extends Controller {
 
         Post::insert($this->_view->user, $content, $groupIDs, $postID);
 
-        Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        if ($redirectAction !== NULL) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $redirectAction);
+        } else {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        }
     }
 
 }

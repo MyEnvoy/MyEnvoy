@@ -4,6 +4,11 @@ use Famework\Registry\Famework_Registry;
 
 class Group {
 
+    /**
+     * Get group name by ID
+     * @param int $id
+     * @return string
+     */
     public static function getNameById($id) {
         $stm = Famework_Registry::getDb()->prepare('SELECT name FROM user_groups WHERE id = :id LIMIT 1');
         $stm->bindParam(':id', $id, PDO::PARAM_INT);
@@ -13,6 +18,26 @@ class Group {
 
         if (!empty($res)) {
             return $res['name'];
+        }
+
+        return NULL;
+    }
+    
+    /**
+     * Get Otheruser by groupID
+     * @param int $id The groupID
+     * @param Currentuser $caller
+     * @return \Otheruser
+     */
+    public static function getOwnerById($id, Currentuser $caller) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT user_id FROM user_groups WHERE id = :id LIMIT 1');
+        $stm->bindParam(':id', $id, PDO::PARAM_INT);
+        $stm->execute();
+
+        $res = $stm->fetch();
+
+        if (!empty($res)) {
+            return new Otheruser($res['user_id'], $caller->getId());
         }
 
         return NULL;
