@@ -24,5 +24,7 @@ class Errorcode {
     const COM_CURL_ERROR = 10013;
     
     const RSA_FAILED_TO_SIGN = 10014;
+    
+    const HASMETA_NODATA = 10015;
 
 }

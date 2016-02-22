@@ -99,11 +99,11 @@ class PostController extends Controller {
             throw new Exception('Disallowed action.');
         }
 
-        $groupID = $post->getGroupId();
+        $groupIDs = $post->getGroupIds();
         $postID = $post->getId();
         $content = Security::trim($content);
 
-        Post::insert($this->_view->user, $content, array($groupID), $postID);
+        Post::insert($this->_view->user, $content, $groupIDs, $postID);
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
     }

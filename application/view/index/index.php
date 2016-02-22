@@ -7,6 +7,7 @@
         </div>
     </div>
 </div>
+<img id="index_logo_background" src="/img/logo/logo.svg" alt="MyEnvoy Logo">
 <div id="center_content" class="center">
     <?php if (!empty($this->hint)): ?>
         <div class="row">
@@ -26,8 +27,8 @@
         <form action="/<?php echo APPLICATION_LANG . '/index/login.do' ?>" method="post">
             <div class="col ten">
                 <div class="form_group">
-                    <label for="name"><?php echo t('login_user_id'); ?></label>
-                    <input id="input_user_id" type="text" id="name" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus required pattern="[a-z0-9.]{3,40}">
+                    <label for="input_user_id"><?php echo t('login_user_id'); ?></label>
+                    <input id="input_user_id" type="text" name="name" placeholder="<?php echo t('login_user_id'); ?>" autofocus required pattern="[a-z0-9.]{3,40}">
                     <label id="input_info_overlay">@<?php echo Server::getMyHost(); ?></label>
                 </div>
                 <div class="form_group">

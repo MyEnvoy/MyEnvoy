@@ -19,7 +19,7 @@ class DashboardController extends Controller {
     public function indexAction() {
         $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
 
-        $weather = new Openweathermap();
+        $weather = new Openweathermap($this->_view->user);
         $data = $weather->getCurrentWeather();
         if (!empty($data)) {
             $this->_view->weather_city = Security::htmloutput($data['city']);

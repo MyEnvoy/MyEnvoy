@@ -10,6 +10,7 @@ class IndexController extends Controller {
 
     public function init() {
         parent::init();
+        $this->_view->addHeadElement('<link rel="canonical" href="' . Server::getRootLink() . '">');
         $this->_paramHandler = new Paramhandler();
     }
 

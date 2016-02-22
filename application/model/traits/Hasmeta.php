@@ -6,10 +6,8 @@ trait Hasmeta {
 
     protected function loadMeta($table = self::DB_TABLE) {
         $id = $this->_id;
-        if ($table === Currentuser::DB_USER_DATA) {
+        if ($table === Currentuser::DB_USER_DATA || $table === Usersettings::DB_TABLE) {
             $stm = $this->_db->prepare('SELECT * FROM ' . $table . ' WHERE user_id = :id LIMIT 1');
-        } elseif ($table === Post::DB_POST_DATA) {
-            $stm = $this->_db->prepare('SELECT * FROM ' . $table . ' WHERE post_id = :id LIMIT 1');
         } else {
             $stm = $this->_db->prepare('SELECT * FROM ' . $table . ' WHERE id = :id LIMIT 1');
         }
@@ -19,7 +17,7 @@ trait Hasmeta {
         $this->_meta[$table] = $stm->fetch();
 
         if (empty($this->_meta[$table])) {
-            throw new Exception('Data not found.');
+            throw new Exception('Data not found.', Errorcode::HASMETA_NODATA);
         }
     }
 

@@ -106,9 +106,10 @@ div#page_title_myenvoy h1 {color: #999;}
 
 div#center_content {width: 300px;margin-top: 30px;}
 
+img#index_logo_background {position: fixed;left: -20%;opacity: 0.6;bottom: -25%;width: 50%;z-index: -100;}
 label#input_info_overlay {position: absolute;left: 300px;top: 21px;background-color: #ccc;padding: 9px;border-radius: 0px 4px 4px 0px;}
 input#input_user_id {border-radius: 4px 0px 0px 4px;}
-@media only screen and (max-width: 615px) {label#input_info_overlay {display: none;}input#input_user_id {border-radius: 4px;}}
+@media only screen and (max-width: 615px) {label#input_info_overlay {display: none;}input#input_user_id {border-radius: 4px;}img#index_logo_background{display: none;}}
 
 .btn_file {position: relative;overflow: hidden;cursor: pointer;}
 .btn_file input[type=file] {position: absolute;top: 0;right: 0;min-width: 100%;min-height: 100%;font-size: 100px;text-align: right;opacity: 0;outline: none;background: white;cursor: inherit;display: block;}

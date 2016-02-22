@@ -8,6 +8,7 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
     public function init() {
         $this->_view->addCSS(HTTP_ROOT . 'css/genericons.css');
         $this->_view->addCSS(HTTP_ROOT . 'css/myenvoy.css');
+        $this->_view->addHeadElement('<link rel="shortcut icon" href="img/logo/favicon.ico">');
     }
 
     public function renderTop() {

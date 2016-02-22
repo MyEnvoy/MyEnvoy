@@ -235,7 +235,11 @@ class Currentuser extends User {
 
     public function canSeePost($postID) {
         $allowedGroups = $this->getMyMemberships();
-        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT * FROM user_posts WHERE group_id IN (' . implode(',', $allowedGroups) . ') AND id = :pid) x LIMIT 1');
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (
+                                        SELECT p.id FROM user_posts p
+                                                JOIN user_posts_data d ON p.id = d.post_id AND d.group_id IN (' . implode(',', $allowedGroups) . ') AND p.id = :pid
+                                        GROUP BY p.id
+                                    ) x LIMIT 1');
         $stm->bindParam(':pid', $postID, PDO::PARAM_INT);
         $stm->execute();
 
@@ -261,6 +265,22 @@ class Currentuser extends User {
                 $res = self::FOLLOWS_ME;
             }
         }
+    }
+
+    /**
+     * @var Usersettings
+     */
+    private $_settings;
+
+    /**
+     * Get the user settigs object
+     * @return Usersettings
+     */
+    public function getSettings() {
+        if (!isset($this->_settings)) {
+            $this->_settings = Usersettings::getByUserID($this->getId());
+        }
+        return $this->_settings;
     }
 
 }

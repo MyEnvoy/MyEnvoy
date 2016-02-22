@@ -5,7 +5,6 @@ use Famework\Registry\Famework_Registry;
 class Post {
 
     const DB_TABLE = 'user_posts';
-    const DB_POST_DATA = 'user_posts_data';
 
     use Hasmeta;
 
@@ -141,8 +140,25 @@ class Post {
         return $this->getWhatever('content');
     }
 
-    public function getGroupId() {
-        return (int) $this->getWhatever('group_id', self::DB_POST_DATA);
+    private $_groupIds;
+
+    public function getGroupIds() {
+        if ($this->_groupIds === NULL) {
+            $stm = $this->_db->prepare('SELECT * FROM user_posts_data WHERE post_id = :pid');
+            $id = $this->getId();
+            $stm->bindParam(':pid', $id, PDO::PARAM_INT);
+            $stm->execute();
+
+            $groupIDs = array();
+
+            foreach ($stm->fetchAll() as $row) {
+                $groupIDs[] = (int) $row['group_id'];
+            }
+
+            $this->_groupIds = $groupIDs;
+        }
+
+        return $this->_groupIds;
     }
 
     public function getEntireComments() {
@@ -212,7 +228,17 @@ class Post {
                         <?php if ($thisuser->getId() === $user->getId() && $public === FALSE) : ?>
                             <div class="left text_light inline_margin">&middot;</div>
                             <div class="left text_light inline_margin">
-                                <span class="genericon genericon-reply"></span> <?php echo Group::getNameById($this->getGroupId()); ?>
+                                <span class="genericon genericon-reply"></span> <?php
+                                if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
+                                    $groups = array();
+                                    foreach ($this->getGroupIds() as $grp) {
+                                        $groups[] = Group::getNameById($grp);
+                                    }
+                                    echo implode(', ', $groups);
+                                } else {
+                                    echo Group::getNameById($user->getPublicGroupId());
+                                }
+                                ?>
                             </div>
                         <?php endif; ?>
                     </div>

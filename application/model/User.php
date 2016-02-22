@@ -161,11 +161,18 @@ abstract class User {
     }
 
     protected abstract function getPicturePath($size);
-    
+
+    private $_publicGroupId;
+
     public function getPublicGroupId() {
-        $stm = $this->_db->prepare('SELECT MIN(id) id FROM user_groups WHERE user_id = ? LIMIT 1');
-        $stm->execute(array($this->getId()));
-        $res = $stm->fetch();
-        return (int) $res['id'];
+        if ($this->_publicGroupId === NULL) {
+            $stm = $this->_db->prepare('SELECT MIN(id) id FROM user_groups WHERE user_id = ? LIMIT 1');
+            $stm->execute(array($this->getId()));
+            $res = $stm->fetch();
+            $this->_publicGroupId = (int) $res['id'];
+        }
+
+        return $this->_publicGroupId;
     }
+
 }

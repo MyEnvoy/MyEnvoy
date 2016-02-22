@@ -9,21 +9,33 @@ class Openweathermap {
 
     private $_apikey;
 
-    public function __construct() {
+    /**
+     * @var Currentuser
+     */
+    private $_user;
+
+    public function __construct(Currentuser $user) {
         $config = Famework_Registry::get('\famework_config');
         $this->_apikey = $config->getValue('api', 'openweathermap_apikey');
+        $this->_user = $user;
     }
 
-    public function getCurrentWeather($lat = 49.45, $lon = 11.08) {
+    public function getCurrentWeather() {
         // there may be no api key set on some envoys
         if (empty($this->_apikey)) {
             return NULL;
         }
-        $apc_key = 'me_weather_' . $lat . '_' . $lon;
+        
+        $city = $this->_user->getSettings()->getWeatherCity();
+        if($city === NULL) {
+            return NULL;
+        }
+        
+        $apc_key = 'me_weather_' . md5($city);
         $result = apc_fetch($apc_key);
 
         if ($result === FALSE) {
-            $data = $this->fetchCurrentData($lat, $lon);
+            $data = $this->fetchCurrentData($city);
 
             $result = array();
 
@@ -43,8 +55,8 @@ class Openweathermap {
         return $result;
     }
 
-    private function fetchCurrentData($lat, $lon) {
-        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&q=Nuremberg&lat=%s&lon=%s&appid=%s', APPLICATION_LANG, $lat, $lon, $this->_apikey);
+    private function fetchCurrentData($city) {
+        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&q=%s&appid=%s', APPLICATION_LANG, $city, $this->_apikey);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
