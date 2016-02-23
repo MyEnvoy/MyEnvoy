@@ -2,6 +2,7 @@
 
 use Famework\LaCodon\Param\Paramhandler;
 use Famework\Registry\Famework_Registry;
+use Famework\Request\Famework_Request;
 
 class UserController extends Controller {
 
@@ -40,11 +41,31 @@ class UserController extends Controller {
                 $this->_view->posts = $this->_view->otheruser->getPublicPosts();
             }
             $this->_view->status = $this->_view->otheruser->getStatus();
-        }
 
-        if (empty($this->_view->status)) {
-            $this->_view->status = t('user_index_emptystatus');
+            if (empty($this->_view->status)) {
+                $this->_view->status = t('user_index_emptystatus');
+            }
         }
+    }
+
+    public function followAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+        $user_id = $this->_paramHandler->getInt('id');
+
+        $otheruser = new Otheruser($user_id, $this->_view->user->getId());
+        $otheruser->follow($this->_view->user);
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $otheruser->getFullQualifiedName());
+    }
+
+    public function unfollowAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+        $user_id = $this->_paramHandler->getInt('id');
+
+        $otheruser = new Otheruser($user_id, $this->_view->user->getId());
+        $otheruser->unfollow($this->_view->user);
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $otheruser->getFullQualifiedName());
     }
 
 }

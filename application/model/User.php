@@ -174,5 +174,22 @@ abstract class User {
 
         return $this->_publicGroupId;
     }
+    
+    /**
+     * Get all groups of this user
+     * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
+     */
+    public function getGroupOverview() {
+        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY isdefault DESC, id DESC');
+        $stm->execute(array($this->getId()));
+
+        $data = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $data[(int) $row['id']] = $row['name'];
+        }
+
+        return $data;
+    }
 
 }

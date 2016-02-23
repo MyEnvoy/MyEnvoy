@@ -125,4 +125,20 @@ class Otheruser extends User {
         return $res;
     }
 
+    public function follow(Currentuser $user) {
+        $user_id = $user->getId();
+        $groupId = $this->getPublicGroupId();
+        $stm = $this->_db->prepare('INSERT IGNORE INTO user_to_groups (user_id, group_id) VALUES (?, ?)');
+        $stm->execute(array($user_id, $groupId));
+    }
+
+    public function unfollow(Currentuser $user) {
+        $user_id = $user->getId();
+        $groupIDs = array_flip($this->getGroupOverview());
+        if ($groupIDs !== NULL) {
+            $stm = $this->_db->prepare('DELETE FROM user_to_groups WHERE user_id = ? AND group_id IN (' . implode(',', $groupIDs) . ')');
+            $stm->execute(array($user_id));
+        }
+    }
+
 }

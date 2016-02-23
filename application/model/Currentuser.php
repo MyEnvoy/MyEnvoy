@@ -129,23 +129,6 @@ class Currentuser extends User {
     }
 
     /**
-     * Get all groups of this user
-     * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
-     */
-    public function getGroupOverview() {
-        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY isdefault DESC, id DESC');
-        $stm->execute(array($this->getId()));
-
-        $data = array();
-
-        foreach ($stm->fetchAll() as $row) {
-            $data[(int) $row['id']] = $row['name'];
-        }
-
-        return $data;
-    }
-
-    /**
      * Return the IDs of all groups from which the user is allowd to read posts
      */
     public function getMyMemberships() {
@@ -251,9 +234,9 @@ class Currentuser extends User {
         return (bool) $stm->fetch()['count'];
     }
 
-    const NO_CONNECTION = 0;
     const I_AM_FOLLOWING = 1;
     const FOLLOWS_ME = 2;
+    const NO_CONNECTION = 4;
 
     public function getConnectionWith(Otheruser $otheruser) {
         $friends = $this->getMyFriends();
@@ -271,6 +254,10 @@ class Currentuser extends User {
             if ($otheruser->getId() === $follower->getId()) {
                 $res = $res | self::FOLLOWS_ME;
             }
+        }
+
+        if ($res === 0) {
+            return self::NO_CONNECTION;
         }
 
         return $res;

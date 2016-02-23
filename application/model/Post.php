@@ -196,13 +196,13 @@ class Post {
         $stm->execute(array($this->getId()));
     }
 
-    public function render(Currentuser $user) {
+    public function render(Currentuser $user, $addRedir = FALSE) {
         if ($this->isMajorPost()) {
-            $this->renderAsPost($user);
+            $this->renderAsPost($user, FALSE, $addRedir);
         } elseif ($this->isNormalComment()) {
-            $this->renderAsComment($user);
+            $this->renderAsComment($user, $addRedir);
         } else {
-            $this->renderAsSubcomment($user);
+            $this->renderAsSubcomment($user, $addRedir);
         }
     }
 
@@ -210,7 +210,7 @@ class Post {
         $this->renderAsPost($user, TRUE);
     }
 
-    private function renderAsPost(Currentuser $thisuser, $public = FALSE) {
+    private function renderAsPost(Currentuser $thisuser, $public = FALSE, $addRedir = FALSE) {
         $user = new Otheruser($this->getOwnerId(), $thisuser->getId());
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
@@ -268,14 +268,14 @@ class Post {
             <?php if ($public === FALSE): ?>
                 <div class="left text_light inline_margin">&middot;</div>
                 <div class="left text_light inline_margin">
-                    <a class="noa" href="<?php echo $this->getFavData($thisuser)['link'] ?>"><?php echo t($this->getFavData($thisuser)['txt']); ?></a>
+                    <a class="noa" href="<?php echo $this->getFavData($thisuser, $addRedir)['link'] ?>"><?php echo t($this->getFavData($thisuser, $addRedir)['txt']); ?></a>
                 </div>
             <?php endif; ?>
         </div>
         <?php
     }
 
-    private function renderAsComment(Currentuser $thisuser) {
+    private function renderAsComment(Currentuser $thisuser, $addRedir = FALSE) {
         $user = new Otheruser($this->getOwnerId(), $this->getId());
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
@@ -300,7 +300,7 @@ class Post {
                         </div>
                         <div class="left text_light inline_margin">&middot;</div>
                         <div class="left text_light inline_margin">
-                            <a class="noa" href="<?php echo $this->getFavData($thisuser)['link'] ?>"><?php echo t($this->getFavData($thisuser)['txt']); ?></a>
+                            <a class="noa" href="<?php echo $this->getFavData($thisuser, $addRedir)['link'] ?>"><?php echo t($this->getFavData($thisuser, $addRedir)['txt']); ?></a>
                         </div>
                         <div class="left text_light inline_margin">&middot;</div>
                         <div class="left text_light inline_margin">
@@ -313,7 +313,7 @@ class Post {
         <?php
     }
 
-    private function renderAsSubcomment(Currentuser $thisuser) {
+    private function renderAsSubcomment(Currentuser $thisuser, $addRedir = FALSE) {
         $user = new Otheruser($this->getOwnerId(), $this->getId());
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
@@ -338,7 +338,7 @@ class Post {
                         </div>
                         <div class="left text_light inline_margin">&middot;</div>
                         <div class="left text_light inline_margin">
-                            <a class="noa" href="<?php echo $this->getFavData($thisuser)['link'] ?>"><?php echo t($this->getFavData($thisuser)['txt']); ?></a>
+                            <a class="noa" href="<?php echo $this->getFavData($thisuser, $addRedir)['link'] ?>"><?php echo t($this->getFavData($thisuser, $addRedir)['txt']); ?></a>
                         </div>
                     </div>
                 </div>
@@ -352,8 +352,9 @@ class Post {
      * @see Currentuser::getWall() for input array structure
      * @param Currentuser $user
      * @param array $posts
+     * @param bool $addRedir Add Redirection to user profile after fav action
      */
-    public static function renderLikeWall(Currentuser $user, array $posts) {
+    public static function renderLikeWall(Currentuser $user, array $posts, $addRedir = FALSE) {
         foreach ($posts as $post) :
             ?>
             <div class="row dashboard_post_container" post-id="<?php echo $post['post']->getId(); ?>">
@@ -366,17 +367,17 @@ class Post {
                             </a>
                         </div>
                     <?php endif; ?>
-                    <?php $post['post']->render($user); ?>
+                    <?php $post['post']->render($user, $addRedir); ?>
 
                     <div class="row dashboard_post_comments">
                         <div class="col ten">
 
                             <?php foreach ($post['comments'] as $comment): ?>
                                 <div class="onecomment" post-id="<?php echo $comment['comment']->getId(); ?>">
-                                    <?php $comment['comment']->render($user); ?>
+                                    <?php $comment['comment']->render($user, $addRedir); ?>
                                     <?php
                                     foreach ($comment['subcomments'] as $subcomment) {
-                                        $subcomment->render($user);
+                                        $subcomment->render($user, $addRedir);
                                     }
                                     ?>
                                     <div class="row dashboard_post_comments_newsub" style="display: none;">
@@ -416,7 +417,7 @@ class Post {
 
     private $_favdata = NULL;
 
-    private function getFavData(Currentuser $user) {
+    private function getFavData(Currentuser $user, $addRedir = FALSE) {
         if ($this->_favdata === NULL) {
             if ($user->hasFavourised($this->getId()) === TRUE) {
                 $this->_favdata = array('txt' => 'dashboard_post_defavit',
@@ -424,6 +425,11 @@ class Post {
             } else {
                 $this->_favdata = array('txt' => 'dashboard_post_favit',
                     'link' => '/' . APPLICATION_LANG . '/post/fav/?id=' . $this->getId());
+            }
+
+            if ($addRedir === TRUE) {
+                $majorOwner = (new Otheruser($this->getMajorPost()->getOwnerId(), $user->getId()))->getFullQualifiedName();
+                $this->_favdata['link'] .= '&redirectlocation=' . $majorOwner;
             }
         }
 
@@ -438,6 +444,20 @@ class Post {
     public function defav(Currentuser $user) {
         $stm = $this->_db->prepare('DELETE FROM user_posts_favs WHERE user_id = ? AND post_id = ?');
         $stm->execute(array($user->getId(), $this->getId()));
+    }
+
+    private function getMajorPost() {
+        if ($this->isMajorPost()) {
+            return $this;
+        }
+
+        if ($this->isNormalComment()) {
+            return $this->getMotherPost();
+        }
+
+        if ($this->isSubComment()) {
+            return $this->getMotherPost()->getMotherPost();
+        }
     }
 
 }

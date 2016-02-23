@@ -73,15 +73,32 @@ class PostController extends Controller {
     }
 
     public function favAction() {
-        $post = $this->validatePostForFavAction();
-        $post->fav($this->_view->user);
-        Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        $this->doFavChange(self::FAV);
     }
 
     public function defavAction() {
+        $this->doFavChange(self::DEFAV);
+    }
+
+    const FAV = 1;
+    const DEFAV = 2;
+
+    private function doFavChange($action) {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+        $redirectAction = $this->_paramHandler->getValue('redirectlocation', FALSE, 3, 40);
+
         $post = $this->validatePostForFavAction();
-        $post->defav($this->_view->user);
-        Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        if ($action === self::FAV) {
+            $post->fav($this->_view->user);
+        } elseif ($action === self::DEFAV) {
+            $post->defav($this->_view->user);
+        }
+
+        if ($redirectAction !== NULL) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $redirectAction);
+        } else {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        }
     }
 
     public function commentAction() {

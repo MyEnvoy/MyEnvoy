@@ -18,7 +18,10 @@
             <ul class="dropdown_list">
                 <li><span class="greyspan"><?php echo t('dashboard_dropdown_title') ?> <b><?php echo $this->user->getName(); ?></b></span></li>
                 <hr>
-                <li><a href="/<?php echo APPLICATION_LANG; ?>/dashboard/logout"><?php echo t('dashboard_dropdown_logout'); ?></a></li>
+                <li><a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $this->user->getFullQualifiedName(); ?>"><span class="genericon genericon-user"></span><?php echo t('dashboard_dropdown_profile'); ?></a></li>
+                <li><a href="/<?php echo APPLICATION_LANG; ?>/settings"><span class="genericon genericon-cog"></span><?php echo t('dashboard_dropdown_settings'); ?></a></li>
+                <hr>
+                <li><a href="/<?php echo APPLICATION_LANG; ?>/dashboard/logout"><span class="genericon genericon-lock"></span><?php echo t('dashboard_dropdown_logout'); ?></a></li>
             </ul>
         </div>
     </div>
