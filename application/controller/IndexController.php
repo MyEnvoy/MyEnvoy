@@ -86,7 +86,7 @@ class IndexController extends Controller {
             // generate activation hash
             $hash = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
             // save hash
-            $stm = Famework_Registry::getDb()->prepare('UPDATE user SET hash = ? WHERE email = ?');
+            $stm = Famework_Registry::getDb()->prepare('UPDATE user_data SET hash = ? WHERE email = ?');
             $stm->execute(array($hash, $email));
             // send mail
             $mail = new Email();
@@ -113,6 +113,10 @@ class IndexController extends Controller {
         $hash = $this->_paramHandler->getValue('hash');
         $email = $this->_paramHandler->getValue('email');
         $newpw = $this->_paramHandler->getValue('newpw');
+
+        if (Newuser::validatePassword($newpw, $email) !== TRUE) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/index/restpwform/?hash=' . $hash . '&email=' . urlencode($email));
+        }
 
         if (User::resetPwd($hash, $email, $newpw) === TRUE) {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::RESET_PWD_SUCCESSFUL);

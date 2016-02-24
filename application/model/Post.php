@@ -220,7 +220,7 @@ class Post {
             </div>
             <div class="col nine">
                 <div class="row dashboard_post_user">
-                    <div class="col ten"><a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>"><?php echo Security::wbrusername($user->getFullQualifiedName(), TRUE); ?></a></div>
+                    <div class="col ten"><a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName()), TRUE); ?></a></div>
                 </div>
                 <div class="row dashboard_post_time">
                     <div class="col ten text_light">
@@ -286,7 +286,7 @@ class Post {
             <div class="col nine">
                 <div class="row dashboard_post_comment_content">
                     <div class="col ten">
-                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername($user->getFullQualifiedName()); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">
@@ -324,7 +324,7 @@ class Post {
             <div class="col nine">
                 <div class="row dashboard_post_comment_content dashboard_post_subcomment_content">
                     <div class="col ten">
-                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername($user->getFullQualifiedName()); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">

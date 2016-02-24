@@ -1,0 +1,22 @@
+<?php if (isset($this->error)) : ?>
+    <div class="row">
+        <div class="col ten">
+            <div class="alert alert_danger">
+                <b><?php echo t('settings_error'); ?></b>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="row">
+    <div class="col ten">
+        <ul class="tab_list">
+            <li><a href="/<?php echo APPLICATION_LANG ?>/settings" class="<?php echo ($this->activeTab === SettingsController::GENERAL_TAB ? 'active' : ''); ?>"><?php echo t('settings_general_tab_title'); ?></a></li>
+            <li><a href="">Gruppen</a></li>
+            <li><a href="">Freunde</a></li>
+            <li><a href="">Design</a></li>
+            <li><a href="">Benachrichtigungen</a></li>
+            <li><a href="/<?php echo APPLICATION_LANG ?>/settings/log" class="<?php echo ($this->activeTab === SettingsController::LOG_TAB ? 'active' : ''); ?>"><?php echo t('settings_log_tab_title'); ?></a></li>
+        </ul>
+    </div>
+</div>

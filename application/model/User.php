@@ -20,7 +20,9 @@ abstract class User {
     }
 
     public static function verifyMailAddress($name, $email) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT email FROM user WHERE name = ? AND email = ? AND activated = 1 LIMIT 1');
+        $stm = Famework_Registry::getDb()->prepare('SELECT d.email email FROM user u
+                                                        JOIN user_data d ON d.user_id = u.id
+                                                    WHERE u.name = ? AND d.email = ? AND d.activated = 1 LIMIT 1');
         $stm->execute(array($name, $email));
 
         $res = NULL;
@@ -38,11 +40,20 @@ abstract class User {
         // generate pwd hash
         $newpwd = self::generatePasswordHash($pwd, $newsalt);
         // update data
-        $stm = Famework_Registry::getDb()->prepare('UPDATE user SET hash = NULL, pwd = ?, salt = ? WHERE email = ? AND hash = ?');
+        $stm = Famework_Registry::getDb()->prepare('UPDATE user_data SET hash = NULL, pwd = ?, salt = ? WHERE email = ? AND hash = ?');
         $stm->execute(array($newpwd, $newsalt, $email, $hash));
         // check data
         $count = (int) $stm->rowCount();
-        return ($count === 1 ? TRUE : FALSE);
+
+        if ($count === 1) {
+            $stmt = Famework_Registry::getDb()->prepare('SELECT user_id FROM user_data WHERE email = ? LIMIT 1');
+            $stmt->execute(array($email));
+            Userinfo::log($stmt->fetch()['user_id'], Userinfo::MESSAGE_PWD_CHANGED);
+
+            return TRUE;
+        }
+
+        return FALSE;
     }
 
     public static function generateGid($name, $domain) {
@@ -174,7 +185,7 @@ abstract class User {
 
         return $this->_publicGroupId;
     }
-    
+
     /**
      * Get all groups of this user
      * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
@@ -190,6 +201,14 @@ abstract class User {
         }
 
         return $data;
+    }
+
+    public function getDisplayName() {
+        $name = $this->getWhatever('display_name');
+        if (empty($name)) {
+            return $this->getFullQualifiedName();
+        }
+        return $name;
     }
 
 }

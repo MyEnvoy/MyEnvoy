@@ -12,6 +12,7 @@ class Userinfo {
     const MESSAGE_REGISTER = 'register';
     const MESSAGE_ACTIVATE_ACCOUNT = 'account_activation';
     const MESSAGE_LOGIN_BLOCKED = 'login_blocked';
+    const MESSAGE_PWD_CHANGED = 'pwd_changed';
 
     /**
      * Log a user action
@@ -46,6 +47,12 @@ class Userinfo {
         }
 
         return $data;
+    }
+
+    public static function getCompleteLog($user_id, $limit = 1000) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT * FROM user_log WHERE user_id = ? ORDER BY datetime DESC LIMIT ' . intval($limit));
+        $stm->execute(array((int) $user_id));
+        return $stm->fetchAll();
     }
 
     /**

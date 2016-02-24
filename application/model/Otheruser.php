@@ -89,7 +89,7 @@ class Otheruser extends User {
         $stm = $this->_db->prepare('SELECT p.id FROM user_posts p
                                         JOIN user_posts_data d ON p.id = d.post_id AND d.group_id = ?
                                     WHERE p.user_id = ?  AND p.post_id IS NULL
-                                    GROUP BY p.id LIMIT 30');
+                                    GROUP BY p.id ORDER BY p.datetime DESC LIMIT 30');
         $stm->execute(array($groupID, $this->getId()));
 
         $res = array();

@@ -81,7 +81,14 @@ class Usersettings {
     }
 
     public function setWeatherCity($city) {
+        $city = Security::trim($city);
+
+        if (!empty($city) && preg_match('/^[\w\s]{0,100}$/u', $city) !== 1) {
+            return FALSE;
+        }
+
         $this->_settingsObject->weathercity = $city;
+        return TRUE;
     }
 
 }

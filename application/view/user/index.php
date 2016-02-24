@@ -132,7 +132,7 @@
                                         <div class="row">
                                             <div class="col ten">
                                                 <p id="user_status">
-                                                    <?php echo $this->status; ?>
+                                                    <?php echo Security::htmloutput($this->status); ?>
                                                 </p>
                                             </div>
                                         </div>

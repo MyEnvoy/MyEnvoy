@@ -1,9 +1,3 @@
-var applang;
-
-function setapplang(lang) {
-    applang = lang;
-}
-
 $(window).load(function () {
     $('div.dashboard_post_footer a.noa').on('click', function () {
         $(this).parent().parent().parent().find('.newcomment').focus();
@@ -35,13 +29,7 @@ $(window).load(function () {
     function commitComment(postID, content) {
         $('#dashboard_post_comment_id').val(postID);
         $('#dashboard_post_comment_content').val(content);
-        
+
         $('#dashboard_post_comment_form').submit();
     }
 });
-
-function jsconfirm(url, text) {
-    if (confirm(text) === true) {
-        window.location.href = url;
-    }
-}

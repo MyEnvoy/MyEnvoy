@@ -66,6 +66,8 @@ class Newuser extends User {
         $upd->bindParam(':id', $uid, PDO::PARAM_INT);
         $upd->execute();
 
+        Userinfo::log($uid, Userinfo::MESSAGE_ACTIVATE_ACCOUNT);
+
         return TRUE;
     }
 

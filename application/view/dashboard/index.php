@@ -71,7 +71,7 @@
                             <div class="col four inline_padding">
                                 <div class="row dashboard_post_container" id="dashboard_weather_widget">
                                     <div id="dashboard_weather_settings">
-                                        <a class="noa"><span class="genericon genericon-cog"></span></a>
+                                        <a class="noa" href="/<?php echo APPLICATION_LANG; ?>/settings"><span class="genericon genericon-cog"></span></a>
                                     </div>
                                     <div class="col ten">
                                         <div class="row">

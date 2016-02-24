@@ -279,4 +279,24 @@ class Currentuser extends User {
         return $this->_settings;
     }
 
+    public function setDisplayName($name) {
+        $name = Security::trim($name);
+
+        if (!empty($name) && preg_match('/^[a-zA-ZäöüÄÖÜß\s]{3,40}$/u', $name) !== 1) {
+            return FALSE;
+        }
+
+        $stm = $this->_db->prepare('UPDATE user SET display_name = ? WHERE id = ?');
+        $stm->execute(array($name, $this->getId()));
+
+        return TRUE;
+    }
+
+    public function setStatus($status) {
+        $status = Security::trim($status);
+
+        $stm = $this->_db->prepare('UPDATE user SET status = ? WHERE id = ?');
+        $stm->execute(array($status, $this->getId()));
+    }
+
 }
