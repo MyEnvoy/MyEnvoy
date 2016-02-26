@@ -8,6 +8,7 @@ class SettingsController extends Controller {
 
     const GENERAL_TAB = 1;
     const LOG_TAB = 2;
+    const GROUPS_TAB = 3;
 
     public function init() {
         parent::init();
@@ -117,6 +118,12 @@ class SettingsController extends Controller {
         $this->_view->user->setStatus($status);
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/settings');
+    }
+
+    public function groupsAction() {
+        $this->_view->addJS(HTTP_ROOT . 'js/Sortable.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/sortgroups.js');
+        $this->_view->activeTab = self::GROUPS_TAB;
     }
 
 }

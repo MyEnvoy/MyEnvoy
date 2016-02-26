@@ -115,9 +115,9 @@ class Currentuser extends User {
         return Userinfo::getDateTime($this->getId(), Userinfo::MESSAGE_REGISTER, 1);
     }
 
-    public function getPicturePath($size) {
+    public function getPicturePath($size, $groupId = 'default') {
         $size = intval($size);
-        $filename = Picture::getUserPicName($this->getId(), $size);
+        $filename = Picture::getUserPicName($this->getId(), $size, $groupId);
         return Picture::PROFILEPIC_PATH . $filename;
     }
 

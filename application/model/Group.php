@@ -22,7 +22,7 @@ class Group {
 
         return NULL;
     }
-    
+
     /**
      * Get Otheruser by groupID
      * @param int $id The groupID
@@ -41,6 +41,20 @@ class Group {
         }
 
         return NULL;
+    }
+
+    public static function getMembers($id, Currentuser $caller) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT user_id FROM user_to_groups
+                                                    WHERE group_id = ?');
+        $stm->execute(array($id));
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = new Otheruser($row['user_id'], $caller->getId());
+        }
+
+        return $res;
     }
 
 }

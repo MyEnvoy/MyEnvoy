@@ -76,7 +76,7 @@ class Picture {
         }
     }
 
-    public function makeProfilePics($userid) {
+    public function makeProfilePics($userid, $groupId = 'default') {
         $im = imagecreatefromjpeg($this->_path);
         $finalSizes = array(256, 32);
 
@@ -91,7 +91,7 @@ class Picture {
         foreach ($finalSizes as $newsize) {
             $imFinish = imagecreatetruecolor($newsize, $newsize);
             imagecopyresampled($imFinish, $imSquare, 0, 0, 0, 0, $newsize, $newsize, $originSize, $originSize);
-            imagejpeg($imFinish, self::PROFILEPIC_PATH . self::getUserPicName($userid, $newsize), 100);
+            imagejpeg($imFinish, self::PROFILEPIC_PATH . self::getUserPicName($userid, $newsize, $groupId), 100);
         }
     }
 

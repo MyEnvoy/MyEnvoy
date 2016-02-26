@@ -41,6 +41,7 @@
                         </div>
                     </form>
 
+                    <h3 class="margin2"><?php echo t('settings_general_resetpwd_h'); ?></h3>
                     <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/pwd.do">
                         <div class="row margin2 form_group horizontal_form">
                             <label for="old_pwd" class="col three right_txt"><?php echo t('settings_general_oldpwd'); ?></label>

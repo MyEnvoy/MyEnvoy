@@ -60,9 +60,9 @@ class Otheruser extends User {
     }
 
     public function getPicturePath($size) {
-        $stm = $this->_db->prepare('SELECT grp.id id FROM user_groups grp
-                                        JOIN user_groups_members grpmbr ON grpmbr.group_id = grp.id AND grpmbr.user_id = ?
-                                    WHERE grp.user_id = ? LIMIT 1');
+        $stm = $this->_db->prepare('SELECT g.id FROM user_groups g
+                                        JOIN user_to_groups utg ON utg.group_id = g.id AND utg.user_id = ?
+                                    WHERE g.user_id = ? LIMIT 1');
         $stm->execute(array($this->_callerID, $this->getId()));
 
         $groupinfo = $stm->fetch();

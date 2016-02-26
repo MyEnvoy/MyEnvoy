@@ -25,6 +25,7 @@ div.row:after {clear: both;}
 .padding {padding: 10px;}
 div.row.margin {margin-top: 10px;}
 div.row.margin2 {margin-top: 20px;}
+.margin2 {margin-top: 20px;}
 
 
 .col {box-sizing: border-box;float: left;min-height: 1px;}
