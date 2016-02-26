@@ -9,46 +9,30 @@
 
             <div class="row margin2">
                 <div class="col ten">
-                    <?php foreach ($this->user->getGroupOverview() as $id => $name): ?>
-                        <div class="row">
-                            <div class="col ten">
-                                <h3><?php echo Security::htmloutput($name); ?></h3>
-                                <ul id="items">
-                                    <?php foreach (Group::getMembers($id, $this->user) as $member) : ?>
-                                        <li class="row settings_groups_userrow">1
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                        <li class="row settings_groups_userrow">2
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                        <li class="row settings_groups_userrow">3
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                                
-                                <ul id="elements">
-                                    <?php foreach (Group::getMembers($id, $this->user) as $member) : ?>
-                                        <li class="row settings_groups_userrow">11
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                        <li class="row settings_groups_userrow">22
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                        <li class="row settings_groups_userrow">33
-                                            <img src="<?php echo $member->getPictureUrl(Currentuser::PIC_SMALL); ?>" alt="profile picture" width="<?php echo Currentuser::PIC_SMALL ?>">
-                                            <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                    <div class="row">
+                        <?php
+                        $groups = $this->user->getGroupOverview();
+                        ksort($groups);
+                        foreach ($groups as $id => $name):
+                            ?>
+                            <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/groups.do">
+                                <input type="hidden" name="group_id" value="<?php echo $id; ?>" required>
+                                <div class="col three dashboard_post_container group_margin">
+                                    <h3><?php echo Security::htmloutput($name); ?></h3>
+                                    <ul id="settings_groups_list_<?php echo $id; ?>" class="settings_groups_list">
+                                        <?php foreach (Group::getMembers($id, $this->user) as $member) : ?>
+                                            <li class="settings_groups_userrow">
+                                                <img class="profile_pic" src="<?php echo $member->getPictureUrl(Currentuser::PIC_LARGE); ?>" alt="profile picture" width="50" height="50">
+                                                <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
+                                                <input type="hidden" name="users[]" value="<?php echo $member->getId(); ?>" required>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                    <input type="submit" class="btn btn_success" value="<?php echo t('settings_save_btn'); ?>">
+                                </div>
+                            </form>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
         </div>

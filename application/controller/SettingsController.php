@@ -121,7 +121,7 @@ class SettingsController extends Controller {
     }
 
     public function groupsAction() {
-        $this->_view->addJS(HTTP_ROOT . 'js/Sortable.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/sortable.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/sortgroups.js');
         $this->_view->activeTab = self::GROUPS_TAB;
     }
