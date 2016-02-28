@@ -209,8 +209,12 @@ ul.tab_list li a.active, ul.tab_list li a.active:hover {color: #555;cursor: defa
 
 div.group_margin {margin-left: 1.65%;margin-right: 1.65%;padding-left: 10px;padding-right: 10px;padding-bottom: 10px;}
 div.group_margin h3 {border-bottom: 1px solid #e5e5e5;padding-bottom: 8px;}
-ul.settings_groups_list {background-color: #fff;list-style: none;min-height: 30px;padding-bottom: 10px;}
+ul.settings_groups_list {background-color: #fff;list-style: none;min-height: 30px;padding-bottom: 10px;max-height: 500px;overflow-y: auto;margin-bottom: 5px;}
 li.settings_groups_userrow {cursor: move;background-color: #fff;padding: 10px 20px;}
 li.sortable-ghost {opacity: .3;background: #f5f5f5;}
 li.settings_groups_userrow img {vertical-align: -100%;}
-li.settings_groups_userrow a {font-size: 16px;font-weight: bold;margin-left: 10px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;display: inline-block;max-width: 205px;}
+li.settings_groups_userrow a {font-size: 16px;font-weight: bold;margin-left: 10px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;display: inline-block;max-width: 188px;}
+
+div#settings_groups_trash {display: none;position: fixed;top: 52px;width: 1100px;box-sizing: border-box;z-index: 1;text-align: center;font-size: 40px;font-family: "Genericons";line-height: 1;}
+div#settings_groups_trash:before {content: '\f407';;}
+div#settings_groups_trash li {display: none;}

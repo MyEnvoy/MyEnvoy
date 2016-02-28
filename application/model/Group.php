@@ -57,4 +57,26 @@ class Group {
         return $res;
     }
 
+    public static function deleteAllMembers($id, Currentuser $caller) {
+        if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
+            $stm = Famework_Registry::getDb()->prepare('DELETE FROM user_to_groups
+                                                    WHERE group_id = ?');
+            $stm->execute(array($id));
+        }
+    }
+
+    public static function addMember($id, Otheruser $user, Currentuser $caller) {
+        if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
+            $stm = Famework_Registry::getDb()->prepare('INSERT IGNORE INTO user_to_groups (user_id, group_id) VALUES (?, ?)');
+            $stm->execute(array($user->getId(), $id));
+        }
+    }
+
+    public static function removeMember($id, Otheruser $user, Currentuser $caller) {
+        if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
+            $stm = Famework_Registry::getDb()->prepare('DELETE FROM user_to_groups WHERE group_id = ? AND user_id = ?');
+            $stm->execute(array($id, $user->getId()));
+        }
+    }
+
 }

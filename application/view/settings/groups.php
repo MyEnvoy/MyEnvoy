@@ -7,12 +7,15 @@
 
             <?php require APPLICATION_PATH . 'view/settings/helper/tabs.php'; ?>
 
+            <div id="settings_groups_trash" class="alert alert_danger"></div>
+
             <div class="row margin2">
                 <div class="col ten">
                     <div class="row">
                         <?php
                         $groups = $this->user->getGroupOverview();
                         ksort($groups);
+                        $count = 0;
                         foreach ($groups as $id => $name):
                             ?>
                             <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/groups.do">
@@ -28,10 +31,15 @@
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
-                                    <input type="submit" class="btn btn_success" value="<?php echo t('settings_save_btn'); ?>">
+                                    <?php if ($count > 0): ?>
+                                        <input type="submit" class="btn btn_success" value="<?php echo t('settings_save_btn'); ?>">
+                                    <?php endif; ?>
                                 </div>
                             </form>
-                        <?php endforeach; ?>
+                            <?php
+                            $count++;
+                        endforeach;
+                        ?>
                     </div>
                 </div>
             </div>
