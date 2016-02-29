@@ -83,7 +83,7 @@ class Usersettings {
     public function setWeatherCity($city) {
         $city = Security::trim($city);
 
-        if (!empty($city) && preg_match('/^[\w\s]{0,100}$/u', $city) !== 1) {
+        if (!empty($city) && preg_match('/^[\w\s0-9,.]{0,100}$/u', $city) !== 1) {
             return FALSE;
         }
 

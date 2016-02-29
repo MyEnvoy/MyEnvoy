@@ -9,6 +9,7 @@ class SettingsController extends Controller {
     const GENERAL_TAB = 1;
     const LOG_TAB = 2;
     const GROUPS_TAB = 3;
+    const FRIENDS_TAB = 4;
 
     public function init() {
         parent::init();
@@ -30,6 +31,7 @@ class SettingsController extends Controller {
 
     public function indexAction() {
         $this->_view->addJS(HTTP_ROOT . 'js/picturepreview.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/localise.js');
         $this->_view->activeTab = self::GENERAL_TAB;
     }
 
@@ -129,51 +131,95 @@ class SettingsController extends Controller {
     public function groupsDoAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
-        $groupId = $this->_paramHandler->getInt('group_id');
-        $users = $this->_paramHandler->getValue('users', FALSE);
+        $usersArray = $this->_paramHandler->getValue('users', FALSE);
 
-        if (Group::getOwnerById($groupId, $this->_view->user)->getId() !== $this->_view->user->getId()) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
-        }
+        // clear empty groups
+        $emptyGroups = array_diff(array_flip($this->_view->user->getGroupOverview()), array_flip_multi($usersArray));
+        foreach ($emptyGroups as $groupId) {
+            if ($this->canEdit($groupId) === FALSE) {
+                continue;
+            }
 
-        if ($this->_view->user->getPublicGroupId() === $groupId) {
-            // one can not delete users from the public group
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
-        }
-
-        if (count($users) === 0 || $users === NULL) {
             Group::deleteAllMembers($groupId, $this->_view->user);
         }
 
-        $currentGroup = array();
-        foreach (Group::getMembers($groupId, $this->_view->user) as $mbr) {
-            $currentGroup[] = $mbr->getId();
-        }
-
-        // diff will contain all user IDs which were not submitted (removed from group)
-        $diff = array_diff($currentGroup, $users);
-
-        foreach ($diff as $userId) {
-            try {
-                $user = new Otheruser($userId, $this->_view->user);
-                Group::removeMember($groupId, $user, $this->_view->user);
-            } catch (Exception $e) {
-                // no such user
+        // add/remove members
+        foreach ($usersArray as $groupId => $users) {
+            if ($this->canEdit($groupId) === FALSE) {
+                continue;
             }
-        }
 
-        if ($users !== NULL) {
-            foreach ($users as $userId) {
+            $users = array_unique($users);
+
+            $currentGroup = array();
+            foreach (Group::getMembers($groupId, $this->_view->user) as $mbr) {
+                $currentGroup[] = $mbr->getId();
+            }
+
+            // diff will contain all user IDs which were not submitted (removed from group)
+            $diff = array_diff($currentGroup, $users);
+
+            foreach ($diff as $userId) {
                 try {
                     $user = new Otheruser($userId, $this->_view->user);
-                    Group::addMember($groupId, $user, $this->_view->user);
+                    Group::removeMember($groupId, $user, $this->_view->user);
                 } catch (Exception $e) {
                     // no such user
+                }
+            }
+
+            if ($users !== NULL) {
+                foreach ($users as $userId) {
+                    try {
+                        $user = new Otheruser((int) $userId, $this->_view->user->getId());
+                        Group::addMember($groupId, $user, $this->_view->user);
+                    } catch (Exception $e) {
+                        // no such user
+                    }
                 }
             }
         }
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+    }
+
+    private function canEdit($groupId) {
+        if (Group::getOwnerById($groupId, $this->_view->user)->getId() !== $this->_view->user->getId()) {
+            // check ownership
+            return FALSE;
+        }
+
+        if ($this->_view->user->getPublicGroupId() === $groupId) {
+            // one can not delete users from the public group
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
+    public function groupAddAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
+        $groupName = $this->_paramHandler->getValue('name', TRUE, 1, Group::MAX_NAME_LENGTH);
+        $groupName = Security::trim($groupName);
+
+        Group::create($groupName, $this->_view->user);
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+    }
+
+    public function groupRemoveAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+        $groupId = $this->_paramHandler->getInt('id');
+
+        if ($this->canEdit($groupId) === TRUE) {
+            Group::remove($groupId, $this->_view->user);
+        }
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+    }
+
+    public function friendsAction() {
+        $this->_view->activeTab = self::FRIENDS_TAB;
     }
 
 }

@@ -44,6 +44,18 @@ class Picture {
         return str_pad($userid, 11, '0', STR_PAD_LEFT) . '-' . $size . '-' . $groupId . '.jpg';
     }
 
+    public static function getConnectionPicture($connType) {
+        $pic = 'src="/img/link-3.png" style="transform: rotate(-45deg);"';
+        if ($connType === Currentuser::NO_CONNECTION) {
+            $pic = 'src="/img/link-0.png" style="transform: rotate(-45deg);"';
+        } elseif ($connType === Currentuser::FOLLOWS_ME) {
+            $pic = 'src="/img/link-2.png" style="transform: rotate(-45deg);"';
+        } elseif ($connType === Currentuser::I_AM_FOLLOWING) {
+            $pic = 'src="/img/link-2.png" style="transform: rotate(135deg);"';
+        }
+        return $pic;
+    }
+
     private $_path = NULL;
     private $_width = NULL;
     private $_height = NULL;

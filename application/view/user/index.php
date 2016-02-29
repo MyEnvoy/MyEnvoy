@@ -64,17 +64,7 @@
                         <hr>
                         <?php if ($this->user->getId() !== $this->otheruser->getId()) : ?>
                             <div class="row">
-                                <?php
-                                if ($this->connectionType === Currentuser::NO_CONNECTION) {
-                                    $pic = 'src="/img/link-0.png" style="transform: rotate(-45deg);"';
-                                } elseif ($this->connectionType === Currentuser::FOLLOWS_ME) {
-                                    $pic = 'src="/img/link-2.png" style="transform: rotate(-45deg);"';
-                                } elseif ($this->connectionType === Currentuser::I_AM_FOLLOWING) {
-                                    $pic = 'src="/img/link-2.png" style="transform: rotate(135deg);"';
-                                } else {
-                                    $pic = 'src="/img/link-3.png" style="transform: rotate(-45deg);"';
-                                }
-                                ?>
+                                <?php $pic = Picture::getConnectionPicture($this->connectionType); ?>
                                 <div class="col three right_txt">
                                     <img class="profile_pic" src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="32" height="32" alt="My profile picture">
                                 </div>

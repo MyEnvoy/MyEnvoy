@@ -30,7 +30,7 @@ $(window).load(function () {
                         <div class="dashboard_search_resultwrapper">\
                             <div class="row">\
                                 <div class="col one">\
-                                    <img src="' + json[i].icon + '" alt="Profile picture" width="32" height="32">\
+                                    <img class="profile_pic" src="' + json[i].icon + '" alt="Profile picture" width="32" height="32">\
                                 </div>\
                                 <div class="col nine dashboard_search_username">\
                                     <a href="' + json[i].url + '" class="text_bold">' + json[i].name + '</a><br>\

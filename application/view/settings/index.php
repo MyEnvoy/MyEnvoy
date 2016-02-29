@@ -18,6 +18,8 @@
                         </div>
                         <div class="row form_group horizontal_form">
                             <label for="city" class="col three right_txt"><?php echo t('settings_general_city'); ?></label>
+                            <a data-toggle="tooltip" data-placement="top" title="<?php echo t('settings_tab_general_localise_tooltip'); ?>"
+                               onclick="getLocation()" id="settings_general_localise" class="noa"><span class="genericon genericon-location"></span></a>
                             <input class="col six" id="city" name="city" placeholder="<?php echo t('settings_general_city'); ?>" pattern=".{0,100}"
                                    value="<?php echo Security::htmloutput($this->user->getSettings()->getWeatherCity()); ?>"
                                    data-placement="top" data-toggle="popover" data-trigger="hover" data-content="<?php echo t('settings_general_city_hint'); ?>">
@@ -41,7 +43,7 @@
                         </div>
                     </form>
 
-                    <h3 class="margin2"><?php echo t('settings_general_resetpwd_h'); ?></h3>
+                    <h4 class="margin2"><?php echo t('settings_general_resetpwd_h'); ?></h4>
                     <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/pwd.do">
                         <div class="row margin2 form_group horizontal_form">
                             <label for="old_pwd" class="col three right_txt"><?php echo t('settings_general_oldpwd'); ?></label>

@@ -232,11 +232,11 @@ class Post {
                                 if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
                                     $groups = array();
                                     foreach ($this->getGroupIds() as $grp) {
-                                        $groups[] = Group::getNameById($grp);
+                                        $groups[] = Security::htmloutput(Group::getNameById($grp));
                                     }
                                     echo implode(', ', $groups);
                                 } else {
-                                    echo Group::getNameById($user->getPublicGroupId());
+                                    echo Security::htmloutput(Group::getNameById($user->getPublicGroupId()));
                                 }
                                 ?>
                             </div>

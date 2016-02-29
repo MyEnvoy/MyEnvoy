@@ -4,6 +4,8 @@ use Famework\Registry\Famework_Registry;
 
 class Group {
 
+    const MAX_NAME_LENGTH = 50;
+
     /**
      * Get group name by ID
      * @param int $id
@@ -44,9 +46,10 @@ class Group {
     }
 
     public static function getMembers($id, Currentuser $caller) {
-        $stm = Famework_Registry::getDb()->prepare('SELECT user_id FROM user_to_groups
-                                                    WHERE group_id = ?');
-        $stm->execute(array($id));
+        $stm = Famework_Registry::getDb()->prepare('SELECT user_id FROM user_to_groups g
+                                                        JOIN user u ON u.id = g.user_id
+                                                    WHERE g.group_id = ? ORDER BY u.name');
+        $stm->execute(array((int) $id));
 
         $res = array();
 
@@ -61,22 +64,32 @@ class Group {
         if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
             $stm = Famework_Registry::getDb()->prepare('DELETE FROM user_to_groups
                                                     WHERE group_id = ?');
-            $stm->execute(array($id));
+            $stm->execute(array((int) $id));
         }
     }
 
     public static function addMember($id, Otheruser $user, Currentuser $caller) {
         if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
             $stm = Famework_Registry::getDb()->prepare('INSERT IGNORE INTO user_to_groups (user_id, group_id) VALUES (?, ?)');
-            $stm->execute(array($user->getId(), $id));
+            $stm->execute(array($user->getId(), (int) $id));
         }
     }
 
     public static function removeMember($id, Otheruser $user, Currentuser $caller) {
         if (Group::getOwnerById($id, $caller)->getId() === $caller->getId()) {
             $stm = Famework_Registry::getDb()->prepare('DELETE FROM user_to_groups WHERE group_id = ? AND user_id = ?');
-            $stm->execute(array($id, $user->getId()));
+            $stm->execute(array((int) $id, $user->getId()));
         }
+    }
+
+    public static function create($name, Currentuser $owner) {
+        $stm = Famework_Registry::getDb()->prepare('INSERT INTO user_groups (user_id, name) VALUES (?, ?)');
+        $stm->execute(array($owner->getId(), $name));
+    }
+
+    public static function remove($id, Currentuser $owner) {
+        $stm = Famework_Registry::getDb()->prepare('DELETE FROM user_groups WHERE user_id = ? AND id = ? LIMIT 1');
+        $stm->execute(array($owner->getId(), (int) $id));
     }
 
 }

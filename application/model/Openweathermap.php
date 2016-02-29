@@ -56,7 +56,7 @@ class Openweathermap {
     }
 
     private function fetchCurrentData($city) {
-        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&q=%s&appid=%s', APPLICATION_LANG, $city, $this->_apikey);
+        $url = sprintf('http://api.openweathermap.org/data/2.5/weather?lang=%s&q=%s&appid=%s', APPLICATION_LANG, urlencode($city), $this->_apikey);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

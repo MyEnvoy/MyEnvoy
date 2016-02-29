@@ -14,7 +14,9 @@
                 <div class="col three" id="dashboard_userinfo_container">
                     <div class="row">
                         <div class="col ten center_txt">
-                            <img class="profile_pic" src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_LARGE); ?>" width="<?php echo Currentuser::PIC_LARGE; ?>" height="<?php echo Currentuser::PIC_LARGE; ?>" alt="Big Profile Picture">
+                            <a class="noa" href="/<?php echo APPLICATION_LANG; ?>/settings">
+                                <img class="profile_pic" src="<?php echo $this->user->getPictureUrl(Currentuser::PIC_LARGE); ?>" width="<?php echo Currentuser::PIC_LARGE; ?>" height="<?php echo Currentuser::PIC_LARGE; ?>" alt="Big Profile Picture">
+                            </a>
                         </div>
                     </div>
                     <div class="row" id="dashboard_username_container">

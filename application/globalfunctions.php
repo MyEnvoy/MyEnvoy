@@ -64,3 +64,15 @@ function getLangs() {
 
     return $value;
 }
+
+/**
+ * array_flip for more dimensional arrays (does NOT return the right keys!)
+ * @param array $array An array to be flipped.
+ */
+function array_flip_multi($array) {
+    $res = array();
+    foreach ($array as $key => $value) {
+        $res[] = $key;
+    }
+    return $res;
+}

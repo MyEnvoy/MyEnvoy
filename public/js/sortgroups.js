@@ -18,7 +18,9 @@ $(window).load(function () {
     $('.settings_groups_list').each(function () {
         var el = document.getElementById($(this).attr('id'));
         var options = {
-            group: 'groups',
+            group: {
+                name: 'groups'
+            },
             animation: 150,
             scroll: true,
             scrollSensitivity: 100,
@@ -29,17 +31,33 @@ $(window).load(function () {
             },
             onEnd: function (e) {
                 $('#settings_groups_trash').hide();
+            },
+            onAdd: function (e) {
+                var el = e.item;
+                $(el).children('input').attr('name', 'users[' + $(e.to).attr('group-id') + '][]');
             }
         };
         if (count === 0) {
             options.group = {
                 name: 'groups',
-                pull: 'clone',
-                put: false
+                put: false,
+                pull: 'clone'
             };
         }
 
         var sortable = new Sortable(el, options);
         count++;
     });
+
+    $('#settings_groups_add_new').on('click', function () {
+        $('#settings_groups_add_form').show();
+        $('#settings_groups_add_new_col').hide();
+        $('#settings_groups_add_input').focus();
+    });
+
+
+    $('.fixform').on('click', function () {
+        $('#settings_groups_savechanges_form').submit();
+    });
+
 });
