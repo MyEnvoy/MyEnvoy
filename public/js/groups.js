@@ -61,3 +61,9 @@ $(window).load(function () {
     });
 
 });
+
+var init_group_change_pic = function (id, lang) {
+    $('#group_change_pic_id').val(id);
+    $('#register_profile_pic').attr('src', '/' + lang + '/upload/grouppic/?id=' + id + '&size=256');
+    $('#group_change_pic__delete').attr('href', '/' + lang + '/settings/groupspic.remove/?id=' + id);
+};

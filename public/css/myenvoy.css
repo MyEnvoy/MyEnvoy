@@ -23,10 +23,8 @@ div.row {width: 100%;max-width: 100%;box-sizing: border-box;position: relative;m
 div.row:before, div.row:after {content: ' ';display: table;}
 div.row:after {clear: both;}
 .padding {padding: 10px;}
-div.row.margin {margin-top: 10px;}
-div.row.margin2 {margin-top: 20px;}
-.margin2 {margin-top: 20px;}
-
+div.row.margin, .margin {margin-top: 10px;}
+div.row.margin2, .margin2 {margin-top: 20px;}
 
 .col {box-sizing: border-box;float: left;min-height: 1px;}
 .col.one {width: 10%;}
@@ -44,6 +42,7 @@ p {display: block;line-height: 1.5;hyphens: auto; text-align: justify}
 p.text_indent {text-indent: 15px;}
 a:not([class=noa]) {text-decoration: none;font-weight: inherit;color: #337ab7;}
 a:hover:not([class=noa]) {text-decoration: underline;}
+a.noa:hover {text-decoration: none;}
 input, textarea, select {outline: 0;}
 hr {height: 1px;margin: 18px 8px;background-color: #e5e5e5;border: none;}
 
@@ -208,7 +207,7 @@ ul.tab_list li a {margin-right: 2px;line-height: 1.43;border: 1px solid transpar
 ul.tab_list li a:hover {cursor: pointer;background-color: #eee;border-color: #eee #eee #ddd;}
 ul.tab_list li a.active, ul.tab_list li a.active:hover {color: #555;cursor: default;background-color: #fff;border: 1px solid #ddd;border-bottom-color: transparent;}
 
-div.group_margin {margin-left: 1.65%;margin-right: 1.65%;padding-left: 10px;padding-right: 10px;padding-bottom: 10px;}
+div.group_margin {margin-left: 1.65%;margin-right: 1.65%;padding-left: 10px;padding-right: 10px;padding-bottom: 10px;overflow: hidden;}
 div.settings_groups_list_title {border-bottom: 1px solid #e5e5e5;}
 div.settings_groups_list_title a {cursor: pointer;top: 6px;color: #9197a3;}
 div.settings_groups_list_title a:hover {color: #666;}
@@ -227,3 +226,11 @@ form#settings_groups_add_form {display: none;}
 
 a#settings_general_localise {left: -25px;z-index: 2;top: 5px;cursor: pointer;}
 a#settings_general_localise .genericon {font-size: 25px;}
+
+div.modal {content: ' ';background-color: rgba(0,0,0,.45);position: fixed;top: 0px;left: 0px;bottom: 0px;right: 0px;z-index: 50;padding-top: 30px;display: none;overflow: auto;}
+div.modal .modal_close {position: absolute;z-index: 51;top: 5px;right: 5px;font-size: 25px;cursor: pointer;}
+div.modal .modal_content {background-color: white;width: 900px;border: 1px solid rgba(0,0,0,.2);box-shadow: 0 5px 15px rgba(0,0,0,.5);;border-radius: 6px;box-sizing: border-box;position: relative;margin: 0px auto;margin-bottom: 30px;}
+div.modal .row {padding: 15px;}
+div.modal hr {margin: -10px 0 0 0;}
+div.modal h4 {margin-top: 0px;}
+div.settings_group_modal_pic_explain {margin: 100px auto;width: 350px;font-size: 14px;text-align: justify;}

@@ -84,6 +84,30 @@ class Otheruser extends User {
         return $path;
     }
 
+    public function getAllPossiblePicturePaths($size) {
+        $stm = $this->_db->prepare('SELECT g.id FROM user_groups g
+                                        JOIN user_to_groups utg ON utg.group_id = g.id AND utg.user_id = ?
+                                    WHERE g.user_id = ?');
+        $stm->execute(array($this->_callerID, $this->getId()));
+
+        $res = array();
+
+        // add default pic
+        $filename = Picture::getUserPicName($this->getId(), $size);
+        $res['default'] = Picture::PROFILEPIC_PATH . $filename;
+
+        foreach ($stm->fetchAll() as $groupinfo) {
+            $filename = Picture::getUserPicName($this->getId(), $size, $groupinfo['id']);
+            $path = Picture::PROFILEPIC_PATH . $filename;
+
+            if (is_readable($path)) {
+                $res[$groupinfo['id']] = $path;
+            }
+        }
+
+        return $res;
+    }
+
     public function getPublicPosts() {
         $groupID = $this->getPublicGroupId();
         $stm = $this->_db->prepare('SELECT p.id FROM user_posts p

@@ -90,7 +90,7 @@ class Picture {
 
     public function makeProfilePics($userid, $groupId = 'default') {
         $im = imagecreatefromjpeg($this->_path);
-        $finalSizes = array(256, 32);
+        $finalSizes = array(Currentuser::PIC_LARGE, Currentuser::PIC_SMALL);
 
         $originSize = $this->_width;
         if ($this->_width > $this->_height) {

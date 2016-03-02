@@ -1,6 +1,7 @@
 <?php
 
 use Famework\LaCodon\Param\Paramhandler;
+use Famework\Request\Famework_Request;
 
 class UploadController extends Controller {
 
@@ -20,18 +21,19 @@ class UploadController extends Controller {
 
         $userid = $this->_paramHandler->getInt('id');
         $size = $this->_paramHandler->getInt('size');
-        
+
         try {
             if ($userid !== $this->_user->getId()) {
                 $other = new Otheruser($userid, $this->_user->getId());
-                $path = $other->getPicturePath($size);
+                $possiblePics = $other->getAllPossiblePicturePaths($size);
+                $path = array_pop($possiblePics);
             } else {
                 $path = $this->_user->getPicturePath($size);
             }
         } catch (Exception $e) {
             $path = NULL;
         }
-        
+
         if (is_readable($path) === TRUE) {
             header('Content-type: image/jpeg');
             imagejpeg(imagecreatefromjpeg($path));
@@ -39,6 +41,31 @@ class UploadController extends Controller {
             header('HTTP/1.0 404 Not Found', TRUE, 404);
         }
         // prevent from rendering view
+        exit();
+    }
+
+    public function grouppicAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+
+        $groupId = $this->_paramHandler->getInt('id');
+        $size = $this->_paramHandler->getInt('size');
+
+        $owner = Group::getOwnerById($groupId, $this->_user);
+
+        if ($owner === NULL || $owner->getId() !== $this->_user->getId()) {
+            header('HTTP/1.0 404 Not Found', TRUE, 404);
+            exit();
+        }
+
+        $path = $this->_user->getPicturePath($size, $groupId);
+
+        if (is_readable($path) === TRUE) {
+            header('Content-type: image/jpeg');
+            imagejpeg(imagecreatefromjpeg($path));
+        } else {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/upload/userpic/?id=' . $this->_user->getId() . '&size=' . $size);
+        }
+
         exit();
     }
 

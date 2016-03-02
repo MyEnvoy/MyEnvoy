@@ -115,6 +115,16 @@ class Currentuser extends User {
         return Userinfo::getDateTime($this->getId(), Userinfo::MESSAGE_REGISTER, 1);
     }
 
+    public function getCertainGroupPicUrl($size, $groupId) {
+        $path = $this->getPicturePath($size, $groupId);
+
+        if (is_readable($path) === TRUE) {
+            return '/' . APPLICATION_LANG . '/upload/grouppic/?id=' . $groupId . '&size=' . $size;
+        }
+
+        return $this->getPictureUrl($size);
+    }
+
     public function getPicturePath($size, $groupId = 'default') {
         $size = intval($size);
         $filename = Picture::getUserPicName($this->getId(), $size, $groupId);

@@ -24,7 +24,7 @@ class SettingsController extends Controller {
 
     private function errorHandling() {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
-        if ($this->_paramHandler->getInt('error', FALSE) !== 0) {
+        if ($this->_paramHandler->getInt('error', FALSE) !== NULL) {
             $this->_view->error = 1;
         }
     }
@@ -112,6 +112,45 @@ class SettingsController extends Controller {
         Famework_Request::redirect('/' . APPLICATION_LANG . '/settings');
     }
 
+    public function groupsChangeAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
+
+        $groupId = $this->_paramHandler->getValue('group_id');
+
+        if ($this->canEdit($groupId) === FALSE) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+        }
+
+        try {
+            $pic = Picture::getFromUpload('profilepic');
+            if ($pic === NULL) {
+                Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups/?error=1');
+            }
+            $pic->makeProfilePics($this->_view->user->getId(), $groupId);
+            $pic->remove();
+        } catch (Exception $e) {
+            // catch if no picture was uploaded
+            if ($e->getCode() !== Errorcode::PICTURE_DISALLOWED_OPERATION) {
+                throw $e;
+            }
+        }
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+    }
+
+    public function groupspicRemoveAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+
+        $groupId = $this->_paramHandler->getValue('id');
+
+        if ($this->canEdit($groupId) === FALSE) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+        }
+
+        Group::removePic($groupId, $this->_view->user);
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/groups');
+    }
+
     public function statusDoAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
 
@@ -124,7 +163,9 @@ class SettingsController extends Controller {
 
     public function groupsAction() {
         $this->_view->addJS(HTTP_ROOT . 'js/sortable.min.js');
-        $this->_view->addJS(HTTP_ROOT . 'js/sortgroups.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/groups.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/picturepreview.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/modal.js');
         $this->_view->activeTab = self::GROUPS_TAB;
     }
 
@@ -199,7 +240,7 @@ class SettingsController extends Controller {
 
     public function groupAddAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
-        $groupName = $this->_paramHandler->getValue('name', TRUE, 1, Group::MAX_NAME_LENGTH);
+        $groupName = $this->_paramHandler->getValue('name', TRUE, 1, Group::MAX_NAME_LENGTH + 1);
         $groupName = Security::trim($groupName);
 
         Group::create($groupName, $this->_view->user);
@@ -212,6 +253,7 @@ class SettingsController extends Controller {
         $groupId = $this->_paramHandler->getInt('id');
 
         if ($this->canEdit($groupId) === TRUE) {
+            Group::removePic($groupId, $this->_view->user);
             Group::remove($groupId, $this->_view->user);
         }
 

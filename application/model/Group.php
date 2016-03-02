@@ -92,4 +92,16 @@ class Group {
         $stm->execute(array($owner->getId(), (int) $id));
     }
 
+    public static function removePic($id, Currentuser $owner) {
+        foreach (array(Currentuser::PIC_SMALL, Currentuser::PIC_LARGE) as $size) {
+            try {
+                $pic = new Picture();
+                $pic->loadPictureFromPath($owner->getPicturePath($size, $id));
+                $pic->remove();
+            } catch (Exception $e) {
+                // no picture
+            }
+        }
+    }
+
 }
