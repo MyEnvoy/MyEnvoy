@@ -26,7 +26,7 @@ $(window).load(function () {
                 for (i = 0; i < json.length; i++) {
                     $item = '';
 
-                    $item = '<div class="col dashboard_search_resultcontainer">\
+                    $item = '<div class="col dashboard_search_resultcontainer actual_search_result">\
                         <div class="dashboard_search_resultwrapper">\
                             <div class="row">\
                                 <div class="col one">\

@@ -109,4 +109,13 @@ class Group {
         $stm->execute(array((int) $prio, (int) $id, $owner->getId()));
     }
 
+    public static function setAsDefault($id, Currentuser $owner) {
+        // remove old default
+        $stm = Famework_Registry::getDb()->prepare('UPDATE user_groups SET isdefault = 0 WHERE user_id = ?');
+        $stm->execute(array($owner->getId()));
+        // set new
+        $stm1 = Famework_Registry::getDb()->prepare('UPDATE user_groups SET isdefault = 1 WHERE id = ? AND user_id = ?');
+        $stm1->execute(array((int) $id, $owner->getId()));
+    }
+
 }
