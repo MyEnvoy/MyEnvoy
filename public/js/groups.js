@@ -15,6 +15,11 @@ $(window).load(function () {
         }
     });
 
+    var group_list_container = document.getElementById('moveable_groups');
+    if (group_list_container !== null) {
+        var moveable_groups = new Sortable(group_list_container);
+    }
+
     $('.settings_groups_list').each(function () {
         var el = document.getElementById($(this).attr('id'));
         var options = {

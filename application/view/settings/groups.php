@@ -17,7 +17,7 @@
                         </div>
                         <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/group.add" id="settings_groups_add_form">
                             <div class="col nine">
-                                <input type="text" id="settings_groups_add_input" maxlength="<?php echo Group::MAX_NAME_LENGTH - 5; ?>" required name="name" placeholder="<?php echo t('settings_groups_input_add'); ?>">
+                                <input type="text" id="settings_groups_add_input" maxlength="<?php echo Group::MAX_NAME_LENGTH; ?>" required name="name" placeholder="<?php echo t('settings_groups_input_add'); ?>">
                             </div>
                             <div class="col one right_txt">
                                 <input type="submit" class="btn btn_success" value="<?php echo t('settings_groups_btn_add_sumbit'); ?>">
@@ -32,47 +32,50 @@
                     <div class="row">
                         <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/groups.do" id="settings_groups_savechanges_form">
                             <?php
-                            $groups = $this->user->getGroupOverview();
-                            ksort($groups);
+                            $groups = $this->user->getGroupOverview(TRUE);
                             $count = 0;
                             foreach ($groups as $id => $name):
-                                ?>
-                                <div class="col three dashboard_post_container group_margin">
-                                    <div class="row settings_groups_list_title">
-                                        <div class="col eight">
-                                            <h3><?php echo Security::wbrusername($name); ?></h3>
-                                        </div>
-                                        <?php if ($count > 0): ?>
-                                            <div class="col one">
-                                                <a class="noa show_modal" style="cursor: pointer;" target-modal="changeGroupPic" onclick="init_group_change_pic('<?php echo $id; ?>', '<?php echo APPLICATION_LANG; ?>')">
-                                                    <img class="profile_pic" imgwidth="<?php echo Currentuser::PIC_SMALL; ?>" alt="small picture" src="<?php echo $this->user->getCertainGroupPicUrl(Currentuser::PIC_SMALL, $id); ?>">
-                                                </a>
-                                            </div>
-                                            <div class="col one">
-                                                <a class="noa" onclick="jsconfirm('/<?php echo APPLICATION_LANG; ?>/settings/group.remove?id=<?php echo $id; ?>', '<?php echo t('settings_jsconfirm'); ?>')">
-                                                    <span class="genericon genericon-trash"></span>
-                                                </a>
-                                            </div>
-                                        <?php endif; ?>
-
-                                    </div>
-                                    <ul id="settings_groups_list_<?php echo $id; ?>" class="settings_groups_list" group-id="<?php echo $id; ?>">
-                                        <?php foreach (Group::getMembers($id, $this->user) as $member) : ?>
-                                            <li class="settings_groups_userrow">
-                                                <img class="profile_pic" src="<?php echo $member->getPictureUrl(Currentuser::PIC_LARGE); ?>" alt="profile picture" width="50" height="50">
-                                                <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
-                                                <input type="hidden" name="users[<?php echo $id; ?>][]" value="<?php echo $member->getId(); ?>" required>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                    <?php if ($count > 0): ?>
-                                        <a class="btn btn_success noa fixform"><?php echo t('settings_save_btn'); ?></a>
+                                if ($count === 1):
+                                    ?>
+                                    <div id="moveable_groups">
                                     <?php endif; ?>
-                                </div>
-                                <?php
-                                $count++;
-                            endforeach;
-                            ?>
+                                    <div class="col three dashboard_post_container group_margin">
+                                        <div class="row settings_groups_list_title">
+                                            <div class="col eight">
+                                                <h3><?php echo Security::wbrusername($name); ?></h3>
+                                            </div>
+                                            <?php if ($count > 0): ?>
+                                                <div class="col one">
+                                                    <a class="noa show_modal" style="cursor: pointer;" target-modal="changeGroupPic" onclick="init_group_change_pic('<?php echo $id; ?>', '<?php echo APPLICATION_LANG; ?>')">
+                                                        <img class="profile_pic" imgwidth="<?php echo Currentuser::PIC_SMALL; ?>" alt="small picture" src="<?php echo $this->user->getCertainGroupPicUrl(Currentuser::PIC_SMALL, $id); ?>">
+                                                    </a>
+                                                </div>
+                                                <div class="col one">
+                                                    <a class="noa" onclick="jsconfirm('/<?php echo APPLICATION_LANG; ?>/settings/group.remove?id=<?php echo $id; ?>', '<?php echo t('settings_jsconfirm'); ?>')">
+                                                        <span class="genericon genericon-trash"></span>
+                                                    </a>
+                                                </div>
+                                            <?php endif; ?>
+
+                                        </div>
+                                        <ul id="settings_groups_list_<?php echo $id; ?>" class="settings_groups_list" group-id="<?php echo $id; ?>">
+                                            <?php foreach (Group::getMembers($id, $this->user) as $member) : ?>
+                                                <li class="settings_groups_userrow">
+                                                    <img class="profile_pic" src="<?php echo $member->getPictureUrl(Currentuser::PIC_LARGE); ?>" alt="profile picture" width="50" height="50">
+                                                    <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $member->getFullQualifiedName(); ?>"><?php echo $member->getDisplayName(); ?></a>
+                                                    <input type="hidden" name="users[<?php echo $id; ?>][]" value="<?php echo $member->getId(); ?>" required>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                        <?php if ($count > 0): ?>
+                                            <a class="btn btn_success noa fixform"><?php echo t('settings_save_btn'); ?></a>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php
+                                    $count++;
+                                endforeach;
+                                ?>
+                            </div>
                         </form>
                     </div>
                 </div>

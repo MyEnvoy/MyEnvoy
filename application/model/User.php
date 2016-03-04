@@ -190,8 +190,12 @@ abstract class User {
      * Get all groups of this user
      * @return array All groups of the current user <b>array('#ID' => '#NAME')</b>
      */
-    public function getGroupOverview() {
-        $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY isdefault DESC, id DESC');
+    public function getGroupOverview($orderByPrio = FALSE) {
+        if ($orderByPrio === TRUE) {
+            $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY prio ASC, id ASC');
+        } else {
+            $stm = $this->_db->prepare('SELECT id, name FROM user_groups WHERE user_id = ? ORDER BY isdefault DESC, id DESC');
+        }
         $stm->execute(array($this->getId()));
 
         $data = array();

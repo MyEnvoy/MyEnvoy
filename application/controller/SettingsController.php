@@ -182,13 +182,19 @@ class SettingsController extends Controller {
             }
 
             Group::deleteAllMembers($groupId, $this->_view->user);
+            Group::setPrio($groupId, 100, $this->_view->user);
         }
+
+        $prioCount = 1;
 
         // add/remove members
         foreach ($usersArray as $groupId => $users) {
             if ($this->canEdit($groupId) === FALSE) {
                 continue;
             }
+
+            Group::setPrio($groupId, $prioCount, $this->_view->user);
+            $prioCount++;
 
             $users = array_unique($users);
 
@@ -240,7 +246,7 @@ class SettingsController extends Controller {
 
     public function groupAddAction() {
         $this->_paramHandler->bindMethods(Paramhandler::POST);
-        $groupName = $this->_paramHandler->getValue('name', TRUE, 1, Group::MAX_NAME_LENGTH + 1);
+        $groupName = $this->_paramHandler->getValue('name', TRUE, 1, Group::MAX_NAME_LENGTH);
         $groupName = Security::trim($groupName);
 
         Group::create($groupName, $this->_view->user);

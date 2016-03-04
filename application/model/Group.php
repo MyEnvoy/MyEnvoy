@@ -104,4 +104,9 @@ class Group {
         }
     }
 
+    public static function setPrio($id, $prio, Currentuser $owner) {
+        $stm = Famework_Registry::getDb()->prepare('UPDATE user_groups SET prio = ? WHERE id = ? AND user_id = ? LIMIT 1');
+        $stm->execute(array((int) $prio, (int) $id, $owner->getId()));
+    }
+
 }

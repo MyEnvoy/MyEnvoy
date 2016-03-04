@@ -87,7 +87,7 @@ class Otheruser extends User {
     public function getAllPossiblePicturePaths($size) {
         $stm = $this->_db->prepare('SELECT g.id FROM user_groups g
                                         JOIN user_to_groups utg ON utg.group_id = g.id AND utg.user_id = ?
-                                    WHERE g.user_id = ?');
+                                    WHERE g.user_id = ? ORDER BY g.prio DESC');
         $stm->execute(array($this->_callerID, $this->getId()));
 
         $res = array();
