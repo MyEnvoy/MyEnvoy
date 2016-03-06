@@ -65,6 +65,7 @@
 
                             <?php
                             $posts = $this->user->getWall();
+//                            krsort($posts);
                             Post::renderLikeWall($this->user, $posts);
                             ?>
 

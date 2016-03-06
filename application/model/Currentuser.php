@@ -218,7 +218,12 @@ class Currentuser extends User {
         foreach ($stm->fetchAll() as $row) {
             $post = Post::getById($row['id']);
             $comments = $post->getEntireComments();
-            $res[] = array('post' => $post, 'comments' => $comments);
+            $count = 0;
+            do {
+                $key = strtotime($post->getCreationTime()) . '#' . rand(0, 1000);
+                $count++;
+            } while (isset($res[$key]) && $count < 1000);
+            $res[$key] = array('post' => $post, 'comments' => $comments);
         }
 
         return $res;
