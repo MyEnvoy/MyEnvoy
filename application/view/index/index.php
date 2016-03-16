@@ -49,4 +49,7 @@
             <a href="/<?php echo APPLICATION_LANG ?>/index/resetpw" class="ash5 right"><?php echo t('login_link_pwdrecover') ?></a>
         </div>
     </div>
+    <footer>
+        <a class="noa text_light" href="/<?php echo APPLICATION_LANG; ?>/tos">Impressum</a>
+    </footer>
 </div>

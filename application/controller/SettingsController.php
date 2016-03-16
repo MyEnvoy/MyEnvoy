@@ -10,6 +10,7 @@ class SettingsController extends Controller {
     const LOG_TAB = 2;
     const GROUPS_TAB = 3;
     const FRIENDS_TAB = 4;
+    const DESIGN_TAB = 5;
 
     public function init() {
         parent::init();
@@ -20,6 +21,7 @@ class SettingsController extends Controller {
         $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
         $this->errorHandling();
+        $this->_view->addCSS(HTTP_ROOT . APPLICATION_LANG . '/style/custom');
     }
 
     private function errorHandling() {
@@ -268,6 +270,28 @@ class SettingsController extends Controller {
 
     public function friendsAction() {
         $this->_view->activeTab = self::FRIENDS_TAB;
+    }
+
+    public function designAction() {
+        $this->_view->addCSS(HTTP_ROOT . 'css/jquery.minicolors.css');
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery.minicolors.js');
+        $this->_view->activeTab = self::DESIGN_TAB;
+    }
+
+    public function designDoAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
+        $design = $this->_paramHandler->getValue('design');
+
+        $allowedSels = Customdesign::$_selectors;
+        foreach ($design as $selector => $style) {
+            if (!in_array($selector, $allowedSels) || strlen($style) > 2000) {
+                Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/design?error=1');
+            }
+        }
+
+        $this->_view->user->getSettings()->setCustomCss($design);
+
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/design');
     }
 
 }

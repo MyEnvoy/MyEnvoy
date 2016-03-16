@@ -80,6 +80,17 @@ class Usersettings {
         return $this->_settingsObject->weathercity;
     }
 
+    public function getCustomCss() {
+        if (!isset($this->_settingsObject->customcss)) {
+            return NULL;
+        }
+        return $this->_settingsObject->customcss;
+    }
+
+    public function setCustomCss($dataarray) {
+        $this->_settingsObject->customcss = $dataarray;
+    }
+
     public function setWeatherCity($city) {
         $city = Security::trim($city);
 

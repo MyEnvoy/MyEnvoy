@@ -43,6 +43,9 @@
                     <input type="password" id="pwdrepeat" name="pwdrepeat" placeholder="<?php echo t('register_user_pwd_repeat'); ?>" pattern=".{8,}" required autocomplete="off">
                 </div>
                 <div class="form_group">
+                    <p><?php echo t('register_accept_terms'); ?></p>
+                </div>
+                <div class="form_group">
                     <input class="btn btn_success right" type="submit" value="<?php echo t('register_btn_register'); ?>">
                 </div>
             </div>

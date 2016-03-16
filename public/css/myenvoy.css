@@ -46,6 +46,12 @@ a.noa:hover {text-decoration: none;}
 input, textarea, select {outline: 0;}
 hr {height: 1px;margin: 18px 8px;background-color: #e5e5e5;border: none;}
 
+table {width: 100%;border-spacing: 0;}
+tr:nth-of-type(odd) {background-color: #f9f9f9;}
+td {padding: 8px;border-top: 1px solid #ddd;}
+
+footer {position: fixed;bottom: 20px;left: 0px;right: 0px;text-align: center;font-size: 15px;}
+
 a.noa {font-size: inherit;color: inherit;font-weight: inherit;text-decoration: inherit;}
 
 div.form_group {position: relative;display: block;margin-top: 10px;}
@@ -92,7 +98,7 @@ a.btn:hover {text-decoration: none;}
 .right {float: right;}
 .left {float: left;}
 .fullsize {width: 100%;box-sizing: border-box;}
-.text_light {color: #9197a3;}
+.text_light {color: #9197a3 !important;}
 .text_bold {font-weight: bold !important;}
 
 .overlay {display: none;height: 100%;width: 100%;position: fixed;top: 0px;bottom: 0px;left: 0px;right: 0px;z-index: 10;}
