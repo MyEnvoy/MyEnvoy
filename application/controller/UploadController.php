@@ -12,7 +12,7 @@ class UploadController extends Controller {
 
     public function init() {
         parent::init();
-        $this->_user = Currentuser::auth();
+        $this->_user = Currentuser::getEnsureLoggedInUser(FALSE);
         $this->_paramHandler = new Paramhandler();
     }
 
@@ -23,12 +23,15 @@ class UploadController extends Controller {
         $size = $this->_paramHandler->getInt('size');
 
         try {
-            if ($userid !== $this->_user->getId()) {
+            if (!empty($this->_user) && $userid !== $this->_user->getId()) {
                 $other = new Otheruser($userid, $this->_user->getId());
                 $possiblePics = $other->getAllPossiblePicturePaths($size);
                 $path = array_pop($possiblePics);
-            } else {
+            } elseif (!empty($this->_user)) {
                 $path = $this->_user->getPicturePath($size);
+            } else {
+                $filename = Picture::getUserPicName($userid, $size, 'default');
+                $path = Picture::PROFILEPIC_PATH . $filename;
             }
         } catch (Exception $e) {
             $path = NULL;

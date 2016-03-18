@@ -1,11 +1,15 @@
+<style>
+    div#page_title_myenvoy {position: absolute;}
+</style>
+
 <div id="dashboard_content">
 
     <?php require APPLICATION_PATH . 'view/dashboard/helper/menubar.php'; ?>
 
     <div id="dashboard_central_container">
 
-        <?php if (!isset($this->error)): ?>
-            <form id="dashboard_post_comment_form" method="post" action="/<?php echo APPLICATION_LANG; ?>/post/comment?redirectlocation=<?php echo $this->otheruser->getFullQualifiedName(); ?>" style="display: none;">
+        <?php if (!isset($this->error) && !empty($this->user)): ?>
+            <form id="dashboard_post_comment_form" method="post" action="/<?php echo APPLICATION_LANG; ?>/post/comment?redirectlocation=user/<?php echo $this->otheruser->getFullQualifiedName(); ?>" style="display: none;">
                 <input id="dashboard_post_comment_id" type="text" name="id" required>
                 <textarea id="dashboard_post_comment_content" name="post" required></textarea>
             </form>
@@ -18,7 +22,7 @@
                         <div class="alert alert_danger"><b><?php echo t('user_index_usernotfound'); ?></b></div>
                     </div>
                 <?php else: ?>
-                    <?php if ($this->user->getId() === $this->otheruser->getId()) : ?>
+                    <?php if (!empty($this->user) && $this->user->getId() === $this->otheruser->getId()) : ?>
                         <div class="col ten">
                             <div class="alert alert_success"><b><?php echo t('user_index_youlikepublic'); ?></b></div>
                         </div>
@@ -62,7 +66,7 @@
                             </div>
                         </div>
                         <hr>
-                        <?php if ($this->user->getId() !== $this->otheruser->getId()) : ?>
+                        <?php if (!empty($this->user) && $this->user->getId() !== $this->otheruser->getId()) : ?>
                             <div class="row">
                                 <?php $pic = Picture::getConnectionPicture($this->connectionType); ?>
                                 <div class="col three right_txt">

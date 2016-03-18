@@ -130,8 +130,12 @@ class Otheruser extends User {
      * @param Currentuser $user
      * @return array <b>array(array('post' => Post, 'comments' => array('comment' => Post, 'subcomments' => array(Post))))</b>
      */
-    public function getViewablePosts(Currentuser $user) {
-        $groups = $user->getMyMemberships();
+    public function getViewablePosts(Currentuser $user = NULL) {
+        if ($user !== NULL) {
+            $groups = $user->getMyMemberships();
+        } else {
+            $groups = $this->getPublicGroupId();
+        }
         $stm = $this->_db->prepare('SELECT p.id FROM user_posts p
                                         JOIN user_posts_data d ON p.id = d.post_id AND p.user_id = ?
                                     WHERE p.post_id IS NULL AND d.group_id IN (' . implode(',', $groups) . ')

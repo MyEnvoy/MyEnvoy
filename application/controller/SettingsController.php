@@ -286,6 +286,8 @@ class SettingsController extends Controller {
         foreach ($design as $selector => $style) {
             if (!in_array($selector, $allowedSels) || strlen($style) > 2000) {
                 Famework_Request::redirect('/' . APPLICATION_LANG . '/settings/design?error=1');
+            } elseif (empty($style)) {
+                unset($design[$selector]);
             }
         }
 

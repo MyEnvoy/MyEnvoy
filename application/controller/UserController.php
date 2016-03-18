@@ -8,16 +8,21 @@ class UserController extends Controller {
 
     public function init() {
         parent::init();
-        $this->_view->user = Currentuser::auth();
         $this->_paramHandler = new Paramhandler();
-        $this->_view->title($this->_view->user->getName() . '@MyEnvoy');
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
         $this->_view->addCSS(HTTP_ROOT . APPLICATION_LANG . '/style/custom');
     }
 
+    private function auth() {
+        $this->_view->user = Currentuser::auth();
+        $this->_view->title($this->_view->user->getName() . '@MyEnvoy');
+    }
+
     public function indexAction() {
+        $this->_view->user = Currentuser::getEnsureLoggedInUser(FALSE);
+
         // get username from URL via famework
         $famework = Famework_Registry::get('\famework_sys');
         $username = $famework->getRequestParam('username');
@@ -27,14 +32,22 @@ class UserController extends Controller {
             $this->_view->error = TRUE;
         }
 
-        $this->_view->otheruser = Otheruser::getLocalByName($username, $this->_view->user->getId());
+        if ($this->_view->user !== NULL) {
+            $this->_view->otheruser = Otheruser::getLocalByName($username, $this->_view->user->getId());
+        } else {
+            $this->_view->otheruser = Otheruser::getLocalByName($username, NULL);
+        }
 
         $this->_view->status = NULL;
         if (empty($this->_view->otheruser)) {
             $this->_view->error = TRUE;
         } else {
             $this->_view->title(sprintf(t('user_index_title'), $this->_view->otheruser->getName()));
-            $this->_view->connectionType = $this->_view->user->getConnectionWith($this->_view->otheruser);
+            if ($this->_view->user !== NULL) {
+                $this->_view->connectionType = $this->_view->user->getConnectionWith($this->_view->otheruser);
+            } else {
+                $this->_view->connectionType = Currentuser::NO_CONNECTION;
+            }
             if ($this->_view->connectionType & Currentuser::I_AM_FOLLOWING === Currentuser::I_AM_FOLLOWING) {
                 $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
                 $this->_view->posts = $this->_view->otheruser->getViewablePosts($this->_view->user);
@@ -50,6 +63,7 @@ class UserController extends Controller {
     }
 
     public function followAction() {
+        $this->auth();
         $this->_paramHandler->bindMethods(Paramhandler::GET);
         $user_id = $this->_paramHandler->getInt('id');
 
@@ -60,6 +74,7 @@ class UserController extends Controller {
     }
 
     public function unfollowAction() {
+        $this->auth();
         $this->_paramHandler->bindMethods(Paramhandler::GET);
         $user_id = $this->_paramHandler->getInt('id');
 

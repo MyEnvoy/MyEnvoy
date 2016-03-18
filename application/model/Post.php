@@ -206,12 +206,16 @@ class Post {
         }
     }
 
-    public function renderPublic(Currentuser $user) {
+    public function renderPublic($user) {
         $this->renderAsPost($user, TRUE);
     }
 
-    private function renderAsPost(Currentuser $thisuser, $public = FALSE, $addRedir = FALSE) {
-        $user = new Otheruser($this->getOwnerId(), $thisuser->getId());
+    private function renderAsPost($thisuser, $public = FALSE, $addRedir = FALSE) {
+        if (!empty($thisuser)) {
+            $user = new Otheruser($this->getOwnerId(), $thisuser->getId());
+        } else {
+            $user = new Otheruser($this->getOwnerId(), NULL);
+        }
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
         <div class="row dashboard_post_header">
@@ -225,20 +229,20 @@ class Post {
                 <div class="row dashboard_post_time">
                     <div class="col ten text_light">
                         <div class="left text_light"><span class="genericon genericon-time"></span> <?php echo $datetime; ?></div>
-                        <?php if ($thisuser->getId() === $user->getId() && $public === FALSE) : ?>
+                        <?php if (!empty($thisuser) && $thisuser->getId() === $user->getId() && $public === FALSE) : ?>
                             <div class="left text_light inline_margin">&middot;</div>
                             <div class="left text_light inline_margin">
                                 <span class="genericon genericon-reply"></span> <?php
-                                if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
-                                    $groups = array();
-                                    foreach ($this->getGroupIds() as $grp) {
-                                        $groups[] = Security::htmloutput(Group::getNameById($grp));
-                                    }
-                                    echo implode(', ', $groups);
-                                } else {
-                                    echo Security::htmloutput(Group::getNameById($user->getPublicGroupId()));
+                            if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
+                                $groups = array();
+                                foreach ($this->getGroupIds() as $grp) {
+                                    $groups[] = Security::htmloutput(Group::getNameById($grp));
                                 }
-                                ?>
+                                echo implode(', ', $groups);
+                            } else {
+                                echo Security::htmloutput(Group::getNameById($user->getPublicGroupId()));
+                            }
+                            ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -249,7 +253,7 @@ class Post {
             <div class="col ten">
                 <div class="row dashboard_post_text">
                     <p>
-                        <?php echo Security::htmloutput($this->getContent()); ?>
+                        <?php echo $this->replaceLinks(Security::htmloutput($this->getContent())); ?>
                     </p>
                 </div>
             </div>
@@ -413,6 +417,43 @@ class Post {
             </div>
             <?php
         endforeach;
+    }
+
+    private function replaceLinks($text) {
+        // get youtube links
+        $youtubeLinks = $this->getYoutubeVideoLinks($text);
+
+        foreach ($youtubeLinks as $youtubeLink) {
+            $text = str_replace($youtubeLink['link'], sprintf('<youtube>%s</youtube>', $youtubeLink['id']), $text);
+        }
+
+        // replace all other links
+        $text = preg_replace("/([\w]+:\/\/[\w-?&;#~=\.\/\@\+\_%()]+[\w-?&;#~=\.\/\@\+\_%()])/i", "<a href=\"$1\" target=\"_blank\">$1</a>", $text);
+
+        foreach ($youtubeLinks as $youtubeLink) {
+            $text = str_replace(sprintf('<youtube>%s</youtube>', $youtubeLink['id']), sprintf('<div class="post_video_container"><iframe width="440" height="250" src="https://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe></div>', $youtubeLink['id']), $text);
+        }
+
+        return $text;
+    }
+
+    private function getYoutubeVideoLinks($note) {
+        $res = array();
+        preg_match_all('/((http:|https:)\/\/[^\s]+)/', $note, $link_array);
+        $links = $link_array[0];
+
+        foreach ($links as $link) {
+            // check if link is from YouTube
+            if (parse_url($link, PHP_URL_HOST) === 'www.youtube.com') {
+                // get the video id (/watch?v=XXXXX)
+                parse_str(parse_url($link, PHP_URL_QUERY), $params);
+                if (isset($params['v']) && preg_match('/^[0-9a-z]+$/ui', $params['v']) === 1) {
+                    $res[] = array('id' => $params['v'], 'link' => $link);
+                }
+            }
+        }
+
+        return $res;
     }
 
     private $_favdata = NULL;

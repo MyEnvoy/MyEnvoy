@@ -104,7 +104,7 @@ class PostController extends Controller {
 
     public function commentAction() {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
-        $redirectAction = $this->_paramHandler->getValue('redirectlocation', FALSE, 3, 40);
+        $redirectAction = $this->_paramHandler->getValue('redirectlocation', FALSE, 3, 50);
 
         $this->_paramHandler->bindMethods(Paramhandler::POST);
         $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_COMMENT_SIZE);
@@ -126,9 +126,31 @@ class PostController extends Controller {
         Post::insert($this->_view->user, $content, $groupIDs, $postID);
 
         if ($redirectAction !== NULL) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $redirectAction);
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/' . $redirectAction);
         } else {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+        }
+    }
+
+    public function showAction() {
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
+
+
+        $this->_view->title('Post@MyEnvoy');
+
+        $this->_paramHandler->bindMethods(Paramhandler::GET);
+
+        $post_id = $this->_paramHandler->getInt('id', FALSE);
+
+        if ($post_id === NULL || $this->_view->user->canSeePost($post_id) === FALSE) {
+            $this->_view->error = 1;
+        } else {
+            $this->_view->post = Post::getById($post_id);
+            if (empty($this->_view->post)) {
+                $this->_view->error = 1;
+            }
         }
     }
 

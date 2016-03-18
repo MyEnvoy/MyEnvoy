@@ -160,7 +160,7 @@ abstract class User {
     }
 
     public function countPosts() {
-        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT p.id FROM user_posts p JOIN user_posts_data d ON d.post_id = p.id WHERE p.user_id = ? AND p.post_id IS NULL) x');
+        $stm = $this->_db->prepare('SELECT count(1) count FROM (SELECT p.id FROM user_posts p JOIN user_posts_data d ON d.post_id = p.id WHERE p.user_id = ? AND p.post_id IS NULL GROUP BY p.id) x');
         $stm->execute(array($this->getId()));
         $res = $stm->fetch();
 

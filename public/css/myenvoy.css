@@ -109,6 +109,16 @@ span.dropdown_arrow {margin-left: 5px;display: inline-block;content: '';vertical
 div.dropdown:before {position: absolute;top: -18px;right: 6px;display: inline-block;content: '';border: 9px solid rgba(0,0,0,.15);border-right-color: transparent;border-left-color: transparent;border-top-color: transparent;}
 div.dropdown:after {position: absolute;top: -18px;right: 5px;display: inline-block;content: '';border: 10px solid;border-color: white;border-right-color: transparent;border-left-color: transparent;border-top-color: transparent;}
 div.dropdown {border-radius: 4px;padding-top: 5px;padding-bottom: 5px;z-index: 1000;display: none;position: absolute;background-color: white;right: -8px;margin-top: 43px;border: 1px solid rgba(0,0,0,.15);box-shadow: 0 3px 12px 0px rgba(0,0,0,.15);}
+div.dropdown_notify {right: 58px;width: 400px;max-height: 500px;}
+div.dropdown_notify #notifications {overflow-y: auto;max-height: inherit;}
+div.dropdown_notify .row {border-bottom: 1px solid rgba(0,0,0,.15);padding: 6px 15px 6px 15px;}
+div.dropdown_notify .row:last-child {border-bottom: none;}
+
+div#notifications .genericon {font-size: 40px;}
+div#notifications .notify_explain {padding-left: 15px;margin-top: 8px;font-weight: bold;}
+div#notifications .row:hover {cursor: pointer;background-color: #4078c0;color: white;}
+div#notifications .notify_new {background-color: #d9534f;padding: 3px;border-radius: 4px;position: absolute;right: 0px;top: 3px;}
+
 ul.dropdown_list {list-style: none;}
 ul.dropdown_list hr {height: 1px;margin: 8px 0px;background-color: #e5e5e5;border: none;}
 ul.dropdown_list li {text-align: left;font-size: 13px;display: block;color: #333;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
@@ -141,8 +151,11 @@ div#dashboard_header_container {padding-top: 10px;padding-bottom: 10px;backgroun
 div#dashboard_header_container:after {clear: both;}
 div#dashboard_header_homelink {margin-right: 6px;}
 div#dashboard_header_homelink img {margin-top: -3px;}
-div#dashboard_header_usermenu:hover, div#dashboard_header_usermenu:hover * {cursor: pointer;border-top-color: #4078c0;}
-div#dashboard_header_usermenu:hover div.dropdown {cursor: default;border-top-color: rgba(0,0,0,.15);}
+div#dashboard_header_usermenu:hover, div#dashboard_header_usermenu:hover *, div#dashboard_header_notifications:hover {cursor: pointer;border-top-color: #4078c0;}
+div#dashboard_header_notifications {margin-right: 10px;}
+div#dashboard_header_notifications .genericon {font-size: 32px;}
+div#dashboard_header_notifications:hover {color: #337ab7;}
+div#dashboard_header_notifications #notify_count {position: absolute;top: 0px;left: 0px;background-color: #d9534f;color: white;padding: 3px;border-radius: 4px;font-size: 10px;text-align: right;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;max-width: 30px;}
 
 div.dashboard_realsize_container {width: 1100px;margin: 0px auto;}
 
@@ -185,6 +198,7 @@ div.dashboard_post_remove:hover, div#dashboard_weather_settings :hover {color: #
 div.dashboard_post_remove a, div#dashboard_weather_settings  a {cursor: pointer;}
 div.dashboard_post_remove .genericon {font-size: 22px;}
 div.dashboard_post_header .genericon-reply {margin-top: -3px;}
+div.post_video_container {margin: 5px 0;text-align: center;}
 
 div#dashboard_weather_widget h3 {margin-top: 0px;}
 div#dashboard_weather_info {margin-bottom: 0px;}

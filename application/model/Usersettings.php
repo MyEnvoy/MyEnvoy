@@ -88,17 +88,25 @@ class Usersettings {
     }
 
     public function setCustomCss($dataarray) {
-        $this->_settingsObject->customcss = $dataarray;
+        if (empty($dataarray)) {
+            unset($this->_settingsObject->customcss);
+        } else {
+            $this->_settingsObject->customcss = $dataarray;
+        }
     }
 
     public function setWeatherCity($city) {
         $city = Security::trim($city);
 
         if (!empty($city) && preg_match('/^[\w\s0-9,.]{0,100}$/u', $city) !== 1) {
+            unset($this->_settingsObject->weathercity);
             return FALSE;
+        } elseif (empty($city)) {
+            unset($this->_settingsObject->weathercity);
+        } else {
+            $this->_settingsObject->weathercity = $city;
         }
 
-        $this->_settingsObject->weathercity = $city;
         return TRUE;
     }
 
