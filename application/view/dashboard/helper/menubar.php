@@ -27,22 +27,26 @@
             </div>
             <div id="dashboard_header_notifications" class="right">
                 <span class="genericon genericon-website"></span>
-                <span id="notify_count">2</span>
+                <?php
+                $count = $this->user->countNewNotifications();
+                if ($count > 0):
+                    ?>
+                    <span id="notify_count"><?php echo $count; ?></span>
+                <?php endif; ?>
             </div>
             <div class="dropdown dropdown_notify">
                 <div id="notifications">
-                    <div class="row" href="/de/post/show?id=22">
-                        <div class="col one"><span class="genericon genericon-quote"></span></div>
-                        <div class="col nine notify_explain">
-                            Du wurdest in einem Post erwähnt. <span class="notify_new"></span>
+                    <?php foreach ($this->user->getNotifications() as $notification) : ?>
+                        <div class="row" href="/de/notify/redir?id=<?php echo $notification->getId(); ?>">
+                            <div class="col one"><span class="genericon <?php echo $notification->getGenericon(); ?>"></span></div>
+                            <div class="col nine notify_explain">
+                                <?php echo t($notification->getMsg()); ?>
+                                <?php if ($notification->getRecStatus() === Notification::UNRECEIVED) : ?>
+                                    <span class="notify_new"></span>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row" href="/de/post/show?id=5">
-                        <div class="col one center_txt"><span class="genericon genericon-comment"></span></div>
-                        <div class="col nine notify_explain">
-                            Einer deiner Posts wurde kommentiert. kjsdhf klasklj asdfgb askljd ghsakfdjgaksfjdak ja akdsrgh kadj a <span class="notify_new"></span>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         <?php endif; ?>

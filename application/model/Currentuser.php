@@ -314,4 +314,27 @@ class Currentuser extends User {
         $stm->execute(array($status, $this->getId()));
     }
 
+    /**
+     * @return array(\Notification)
+     */
+    public function getNotifications() {
+        $stm = $this->_db->prepare('SELECT id FROM user_notifications WHERE user_id = ? ORDER BY rec ASC, id DESC LIMIT 100');
+        $stm->execute(array($this->getId()));
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $res[] = new Notification($row['id']);
+        }
+
+        return $res;
+    }
+
+    public function countNewNotifications() {
+        $stm = $this->_db->prepare('SELECT count(1) count FROM user_notifications WHERE user_id = ? AND rec = 0');
+        $stm->execute(array($this->getId()));
+
+        return (int) $stm->fetch()['count'];
+    }
+
 }

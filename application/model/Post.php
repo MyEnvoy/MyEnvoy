@@ -487,7 +487,7 @@ class Post {
         $stm->execute(array($user->getId(), $this->getId()));
     }
 
-    private function getMajorPost() {
+    public function getMajorPost() {
         if ($this->isMajorPost()) {
             return $this;
         }

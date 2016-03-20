@@ -42,3 +42,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('.onecomment').each(function () {
+        if ($(this).attr('post-id') === '<?php echo $this->markPost; ?>') {
+            $(this).addClass('glowing_post');
+        }
+    });
+</script>

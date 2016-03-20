@@ -64,6 +64,7 @@ pre.var_dump {margin: 10px;background-color: #eee;border: 1px solid #ccc;padding
 
 input:not([type=submit]), textarea, select {display: block;box-sizing: border-box;width: 100%;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.43;background-color: #fff;border: 1px solid #ccc;border-radius: 4px;box-shadow: inset 0 1px 1px rgba(0,0,0,.075);transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
 input:not([type=submit]):focus, textarea:focus, select:focus {border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
+input:disabled {background-color: #eee;cursor: not-allowed;}
 textarea {resize: vertical;height: 90px;min-height: 90px;max-height: 150px;color:#333;font-family: 'helvetica', 'Arial';font-size: 15px;font-weight: normal;}
 select {display: inline-block;box-sizing: border-box;width: fit-content;width: -moz-fit-content;height: 36px;}
 
@@ -114,6 +115,7 @@ div.dropdown_notify #notifications {overflow-y: auto;max-height: inherit;}
 div.dropdown_notify .row {border-bottom: 1px solid rgba(0,0,0,.15);padding: 6px 15px 6px 15px;}
 div.dropdown_notify .row:last-child {border-bottom: none;}
 
+div#notifications {min-height: 30px;}
 div#notifications .genericon {font-size: 40px;}
 div#notifications .notify_explain {padding-left: 15px;margin-top: 8px;font-weight: bold;}
 div#notifications .row:hover {cursor: pointer;background-color: #4078c0;color: white;}
@@ -199,6 +201,7 @@ div.dashboard_post_remove a, div#dashboard_weather_settings  a {cursor: pointer;
 div.dashboard_post_remove .genericon {font-size: 22px;}
 div.dashboard_post_header .genericon-reply {margin-top: -3px;}
 div.post_video_container {margin: 5px 0;text-align: center;}
+.glowing_post {background-color: #FFF3DD;}
 
 div#dashboard_weather_widget h3 {margin-top: 0px;}
 div#dashboard_weather_info {margin-bottom: 0px;}

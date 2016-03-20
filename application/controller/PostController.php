@@ -119,6 +119,13 @@ class PostController extends Controller {
             throw new Exception('Disallowed action.');
         }
 
+        // send notification to owner
+        if ($post->getOwnerId() !== $this->_view->user->getId()) {
+            $notify = new Notification();
+            $notify->add(new Otheruser($post->getOwnerId(), $this->_view->user->getId()), Notification::TYPE_NEW_COMMENT, 'notification_type_comment', $post->getId());
+            unset($notify);
+        }
+
         $groupIDs = $post->getGroupIds();
         $postID = $post->getId();
         $content = Security::trim($content);
@@ -136,7 +143,7 @@ class PostController extends Controller {
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
         $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
-
+        $this->_view->addCSS(HTTP_ROOT . APPLICATION_LANG . '/style/custom');
 
         $this->_view->title('Post@MyEnvoy');
 
@@ -147,7 +154,8 @@ class PostController extends Controller {
         if ($post_id === NULL || $this->_view->user->canSeePost($post_id) === FALSE) {
             $this->_view->error = 1;
         } else {
-            $this->_view->post = Post::getById($post_id);
+            $this->_view->markPost = $post_id;
+            $this->_view->post = Post::getById($post_id)->getMajorPost();
             if (empty($this->_view->post)) {
                 $this->_view->error = 1;
             }

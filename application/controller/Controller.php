@@ -7,7 +7,9 @@ abstract class Controller extends Famework_Controller {
     protected $_session;
 
     public function init() {
-        $this->_view->setLang(APPLICATION_LANG);
+        if (defined('APPLICATION_LANG')) {
+            $this->_view->setLang(APPLICATION_LANG);
+        }
         $this->_view->setFrameController(new FrameController($this->_view));
         $this->_view->addMeta('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
         $this->_view->addJs(HTTP_ROOT . 'js/fuckkaspersky.js');

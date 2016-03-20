@@ -11,6 +11,10 @@
                 <div class="col five">
                     <form action="/<?php echo APPLICATION_LANG; ?>/settings/index.do" method="post">
                         <div class="row form_group horizontal_form">
+                            <label for="display_name" class="col three right_txt"><?php echo t('settings_general_email'); ?></label>
+                            <input class="col six" id="email_addr" value="<?php echo Security::htmloutput($this->user->getEmail()); ?>" disabled>
+                        </div>
+                        <div class="row form_group horizontal_form">
                             <label for="display_name" class="col three right_txt"><?php echo t('settings_general_displayname'); ?></label>
                             <input class="col six" id="display_name" name="display_name" 
                                    placeholder="<?php echo t('settings_general_displayname'); ?>" value="<?php echo Security::htmloutput($this->user->getDisplayName()); ?>"
