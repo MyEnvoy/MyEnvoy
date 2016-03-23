@@ -39,7 +39,7 @@
                                     <div class="row">
                                         <div class="col ten">
                                             <div class="form_group">
-                                                <textarea required name="post" data-toggle="tooltip" data-placement="top" pattern=".{1,<?php echo PostController::MAX_POST_SIZE; ?>}"
+                                                <textarea id="post" required name="post" data-toggle="tooltip" data-placement="top" pattern=".{1,<?php echo PostController::MAX_POST_SIZE; ?>}"
                                                           title="<?php echo t('dashboard_textarea_tooltip'); ?>" placeholder="<?php echo t('dashboard_textarea_placeholder'); ?>"></textarea>
                                             </div>
                                         </div>
@@ -105,3 +105,33 @@
         </div>
     </div>
 </div>
+<?php
+$followers = $this->user->getMyFollowers();
+$mentions = array();
+foreach ($followers as $follower) {
+    $mentions[] = '"' . $follower->getName() . '"';
+}
+?>
+<script>
+    var mts = [<?php echo implode(',', $mentions); ?>];
+    var match = /\B@(\w*)$/;
+
+    function search(term, callback) {
+        callback($.map(this.mentions, function (mention) {
+            return mention.indexOf(term) === 0 ? mention : null;
+        }));
+    }
+
+    function replace(mention) {
+        return '@' + mention + ' ';
+    }
+
+    $('#post').textcomplete([{
+            mentions: mts,
+            match: match,
+            search: search,
+            index: 1,
+            replace: replace
+        }
+    ]);
+</script>

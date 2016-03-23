@@ -30,10 +30,25 @@ class PostController extends Controller {
 
         $content = Security::trim($content);
 
-        Post::insert($this->_view->user, $content, array($groupID));
+        $postId = Post::insert($this->_view->user, $content, array($groupID));
         Group::setAsDefault($groupID, $this->_view->user);
 
+        $this->sendMentionNotifications($content, $postId);
+
         Famework_Request::redirect('/' . APPLICATION_LANG . '/dashboard/index');
+    }
+
+    private function sendMentionNotifications($postTxt, $postId) {
+        if (preg_match_all('/\B@([a-z0-9.]{3,40})/u', $postTxt, $matches)) {
+            foreach ($matches[1] as $name) {
+                // send a notification
+                $user = Otheruser::getLocalByName($name, $this->_view->user->getId());
+                if ($user !== NULL) {
+                    $notify = new Notification();
+                    $notify->add($user, Notification::TYPE_MENTIONED, 'notification_type_mention', $postId);
+                }
+            }
+        }
     }
 
     public function removeAction() {
@@ -130,7 +145,9 @@ class PostController extends Controller {
         $postID = $post->getId();
         $content = Security::trim($content);
 
-        Post::insert($this->_view->user, $content, $groupIDs, $postID);
+        $postId = Post::insert($this->_view->user, $content, $groupIDs, $postID);
+        
+        $this->sendMentionNotifications($content, $postId);
 
         if ($redirectAction !== NULL) {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/' . $redirectAction);

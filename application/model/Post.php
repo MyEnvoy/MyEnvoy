@@ -32,6 +32,7 @@ class Post {
      * @param string $content
      * @param array $groupIDs An array of groupIDs to post to
      * @param int $postID The ID of the post to comment to
+     * @return int The post's id
      */
     public static function insert(Currentuser $user, $content, array $groupIDs, $postID = NULL) {
         $db = Famework_Registry::getDb();
@@ -60,6 +61,8 @@ class Post {
             $stmt->bindParam(':grip', $grip, PDO::PARAM_INT);
             $stmt->execute();
         }
+
+        return $thisPostID;
     }
 
     /**
@@ -233,16 +236,16 @@ class Post {
                             <div class="left text_light inline_margin">&middot;</div>
                             <div class="left text_light inline_margin">
                                 <span class="genericon genericon-reply"></span> <?php
-                            if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
-                                $groups = array();
-                                foreach ($this->getGroupIds() as $grp) {
-                                    $groups[] = Security::htmloutput(Group::getNameById($grp));
+                                if (!in_array($user->getPublicGroupId(), $this->getGroupIds())) {
+                                    $groups = array();
+                                    foreach ($this->getGroupIds() as $grp) {
+                                        $groups[] = Security::htmloutput(Group::getNameById($grp));
+                                    }
+                                    echo implode(', ', $groups);
+                                } else {
+                                    echo Security::htmloutput(Group::getNameById($user->getPublicGroupId()));
                                 }
-                                echo implode(', ', $groups);
-                            } else {
-                                echo Security::htmloutput(Group::getNameById($user->getPublicGroupId()));
-                            }
-                            ?>
+                                ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -253,7 +256,7 @@ class Post {
             <div class="col ten">
                 <div class="row dashboard_post_text">
                     <p>
-                        <?php echo $this->replaceLinks(Security::htmloutput($this->getContent())); ?>
+                        <?php echo $this->replaceMentions($this->replaceLinks(Security::htmloutput($this->getContent()))); ?>
                     </p>
                 </div>
             </div>
@@ -290,7 +293,7 @@ class Post {
             <div class="col nine">
                 <div class="row dashboard_post_comment_content">
                     <div class="col ten">
-                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo $this->replaceMentions(Security::htmloutput($this->getContent())); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">
@@ -321,14 +324,14 @@ class Post {
         $user = new Otheruser($this->getOwnerId(), $this->getId());
         $datetime = Dateutils::getPostDiff(new DateTime($this->getCreationTime()));
         ?>
-        <div class="row dashboard_post_subcomment">
+        <div class="row dashboard_post_subcomment" post-id="<?php echo $this->getId(); ?>">
             <div class="col one center_txt">
                 <img src="<?php echo $user->getPictureUrl(Currentuser::PIC_SMALL); ?>" width="20" height="20" alt="Posting user picture">
             </div>
             <div class="col nine">
                 <div class="row dashboard_post_comment_content dashboard_post_subcomment_content">
                     <div class="col ten">
-                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo Security::htmloutput($this->getContent()); ?>
+                        <a href="/<?php echo APPLICATION_LANG; ?>/user/<?php echo $user->getFullQualifiedName(); ?>" class="text_bold"><?php echo Security::wbrusername(Security::htmloutput($user->getDisplayName())); ?></a> <?php echo $this->replaceMentions(Security::htmloutput($this->getContent())); ?>
                     </div>
                 </div>
                 <div class="row dashboard_post_comment_info">
@@ -417,6 +420,19 @@ class Post {
             </div>
             <?php
         endforeach;
+    }
+
+    private function replaceMentions($text) {
+        if (preg_match_all('/\B@([a-z0-9.]{3,40})/u', $text, $matches)) {
+            foreach ($matches[1] as $name) {
+                // send a notification
+                $user = Otheruser::getLocalByName($name, NULL);
+                if ($user !== NULL) {
+                    $text = str_replace('@' . $user->getName(), sprintf('<a href="/%s/user/%s">%s</a>', APPLICATION_LANG, $user->getName(), '@' . $user->getName()), $text);
+                }
+            }
+        }
+        return $text;
     }
 
     private function replaceLinks($text) {

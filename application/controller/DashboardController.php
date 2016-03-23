@@ -19,6 +19,7 @@ class DashboardController extends Controller {
 
     public function indexAction() {
         $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery.textcomplete.min.js');
 
         $weather = new Openweathermap($this->_view->user);
         $data = $weather->getCurrentWeather();

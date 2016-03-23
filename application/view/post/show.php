@@ -44,9 +44,12 @@
 </div>
 
 <script>
-    $('.onecomment').each(function () {
+    $('.onecomment').each(highlightPost);
+    $('.dashboard_post_subcomment').each(highlightPost);
+
+    function highlightPost() {
         if ($(this).attr('post-id') === '<?php echo $this->markPost; ?>') {
             $(this).addClass('glowing_post');
         }
-    });
+    }
 </script>

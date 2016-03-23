@@ -190,7 +190,7 @@ div.dashboard_post_comment_content {margin-bottom: 2px !important;}
 div.dashboard_post_subcomment_content {width: 92% !important;margin-left: 0px;}
 div.dashboard_post_comment_info .genericon-star {margin-top: -2px;}
 div.dashboard_post_subcomment, div.dashboard_post_comments_newsub {margin-left: 25px;border-left: 3px solid #9197a3;padding-left: 10px;}
-div.dashboard_post_subcomment {margin-bottom: 0px !important;padding-top: 8px;}
+div.dashboard_post_subcomment {margin-bottom: 0px !important;padding-top: 8px;width: auto;}
 div.dashboard_post_comments_newsub {padding-top: 8px;}
 div.dashboard_post_comments_newsub input {width: 92.5% !important;height: 20px !important;padding: 3px 6px !important;font-size: 12px !important;line-height: 1.4 !important;}
 div.dashboard_post_comment .inline_margin, div.dashboard_post_subcomment .inline_margin {margin-left: 5px;}
@@ -258,3 +258,8 @@ div.modal .row {padding: 15px;}
 div.modal hr {margin: -10px 0 0 0;}
 div.modal h4 {margin-top: 0px;}
 div.settings_group_modal_pic_explain {margin: 100px auto;width: 350px;font-size: 14px;text-align: justify;}
+
+.dropdown-menu {list-style: none;background-color: white;border-radius: 4px;padding-top: 5px;padding-bottom: 5px;border: 1px solid rgba(0,0,0,.15);box-shadow: 0 3px 12px 0px rgba(0,0,0,.15);}
+.dropdown-menu li {text-align: left;font-size: 13px;display: block;color: #333;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.dropdown-menu a {padding: 6px 15px 6px 15px;text-decoration: none;color: #333;width: 100%;display: block;}
+.dropdown-menu a:hover, .dropdown-menu .active, .dropdown-menu .active a {text-decoration: none;color: #fff !important;background-color: #4078c0;cursor: pointer;}
