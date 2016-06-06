@@ -31,7 +31,7 @@
                 Quellcode der Software ist für jeden offen zugänglich und kann eingesehen, <br>
                 heruntergeladen, genutzt und verteilt werden.</p>
 
-<!--<p>Diaspora ist ein dezentrales soziales Netzwerk, welches Nutzern erlaubt, Inhalte <br>
+<!--<p>MyEnvoy ist ein dezentrales soziales Netzwerk, welches Nutzern erlaubt, Inhalte <br>
 miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
 
 
@@ -69,7 +69,7 @@ miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
             <h2 id="4-urheberrecht">4. Urheberrecht</h2>
 
             <p>Das Urheberrecht für Texte, Bilder und sonstige Medien, die ein Benutzer <br>
-                auf Geraspora hochladen kann, bleibt beim Nutzer. Eine Übertragung auf den <br>
+                auf MyEnvoy hochladen kann, bleibt beim Nutzer. Eine Übertragung auf den <br>
                 Betreiber des Pods findet nicht statt.</p>
 
             <p>Sollte ein Nutzer wissentlich oder unwissentlich gegen gültiges Urheberrecht <br>

@@ -49,6 +49,11 @@
                     <?php endforeach; ?>
                 </div>
             </div>
+            <div id="dashboard_header_chat" class="right">
+                <a href="/<?php echo APPLICATION_LANG; ?>/chat/index">
+                    <span class="genericon genericon-comment"></span>
+                </a>
+            </div>
         <?php endif; ?>
     </div>
 </div>

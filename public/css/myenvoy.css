@@ -153,11 +153,13 @@ div#dashboard_header_container {padding-top: 10px;padding-bottom: 10px;backgroun
 div#dashboard_header_container:after {clear: both;}
 div#dashboard_header_homelink {margin-right: 6px;}
 div#dashboard_header_homelink img {margin-top: -3px;}
-div#dashboard_header_usermenu:hover, div#dashboard_header_usermenu:hover *, div#dashboard_header_notifications:hover {cursor: pointer;border-top-color: #4078c0;}
+div#dashboard_header_usermenu:hover, div#dashboard_header_usermenu:hover *, div#dashboard_header_notifications:hover, div#dashboard_header_chat:hover {cursor: pointer;border-top-color: #4078c0;}
 div#dashboard_header_notifications {margin-right: 10px;}
-div#dashboard_header_notifications .genericon {font-size: 32px;}
-div#dashboard_header_notifications:hover {color: #337ab7;}
+div#dashboard_header_chat {margin-right: 7px;}
+div#dashboard_header_notifications .genericon, div#dashboard_header_chat .genericon {font-size: 32px;}
+div#dashboard_header_notifications:hover, div#dashboard_header_chat:hover {color: #337ab7;}
 div#dashboard_header_notifications #notify_count {position: absolute;top: 0px;left: 0px;background-color: #d9534f;color: white;padding: 3px;border-radius: 4px;font-size: 10px;text-align: right;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;max-width: 30px;}
+div#dashboard_header_chat a {text-decoration: none;color: inherit;}
 
 div.dashboard_realsize_container {width: 1100px;margin: 0px auto;}
 
@@ -263,3 +265,13 @@ div.settings_group_modal_pic_explain {margin: 100px auto;width: 350px;font-size:
 .dropdown-menu li {text-align: left;font-size: 13px;display: block;color: #333;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 .dropdown-menu a {padding: 6px 15px 6px 15px;text-decoration: none;color: #333;width: 100%;display: block;}
 .dropdown-menu a:hover, .dropdown-menu .active, .dropdown-menu .active a {text-decoration: none;color: #fff !important;background-color: #4078c0;cursor: pointer;}
+
+div#chat_input_container {position: fixed;margin: 0px auto;bottom: 100px;left: 5px;right: 5px;width: 1100px;}
+div#chat_area {position: fixed;margin: 0px auto;bottom: 163px;top:50px;left: 5px;right: 5px;width: 1100px;}
+input.input_message {border-radius: 0px !important; width: 100%;}
+.chat_username {font-weight: 700;overflow: hidden;padding-right: 15px;text-align: right;}
+ul.chat_messages {list-style: none;word-wrap: break-word;}
+.chat_messages {font-size: 150%;height: 100%;margin: 0;overflow-y: auto;padding: 10px 20px 10px 20px;}
+.chat_log {color: gray;font-size: 70%;margin: 5px;text-align: center;}
+.message.typing .messageBody {color: gray;}
+div#online {position: fixed;right: 5px;list-style: none;width: 290px;text-align: right;}

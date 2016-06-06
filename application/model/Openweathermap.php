@@ -43,7 +43,7 @@ class Openweathermap {
                 $result['city'] = $data->name;
                 $result['icon'] = $this->getIconUrl($data->weather[0]->icon);
                 // from Kelvin to Celsius
-                $result['temp'] = Security::round($data->main->temp - 273.15, 2);
+                $result['temp'] = Security::round($data->main->temp - 273.15, 1);
                 $result['desc'] = $data->weather[0]->description;
             }
 
