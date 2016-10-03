@@ -17,7 +17,6 @@
             <li><a href="/<?php echo APPLICATION_LANG ?>/settings/friends" class="<?php echo ($this->activeTab === SettingsController::FRIENDS_TAB ? 'active' : ''); ?>"
                    data-toggle="tooltip" data-placement="top" title="<?php echo t('settings_tab_friends_tooltip'); ?>">Freunde</a></li>
             <li><a href="/<?php echo APPLICATION_LANG ?>/settings/design" class="<?php echo ($this->activeTab === SettingsController::DESIGN_TAB ? 'active' : ''); ?>"><?php echo t('settings_design_tab_title'); ?></a></li>
-            <li><a href="">Benachrichtigungen</a></li>
             <li><a href="/<?php echo APPLICATION_LANG ?>/settings/log" class="<?php echo ($this->activeTab === SettingsController::LOG_TAB ? 'active' : ''); ?>"><?php echo t('settings_log_tab_title'); ?></a></li>
         </ul>
     </div>
