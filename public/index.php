@@ -1,3 +1,4 @@
+<?php if ($_SERVER['REQUEST_URI'] === '/de/') ?>
 <!--
 WWWWWWWWWW@@WWWWWWWWWWWW@@WW@WWWWWWWWWWWWWWWWWWW@@@@@@WW@@@@@@@@@WWWWWWWWW@@@@@@@@@@@@@@@@
 WWWWWWWWWWWWWWWWWWWWWWW@WW@WWWWWWWWWWWWWWWWWWWWW@@@@@@WW@@@@@@@@@WWWWWWWWW@@@@@@@@@@@@@@@@
@@ -92,10 +93,9 @@ W@@@@@WWW@W@WWWWWWWWW@@@@@@#######@@@@@@@@###***#################@@@WW@@@@W@@@@@
 ********################@@#############@#@@@@##############@*#@WWWWWWWWWWWWWWWWWWWWWWWWWWW
 **********############@#@###################################++*+#WWWWWWWWWWWWWWWWWWWWWWWWW
 *********############@############################**#######*:+++*#WWWW@WW@@WWWWWWWWWWWWWWW
-
 -->
+<?php endif; ?>
 <?php
-
 require '../../Famework/Famework.php';
 require '../application/autoloader.php';
 
