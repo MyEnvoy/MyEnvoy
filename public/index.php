@@ -1,4 +1,4 @@
-<?php if ($_SERVER['REQUEST_URI'] === '/de/'): ?>
+<?php if ($_SERVER['REQUEST_URI'] === '/de'): ?>
 <!--
 WWWWWWWWWW@@WWWWWWWWWWWW@@WW@WWWWWWWWWWWWWWWWWWW@@@@@@WW@@@@@@@@@WWWWWWWWW@@@@@@@@@@@@@@@@
 WWWWWWWWWWWWWWWWWWWWWWW@WW@WWWWWWWWWWWWWWWWWWWWW@@@@@@WW@@@@@@@@@WWWWWWWWW@@@@@@@@@@@@@@@@
