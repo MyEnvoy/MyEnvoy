@@ -41,10 +41,10 @@ class Errorhandler {
             Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': #' . $exception->getCode() . ' "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
             header('Internal Server Error', TRUE, 500);
             die();
+        } else {
+            Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': #' . $exception->getCode() . ' "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
+            header('Location: /');
         }
-
-        Log::err('[Errorhandler] Exception: in ' . $exception->getFile() . ' on line ' . $exception->getLine() . ': #' . $exception->getCode() . ' "' . $exception->getMessage() . '"; Trace: ' . PHP_EOL . $exception->getTraceAsString());
-
         return TRUE;
     }
 
