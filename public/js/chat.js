@@ -20,7 +20,7 @@ $(function () {
     var lastTypingTime;
     var $currentInput = $inputMessage.focus();
 
-    var socket = io('192.168.178.50:8081');
+    var socket = io(window.location.hostname + ':8080');
 
     // Sets the client's username
     setUsername();
