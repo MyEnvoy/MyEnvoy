@@ -70,7 +70,7 @@ miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
 
             <p>Das Urheberrecht für Texte, Bilder und sonstige Medien, die ein Benutzer <br>
                 auf MyEnvoy hochladen kann, bleibt beim Nutzer. Eine Übertragung auf den <br>
-                Betreiber des Pods findet nicht statt.</p>
+                Betreiber des Servers findet nicht statt.</p>
 
             <p>Sollte ein Nutzer wissentlich oder unwissentlich gegen gültiges Urheberrecht <br>
                 verstoßen, ist dieser darauf hinzuweisen. Entsprechende Kontaktdaten können <br>
