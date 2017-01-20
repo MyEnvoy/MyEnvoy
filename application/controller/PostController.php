@@ -121,33 +121,37 @@ class PostController extends Controller {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
         $redirectAction = $this->_paramHandler->getValue('redirectlocation', FALSE, 3, 50);
 
-        $this->_paramHandler->bindMethods(Paramhandler::POST);
-        $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_COMMENT_SIZE);
-        $tmpID = $this->_paramHandler->getInt('id');
-        $post = Post::getById($tmpID);
+        try {
+            $this->_paramHandler->bindMethods(Paramhandler::POST);
+            $content = $this->_paramHandler->getValue('post', TRUE, 1, self::MAX_COMMENT_SIZE);
+            $tmpID = $this->_paramHandler->getInt('id');
+            $post = Post::getById($tmpID);
 
-        if (empty($post)) {
-            throw new Exception('Post not availabel.');
+            if (empty($post)) {
+                throw new Exception('Post not availabel.');
+            }
+
+            if ($this->_view->user->canSeePost($post->getId()) !== TRUE || $post->isSubComment() === TRUE) {
+                throw new Exception('Disallowed action.');
+            }
+
+            // send notification to owner
+            if ($post->getOwnerId() !== $this->_view->user->getId()) {
+                $notify = new Notification();
+                $notify->add(new Otheruser($post->getOwnerId(), $this->_view->user->getId()), Notification::TYPE_NEW_COMMENT, 'notification_type_comment', $post->getId());
+                unset($notify);
+            }
+
+            $groupIDs = $post->getGroupIds();
+            $postID = $post->getId();
+            $content = Security::trim($content);
+
+            $postId = Post::insert($this->_view->user, $content, $groupIDs, $postID);
+
+            $this->sendMentionNotifications($content, $postId);
+        } catch (Exception $e) {
+            // do nothing
         }
-
-        if ($this->_view->user->canSeePost($post->getId()) !== TRUE || $post->isSubComment() === TRUE) {
-            throw new Exception('Disallowed action.');
-        }
-
-        // send notification to owner
-        if ($post->getOwnerId() !== $this->_view->user->getId()) {
-            $notify = new Notification();
-            $notify->add(new Otheruser($post->getOwnerId(), $this->_view->user->getId()), Notification::TYPE_NEW_COMMENT, 'notification_type_comment', $post->getId());
-            unset($notify);
-        }
-
-        $groupIDs = $post->getGroupIds();
-        $postID = $post->getId();
-        $content = Security::trim($content);
-
-        $postId = Post::insert($this->_view->user, $content, $groupIDs, $postID);
-        
-        $this->sendMentionNotifications($content, $postId);
 
         if ($redirectAction !== NULL) {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/' . $redirectAction);
