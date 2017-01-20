@@ -44,7 +44,9 @@ class SettingsController extends Controller {
         $city = $this->_paramHandler->getValue('city', FALSE, NULL, 100);
 
         $error = !$this->_view->user->getSettings()->setWeatherCity($city);
-        $error = $error || !$this->_view->user->setDisplayName($display_name);
+        if ($display_name !== $this->_view->user->getName()) {
+            $error = $error || !$this->_view->user->setDisplayName($display_name);
+        }
 
         if ($error === TRUE) {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/settings?error=1');
