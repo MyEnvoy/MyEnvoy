@@ -4,7 +4,6 @@
     "description": "The MyEnvoy chat server",
     "author": "Fabian Maier",
     "dependencies": {
-        "express": "4.x",
-        "socket.io": "*"
+        "express": "^4.14.0", "socket.io": "^1.7.2"
     }
 }
