@@ -1,1 +1,4 @@
 /application/config/config.ini
+/application/jobs/chatserver/node_modules/*
+/application/jobs/chatserver/output.log
+/work/*
