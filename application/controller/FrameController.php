@@ -1,7 +1,9 @@
 <?php
 
+use Famework\Famework;
 use Famework\Controller\Famework_Controller;
 use Famework\View\Famework_View_Frame_Controller;
+use Famework\Registry\Famework_Registry;
 
 class FrameController extends Famework_Controller implements Famework_View_Frame_Controller {
 
@@ -22,6 +24,10 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
             </div>
             <?php
         endif;
+        
+        if(Famework_Registry::getEnv() === Famework::ENV_DEV) {
+            echo '<style>div#dashboard_header_container {background-color: #f2dede !important;}</style>';
+        }
     }
 
     public function renderBottom() {
