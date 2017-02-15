@@ -183,7 +183,7 @@ div.dashboard_post_container hr {margin: 13px 10px 8px 10px;}
 div.dashboard_post_footer .genericon {margin-top: -2px;}
 
 div.dashboard_post_comments {background-color: rgba(220,220,220,.3);margin: 0px !important;padding: 10px;border-top: 1px solid #e5e5e5;}
-div.dashboard_post_comments .row {margin-bottom: 8px;}
+div.dashboard_post_comments .row {margin-bottom: 8px;word-wrap: break-word;}
 div.dashboard_post_comments .row:last-of-type {margin-bottom: 0px;}
 div.onecomment {margin-bottom: 8px;}
 input.newcomment, input.newsubcomment {width: 98% !important;border-radius: 0px;}
