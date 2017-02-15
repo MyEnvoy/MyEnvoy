@@ -170,8 +170,13 @@ class Currentuser extends User {
         $stm->execute(array($this->getId()));
 
         $res = array();
+        $ownerIDs = array();
         foreach ($stm->fetchAll() as $row) {
-            $res[] = Group::getOwnerById($row['id'], $this);
+            $owner = Group::getOwnerById($row['id'], $this);
+            if (!in_array($owner->getGid(), $ownerIDs)) {
+                $ownerIDs[] = $owner->getGid();
+                $res[] = $owner;
+            }
         }
         return $res;
     }
