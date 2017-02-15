@@ -126,7 +126,7 @@
                                         <div class="row">
                                             <div class="col ten">
                                                 <p id="user_status">
-                                                    <?php echo Security::htmloutput($this->status); ?>
+                                                    <?php echo Security::htmloutput($this->status, FALSE); ?>
                                                 </p>
                                             </div>
                                         </div>

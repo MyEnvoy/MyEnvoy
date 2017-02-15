@@ -2,8 +2,14 @@
 
 class Security {
 
-    public static function htmloutput($string) {
-        return stripslashes(htmlspecialchars($string, ENT_QUOTES | ENT_HTML5));
+    public static function htmloutput($string, $stripSplashes = TRUE) {
+        $string = htmlspecialchars($string, ENT_QUOTES | ENT_HTML5);
+        
+        if($stripSplashes) {
+            $string = stripslashes($string);
+        }
+        
+        return $string;
     }
 
     public static function trim($str) {
