@@ -31,5 +31,7 @@ class Errorcode {
     const POSTCONTROLLER_POST_DISALLOWED_ACTION = 10017;
     
     const NOTIFICATION_CREATE_ERROR = 10018;
+    
+    const API_ENDPOINT_NOT_FOUND = 10019;
 
 }
