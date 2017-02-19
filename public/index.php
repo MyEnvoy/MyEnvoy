@@ -140,7 +140,6 @@ if ($lang !== NULL) {
         $default = ($default === NULL ? 'en' : $default);
         if ($famework->getController() !== 'FederationController' &&
                 strpos($famework->getController(), 'Api') === FALSE) {
-            die();
             Famework_Request::redirect('/' . $default . '/', Famework_Request::CODE_TEMPORARYREDIRECT);
         } else {
             // no language for federation and api controller required
