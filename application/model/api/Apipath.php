@@ -12,6 +12,7 @@ abstract class Apipath {
 
     public function __construct() {
         $this->_paramHandler = new \Famework\LaCodon\Param\Paramhandler();
+        $this->_paramHandler->bindMethods(\Famework\LaCodon\Param\Paramhandler::POST);
     }
 
     public function handlePath($apiPath) {

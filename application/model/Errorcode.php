@@ -33,5 +33,10 @@ class Errorcode {
     const NOTIFICATION_CREATE_ERROR = 10018;
     
     const API_ENDPOINT_NOT_FOUND = 10019;
+    const API_EMPTY_JWT_KEY = 10020;
+    const API_INVALID_JWT = 10021;
+    const API_INVALID_JWT_HEADER = 10022;
+    const API_INVALID_JWT_BODY = 10023;
+    const API_EXPIRED_JWT = 10024;
 
 }

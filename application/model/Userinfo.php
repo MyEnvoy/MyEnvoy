@@ -13,6 +13,9 @@ class Userinfo {
     const MESSAGE_ACTIVATE_ACCOUNT = 'account_activation';
     const MESSAGE_LOGIN_BLOCKED = 'login_blocked';
     const MESSAGE_PWD_CHANGED = 'pwd_changed';
+    const MESSAGE_API_LOGIN_SUCCESS = 'api_login';
+    const MESSAGE_API_LOGIN_FAIL = 'api_fail';
+    const MESSAGE_API_LOGIN_BLOCKED = 'api_blocked';
 
     /**
      * Log a user action
@@ -60,9 +63,9 @@ class Userinfo {
      * @param int $user_id
      * @return boolean <b>TRUE</b> if account is locked
      */
-    public static function isAccountLocked($user_id) {
+    public static function isAccountLocked($user_id, $fail_msg = self::MESSAGE_LOGIN_FAIL) {
         $stm = Famework_Registry::getDb()->prepare('SELECT count(1) count FROM user_log WHERE user_id = ? '
-                . 'AND action = "' . self::MESSAGE_LOGIN_FAIL . '" '
+                . 'AND action = "' . $fail_msg . '" '
                 . 'AND (user_log.datetime BETWEEN DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL ' . intval(self::LOCK_DELAY_MINUTES) . ' MINUTE) AND CURRENT_TIMESTAMP()) '
                 . 'GROUP BY user_id');
         $stm->execute(array((int) $user_id));

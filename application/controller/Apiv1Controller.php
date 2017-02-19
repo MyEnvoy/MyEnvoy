@@ -41,6 +41,7 @@ class Apiv1Controller extends Famework_Controller {
             $this->_responseObject = new stdClass();
         }
 
+        header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($this->_responseObject, JSON_PRETTY_PRINT);
     }
 
