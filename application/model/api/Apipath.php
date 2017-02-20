@@ -15,6 +15,20 @@ abstract class Apipath {
         $this->_paramHandler->bindMethods(\Famework\LaCodon\Param\Paramhandler::POST);
     }
 
+    protected function getBearer() {
+        $authHeader = getallheaders();
+
+        if (isset($authHeader['Auth'])) {
+            $bearer = $authHeader['Auth'];
+            if (strpos($bearer, 'Bearer ') === 0) {
+                return str_replace('Bearer ', '', $bearer);
+            }
+        }
+
+        header('HTTP/1.1 401 Unauthorized');
+        exit(1);
+    }
+
     public function handlePath($apiPath) {
         $pathParts = explode('/', $apiPath);
         foreach ($pathParts as &$part) {
@@ -28,7 +42,7 @@ abstract class Apipath {
         } catch (\Exception $e) {
             if ($e->getCode() === \Errorcode::API_ENDPOINT_NOT_FOUND) {
                 header('HTTP/1.0 404 Not Found');
-                exit();
+                exit(1);
             } else {
                 throw $e;
             }

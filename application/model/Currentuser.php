@@ -4,6 +4,8 @@ use Famework\Registry\Famework_Registry;
 use Famework\Session\Famework_Session;
 use Famework\Request\Famework_Request;
 
+use Api\Jwt;
+
 class Currentuser extends User {
 
     const PIC_LARGE = 256;
@@ -65,6 +67,13 @@ class Currentuser extends User {
         }
 
         return new Currentuser($uid);
+    }
+    
+    public static function getEnsuredLoggedInUserByJwt($token) {
+        $jwt = new Jwt();
+        $decToken = $jwt->decode($token);
+        
+        return new Currentuser((int) $decToken->uid);
     }
 
     public static function auth() {

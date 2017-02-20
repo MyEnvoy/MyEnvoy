@@ -34,6 +34,15 @@ class Apiv1Controller extends Famework_Controller {
         $this->printOutput();
     }
 
+    public function wallAction() {
+        $apiPath = Famework_Registry::get('\famework_sys')->getRequestParam('path');
+
+        $wallPath = new Api\ApipathWall();
+        $this->_responseObject = $wallPath->handlePath($apiPath);
+
+        $this->printOutput();
+    }
+
     private function printOutput() {
         $this->_view->turnLayoutOff();
         $this->_view->ignoreView();

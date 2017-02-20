@@ -2,7 +2,7 @@
 
 use Famework\Registry\Famework_Registry;
 
-class Post {
+class Post implements JsonSerializable {
 
     const DB_TABLE = 'user_posts';
 
@@ -515,6 +515,18 @@ class Post {
         if ($this->isSubComment()) {
             return $this->getMotherPost()->getMotherPost();
         }
+    }
+
+    public function jsonSerialize() {
+        $res = new stdClass();
+        
+        $res->id = $this->getId();
+        $res->owner = Otheruser::getLocalById($this->getOwnerId());
+        $res->countFavs = $this->countFavs();
+        $res->creationTime = (new DateTime($this->getCreationTime()))->getTimestamp();
+        $res->body = $this->getContent();
+        
+        return $res;
     }
 
 }

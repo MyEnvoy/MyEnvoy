@@ -38,5 +38,6 @@ class Errorcode {
     const API_INVALID_JWT_HEADER = 10022;
     const API_INVALID_JWT_BODY = 10023;
     const API_EXPIRED_JWT = 10024;
+    const API_NOT_FOUND = 10025;
 
 }

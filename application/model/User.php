@@ -2,7 +2,7 @@
 
 use Famework\Registry\Famework_Registry;
 
-abstract class User {
+abstract class User implements JsonSerializable {
 
     const DB_TABLE = 'user';
     const DB_USER_DATA = 'user_data';
@@ -213,6 +213,35 @@ abstract class User {
             return $this->getFullQualifiedName();
         }
         return $name;
+    }
+    
+    private $_jsonAdditionals = array();
+
+    public function addJsonData($name, $value) {
+        $this->_jsonAdditionals[$name] = $value;
+    }
+
+    public function jsonSerialize() {
+        $res = new stdClass();
+
+        $res->id = $this->getId();
+        $res->gid = $this->getGid();
+        $res->username = $this->getName();
+        $res->displayname = $this->getDisplayName();
+
+        if (!empty($this->_callerID) || $this instanceof Currentuser) {
+            $res->pic = array(
+                'small' => $this->getPictureUrl(\Currentuser::PIC_SMALL),
+                'large' => $this->getPictureUrl(\Currentuser::PIC_LARGE)
+            );
+            $res->status = $this->getStatus();
+        }
+        
+        foreach ($this->_jsonAdditionals as $key => $value) {
+            $res->$key = $value;
+        }
+
+        return $res;
     }
 
 }

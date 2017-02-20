@@ -25,6 +25,16 @@ class Otheruser extends User {
         return NULL;
     }
 
+    public static function getLocalById($id, $callerId = NULL) {
+        $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE id = ? AND host_gid IS NULL LIMIT 1');
+        $stm->execute(array($id));
+        $res = $stm->fetch();
+        if (!empty($res)) {
+            return new Otheruser($res['id'], $callerId);
+        }
+        return NULL;
+    }
+
     /**
      * Get foreign or local user by gid
      * @param string $gid
@@ -167,6 +177,21 @@ class Otheruser extends User {
             $stm = $this->_db->prepare('DELETE FROM user_to_groups WHERE user_id = ? AND group_id IN (' . implode(',', $groupIDs) . ')');
             $stm->execute(array($user_id));
         }
+    }
+
+    public function groupsImIn(Currentuser $user) {
+        $stm = $this->_db->prepare('SELECT ug.id id  FROM user_to_groups utg
+                                        JOIN user_groups ug ON ug.user_id = ? AND utg.group_id = ug.id 
+                                    WHERE utg.user_id = ? GROUP BY ug.id');
+        $stm->execute(array($user->getId(), $this->getId()));
+
+        $res = array();
+
+        foreach ($stm->fetchAll() as $row) {
+            $res[$row['id']] = Group::getNameById($row['id']);
+        }
+
+        return $res;
     }
 
 }
