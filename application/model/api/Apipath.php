@@ -44,7 +44,10 @@ abstract class Apipath {
                 header('HTTP/1.0 404 Not Found');
                 exit(1);
             } else {
-                throw $e;
+                return array(
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode()
+                );
             }
         }
     }
@@ -52,6 +55,12 @@ abstract class Apipath {
     protected function throwExceptionOnTooLongPath($maxLength) {
         if ($this->_pathPartCount > $maxLength) {
             throw new \Exception('API Endpoint not found', \Errorcode::API_ENDPOINT_NOT_FOUND);
+        }
+    }
+
+    protected function hasToBePost() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new \Exception('POST request expected.', \Errorcode::API_POST_REQUIRED);
         }
     }
 

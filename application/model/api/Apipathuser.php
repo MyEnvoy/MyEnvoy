@@ -35,6 +35,7 @@ class ApiPathUser extends Apipath {
 
     private function loginAction() {
         $this->throwExceptionOnTooLongPath(1);
+        $this->hasToBePost();
         $res = new \stdClass();
 
         try {

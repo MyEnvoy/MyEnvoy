@@ -516,6 +516,12 @@ class Post implements JsonSerializable {
             return $this->getMotherPost()->getMotherPost();
         }
     }
+    
+    private $_jsonAdditionals = array();
+
+    public function addJsonData($name, $value) {
+        $this->_jsonAdditionals[$name] = $value;
+    }
 
     public function jsonSerialize() {
         $res = new stdClass();
@@ -525,6 +531,10 @@ class Post implements JsonSerializable {
         $res->countFavs = $this->countFavs();
         $res->creationTime = (new DateTime($this->getCreationTime()))->getTimestamp();
         $res->body = $this->getContent();
+        
+        foreach ($this->_jsonAdditionals as $key => $value) {
+            $res->$key = $value;
+        }
         
         return $res;
     }
