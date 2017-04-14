@@ -27,7 +27,7 @@ class SettingsController extends Controller {
     private function errorHandling() {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
         if ($this->_paramHandler->getInt('error', FALSE) !== NULL) {
-            $this->_view->error = 1;
+            $this->_view->error = $this->_paramHandler->getInt('error');
         }
     }
 
@@ -67,7 +67,7 @@ class SettingsController extends Controller {
         }
 
         if (Newuser::validatePassword($newpw, $this->_view->user->getName()) !== TRUE) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings?error=1');
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings?error=' . RegisterController::ERR_BAD_PASSWORD);
         }
 
         $hash = 'reset_pwd_' . uniqid();

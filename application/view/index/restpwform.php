@@ -16,6 +16,11 @@
     <div class="row">
         <form action="/<?php echo APPLICATION_LANG . '/index/resetpwform.do' ?>" method="post">
             <div class="col ten">
+                <?php if (!empty($this->error)): ?>
+                    <div class="alert alert_danger">
+                        <b><?php echo t('register_errorhint_6') ?></b>
+                    </div>
+                <?php endif; ?>
                 <div class="form_group">
                     <input type="hidden" id="email" name="email" required value="<?php echo Security::htmloutput($this->email); ?>">
                     <input type="hidden" id="hash" name="hash" required value="<?php echo Security::htmloutput($this->hash); ?>">

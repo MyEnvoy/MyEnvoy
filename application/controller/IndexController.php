@@ -105,6 +105,7 @@ class IndexController extends Controller {
 
         $this->_view->hash = $this->_paramHandler->getValue('hash');
         $this->_view->email = strtolower($this->_paramHandler->getValue('email'));
+        $this->_view->error = $this->_paramHandler->getValue('error', FALSE);
     }
 
     public function resetpwformDoAction() {
@@ -115,7 +116,7 @@ class IndexController extends Controller {
         $newpw = $this->_paramHandler->getValue('newpw');
 
         if (Newuser::validatePassword($newpw, $email) !== TRUE) {
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/index/restpwform/?hash=' . $hash . '&email=' . urlencode($email));
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/index/restpwform/?hash=' . $hash . '&email=' . urlencode($email) . '&error=' . RegisterController::ERR_BAD_PASSWORD);
         }
 
         if (User::resetPwd($hash, $email, $newpw) === TRUE) {

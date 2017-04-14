@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col ten">
             <div class="alert alert_danger">
-                <b><?php echo t('settings_error'); ?></b>
+                <b><?php echo ($this->error == RegisterController::ERR_BAD_PASSWORD ? t('register_errorhint_' . RegisterController::ERR_BAD_PASSWORD) : t('settings_error')); ?></b>
             </div>
         </div>
     </div>
