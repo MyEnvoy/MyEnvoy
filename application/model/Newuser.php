@@ -84,7 +84,7 @@ class Newuser extends User {
         }
 
         // MyEnvoy shouldn't be part of password
-        if (strpos(strtolower($pwd), 'myenvoy')) {
+        if (strpos(strtolower($pwd), 'myenvoy') !== FALSE) {
             return FALSE;
         }
 
