@@ -8,7 +8,7 @@
 
     <div id="dashboard_central_container">
 
-        <?php if (!isset($this->error) && !empty($this->user)): ?>
+        <?php if ((!isset($this->error) || $this->error === FALSE ) && !empty($this->user)): ?>
             <form id="dashboard_post_comment_form" method="post" action="/<?php echo APPLICATION_LANG; ?>/post/comment?redirectlocation=user/<?php echo $this->otheruser->getFullQualifiedName(); ?>" style="display: none;">
                 <input id="dashboard_post_comment_id" type="text" name="id" required>
                 <textarea id="dashboard_post_comment_content" name="post" required></textarea>
@@ -17,7 +17,7 @@
 
         <div class="dashboard_realsize_container">
             <div class="row">
-                <?php if (isset($this->error)): ?>
+                <?php if (isset($this->error) && $this->error === TRUE): ?>
                     <div class="col ten">
                         <div class="alert alert_danger"><b><?php echo t('user_index_usernotfound'); ?></b></div>
                     </div>
