@@ -115,6 +115,10 @@ class Currentuser extends User {
     public function getSalt() {
         return $this->getWhatever('salt', self::DB_USER_DATA);
     }
+    
+    public function getXmppPwd() {
+        return $this->getWhatever('xmpp_pwd', self::DB_USER_DATA);
+    }
 
     /**
      * Gets the register datetime of the user

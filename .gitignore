@@ -3,3 +3,6 @@
 /application/jobs/chatserver/output.log
 /work/*
 node_modules
+/application/controller/PlaygroundController.php
+/application/view/playground/
+/public/js/test/
