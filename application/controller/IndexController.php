@@ -16,7 +16,7 @@ class IndexController extends Controller {
 
     public function indexAction() {
         $this->_view->title(t('html_title_index_index'));
-        $this->_view->hint = $this->_paramHandler->getInt('stat', FALSE, 9, 15);
+        $this->_view->hint = $this->_paramHandler->getInt('stat', FALSE, 9, 16);
 
         // redirect logged in users
         if (Currentuser::getEnsureLoggedInUser(FALSE) !== NULL) {
@@ -43,10 +43,15 @@ class IndexController extends Controller {
         $user = Currentuser::getUserFromLogin($name, $pwd);
 
         if ($user === NULL || !($user instanceof Currentuser)) {
-            if ($idbyname !== NULL) {
+            if ($idbyname !== NULL && !Currentuser::isNotActivated($name)) {
                 Userinfo::log($idbyname, Userinfo::MESSAGE_LOGIN_FAIL);
             }
-            Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::LOGIN_ERROR);
+
+            if (Currentuser::isNotActivated($name)) {
+                Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::LOGIN_NOT_ACTIVATED);
+            } else {
+                Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . RegisterController::LOGIN_ERROR);
+            }
         }
 
         $user->generateAuthSession();
