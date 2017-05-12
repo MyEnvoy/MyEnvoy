@@ -32,6 +32,9 @@
                                     case Userinfo::MESSAGE_ACTIVATE_ACCOUNT:
                                         echo '<span class="genericon genericon-subscribed"></span>';
                                         break;
+                                    case Userinfo::MESSAGE_CREATE_PROSODY_ACCOUNT:
+                                        echo '<span class="genericon genericon-chat"></span>';
+                                        break;
                                 }
                                 ?>
                             </div>

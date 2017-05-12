@@ -100,6 +100,7 @@ class RegisterController extends Controller {
         $name = $this->_paramHandler->getValue('name');
 
         if (Newuser::activate($name, $hash) === TRUE) {
+            Newuser::createProsodyAccount($name);
             Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . self::ACTIVATED);
         } else {
             Famework_Request::redirect('/' . APPLICATION_LANG . '/?stat=' . self::NOT_ACTIVATED);

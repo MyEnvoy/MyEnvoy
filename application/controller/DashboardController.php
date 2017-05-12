@@ -13,7 +13,7 @@ class DashboardController extends Controller {
         $this->_view->title($this->_view->user->getName() . '@MyEnvoy');
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
-        $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
+        $this->includeStdJs();
         $this->_view->addCSS(HTTP_ROOT . APPLICATION_LANG . '/style/custom');
     }
 

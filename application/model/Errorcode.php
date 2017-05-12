@@ -40,5 +40,7 @@ class Errorcode {
     const API_EXPIRED_JWT = 10024;
     const API_NOT_FOUND = 10025;
     const API_POST_REQUIRED = 10026;
+    
+    const PROSODY_CONNECTION_ERROR = 10027;
 
 }

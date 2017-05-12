@@ -1,273 +1,384 @@
-$(function () {
-    var FADE_TIME = 150; // ms
-    var TYPING_TIMER_LENGTH = 400; // ms
-    var COLORS = [
-        '#e21400', '#91580f', '#f8a700', '#f78b00',
-        '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-        '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-    ];
+/* global Strophe, prosodyJid, prosodySid, prosodyRid, $pres, $msg */
 
-    // Initialize variables
-    var $window = $(window);
-    var $usernameInput = $('.input_username'); // Input for username
-    var $messages = $('.chat_messages'); // Messages area
-    var $inputMessage = $('.input_message'); // Input message input box
+var connection = null;
+var heads = getStorage('prosody_heads') || [];
+var headMsgCount = getStorage('prosody_heads_count') || [];
 
-    // Prompt for setting a username
-    var username;
-    var connected = false;
-    var typing = false;
-    var lastTypingTime;
-    var $currentInput = $inputMessage.focus();
+var host = window.location.hostname;
 
-    var socket = io('88.99.87.96:8081');
+var chatwindows = [];
+var collapsedwins = getStorage('prosody_collapsed') || [];
 
-    // Sets the client's username
-    setUsername();
-    function setUsername() {
-        username = cleanInput($usernameInput.val().trim());
+$(document).ready(function () {
 
-        // If the username is valid
-        if (username) {
-            $currentInput = $inputMessage.focus();
+    connection = new Strophe.Connection('/http-bind');
 
-            socket.emit('add user');
-        }
+    connection.attach(prosodyJid,
+            prosodySid,
+            prosodyRid,
+            onStatus);
+
+    var chats = getStorage('prosody_windows') || [];
+    for (var i = 0; i < chats.length; i++) {
+        openChatWindow(chats[i], chats[i] + '@' + host);
     }
 
-    // Sends a chat message
-    function sendMessage() {
-        var message = $inputMessage.val();
-        // Prevent markup from being injected into the message
-        message = cleanInput(message);
-        // if there is a non-empty message and a socket connection
-        if (message && connected) {
-            $inputMessage.val('');
-            addChatMessage({
-                username: username,
-                message: message
-            });
-            // tell server to execute 'new message' and send along one parameter
-            socket.emit('new message', {
-                username: username,
-                message: message
-            });
+    updateRoster();
+
+    $('body').tooltip({
+        selector: '[data-toggle=tooltip]',
+        container: 'body'
+    });
+
+    $(window).bind('beforeunload', function () {
+        connection.options.sync = true;
+        connection.flush();
+        connection.disconnect();
+    });
+
+    $('span#prosody_chatbar_roster_controller_btn').click(function () {
+        $('div#prosody_chatbar_container').toggleClass('collapsed');
+        $.cookie('prosody_bar_closed', $('div#prosody_chatbar_container').hasClass('collapsed'), {path: '/'});
+    });
+
+    $(document).on('click', 'div.prosody_userhead', function () {
+        var name = $(this).data('name');
+        $('div#prosody_chatbar_roster_wrapper_scroll')
+                .find('.prosody_userhead[data-name="' + name + '"]')
+                .find('span').remove();
+        headMsgCount[heads.indexOf(name)] = 0;
+        saveStorage('prosody_heads_count', headMsgCount);
+        openChatWindow(name, $(this).data('jid'));
+        $('div.prosody_chatwindow[data-name="' + name + '"]').removeClass('collapsed');
+        collapsedwins[chatwindows.indexOf(name)] = false;
+        saveStorage('prosody_collapsed', collapsedwins);
+    });
+
+    $(document).on('click', 'a.prosody_userhead_searchres', function (e) {
+        var name = $(e.target).data('name');
+        if (heads.indexOf(name) === -1) {
+            heads.push(name);
+            headMsgCount.push(0);
+            saveStorage('prosody_heads', heads);
+            saveStorage('prosody_heads_count', headMsgCount);
+            updateRoster();
         }
-    }
+    });
 
-    // Log a message
-    function log(message, options) {
-        var $el = $('<li>').addClass('chat_log').text(message);
-        addMessageElement($el, options);
-    }
+    $(document).on('click', 'span.prosody_chatwindow_close', function () {
+        var name = $(this).data('name');
+        $('div.prosody_chatwindow[data-name="' + name + '"]').remove();
+        chatwindows.splice(chatwindows.indexOf(name), 1);
+        collapsedwins.splice(chatwindows.indexOf(name), 1);
+        saveStorage('prosody_windows', chatwindows);
+        saveStorage('prosody_collapsed', collapsedwins);
+    });
 
-    // Adds the visual chat message to the message list
-    function addChatMessage(data, options) {
-        // Don't fade the message in if there is an 'X was typing'
-        var $typingMessages = getTypingMessages(data);
-        options = options || {};
-        if ($typingMessages.length !== 0) {
-            options.fade = false;
-            $typingMessages.remove();
+    $(document).on('click', 'div.prosody_chatwindow_head', function (e) {
+        var parent = $(e.target).parent();
+        var name = parent.data('name');
+        parent.toggleClass('collapsed');
+        $('div.prosody_chatwindow[data-name="' + name + '"]').removeClass('newmsg');
+        collapsedwins[chatwindows.indexOf(name)] = !collapsedwins[chatwindows.indexOf(name)];
+        saveStorage('prosody_collapsed', collapsedwins);
+    });
+
+    $(document).on('keydown', 'input.prosody_chatwindow_newmsg_input', function (e) {
+        if (e.keyCode === 13) {
+            var to = $(this).data('to');
+            var val = $(this).val();
+            sendMessage(to, val);
+            storeMessage(getNameFromJid(prosodyJid), val);
+            var msg = {
+                time: Date.now(),
+                msg: val
+            };
+            appendMessage(getNameFromJid(to), msg, true);
+            $(this).val('');
+        }
+    });
+
+    var is_searching = false;
+    var typed = false;
+
+    $('input#prosody_chatbar_search_input').bind('keyup', function () {
+        if (is_searching === true) {
+            typed = true;
+            return;
         }
 
-        var $usernameDiv = $('<span class="chat_username"/>')
-                .text(data.username)
-                .css('color', getUsernameColor(data.username));
-        var $messageBodyDiv = $('<span class="messageBody">')
-                .text(data.message);
+        if ($('#prosody_chatbar_search_input').val().length >= 3) {
+            is_searching = true;
+            $('div#prosody_loading').show();
 
-        var typingClass = data.typing ? 'typing' : '';
-        var $messageDiv = $('<li class="message"/>')
-                .data('username', data.username)
-                .addClass(typingClass)
-                .append($usernameDiv, $messageBodyDiv);
+            $.ajax({
+                type: 'POST',
+                url: '/de/dashboard/search.do',
+                data: {s: $('#prosody_chatbar_search_input').val()}
+            }).done(function (jsonData) {
+                var json = $.parseJSON(jsonData);
 
-        addMessageElement($messageDiv, options);
-    }
+                $('#prosody_chatbar_search_results').empty();
 
-    // Adds the visual chat typing message
-    function addChatTyping(data) {
-        data.typing = true;
-        data.message = 'tippt...';
-        addChatMessage(data);
-    }
+                var $item = '';
+                for (i = 0; i < json.length; i++) {
+                    $item = '';
 
-    // Removes the visual chat typing message
-    function removeChatTyping(data) {
-        getTypingMessages(data).fadeOut(function () {
-            $(this).remove();
-        });
-    }
+                    $item = '<div class="dashboard_search_resultwrapper">\n\
+                            <div class="row">\n\
+                                <div class="col one">\n\
+                                    <img class="profile_pic" src="' + json[i].icon + '" alt="Profile picture" width="32" height="32">\n\
+                                </div>\n\
+                                <div class="col one"></div>\n\
+                                <div class="col eight dashboard_search_username">\n\
+                                    <a class="text_bold prosody_userhead_searchres" data-name="' + json[i].name + '">' + json[i].name + '</a>\n\
+                                </div>\n\
+                            </div>\n\
+                        </div>';
 
-    // Adds a message element to the messages and scrolls to the bottom
-    // el - The element to add as a message
-    // options.fade - If the element should fade-in (default = true)
-    // options.prepend - If the element should prepend
-    //   all other messages (default = false)
-    function addMessageElement(el, options) {
-        var $el = $(el);
-
-        // Setup default options
-        if (!options) {
-            options = {};
-        }
-        if (typeof options.fade === 'undefined') {
-            options.fade = true;
-        }
-        if (typeof options.prepend === 'undefined') {
-            options.prepend = false;
-        }
-
-        // Apply options
-        if (options.fade) {
-            $el.hide().fadeIn(FADE_TIME);
-        }
-        if (options.prepend) {
-            $messages.prepend($el);
-        } else {
-            $messages.append($el);
-        }
-        $messages[0].scrollTop = $messages[0].scrollHeight;
-    }
-
-    // Prevents input from having injected markup
-    function cleanInput(input) {
-        return $('<div/>').text(input).text();
-    }
-
-    // Updates the typing event
-    function updateTyping() {
-        if (connected) {
-            if (!typing) {
-                typing = true;
-                socket.emit('typing', username);
-            }
-            lastTypingTime = (new Date()).getTime();
-
-            setTimeout(function () {
-                var typingTimer = (new Date()).getTime();
-                var timeDiff = typingTimer - lastTypingTime;
-                if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
-                    socket.emit('stop typing', username);
-                    typing = false;
+                    $('#prosody_chatbar_search_results').append($item);
                 }
-            }, TYPING_TIMER_LENGTH);
-        }
-    }
 
-    // Gets the 'X is typing' messages of a user
-    function getTypingMessages(data) {
-        return $('.typing.message').filter(function (i) {
-            return $(this).data('username') === data.username;
-        });
-    }
-
-    function hashCode(str) {
-        var hash = 0, i, chr, len;
-        if (str.length === 0)
-            return hash;
-        for (i = 0, len = str.length; i < len; i++) {
-            chr = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + chr;
-            hash |= 0;
-        }
-        return hash;
-    }
-
-    var onlineUsers = [];
-
-    function showAsOnline(data) {
-        var $usernameDiv = $('<span class="chat_username"/>')
-                .text(data.username)
-                .css('color', getUsernameColor(data.username));
-
-        var $messageDiv = $('<li class="message ' + hashCode(data.username) + '"/>')
-                .data('username', data.username)
-                .append($usernameDiv);
-
-        $('#online:not(:has(.message.' + hashCode(data.username) + '))').append($messageDiv);
-        onlineUsers.push(data.username);
-    }
-
-    setInterval(function () {
-        $('#online .message').each(function () {
-            if ($.inArray($(this).data('username'), onlineUsers) === -1) {
-                $(this).remove();
-            }
-        });
-        onlineUsers = [];
-    }, 2000);
-
-    // Gets the color of a username through our hash function
-    function getUsernameColor(username) {
-        // Compute hash code
-        var hash = 7;
-        var index = 42;
-        for (var i = 0; i < username.length; i++) {
-            hash = username.charCodeAt(i) + (hash << 5) - hash;
-        }
-        // Calculate color
-        index = Math.abs(hash % COLORS.length);
-        return COLORS[index];
-    }
-
-    // Keyboard events
-
-    $window.keydown(function (event) {
-        // Auto-focus the current input when a key is typed
-        if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-            $currentInput.focus();
-        }
-        // When the client hits ENTER on their keyboard
-        if (event.which === 13) {
-            if (username) {
-                sendMessage();
-                socket.emit('stop typing', username);
-                typing = false;
-            } else {
-                setUsername();
-            }
+                finishRequest();
+            }).fail(function () {
+                finishRequest();
+            });
         }
     });
 
-    $inputMessage.on('input', function () {
-        updateTyping();
-    });
+    function finishRequest() {
+        $('div#prosody_loading').hide();
+        is_searching = false;
+        if (typed) {
+            typed = false;
+            $('input#prosody_chatbar_search_input').trigger('keyup');
+        }
+    }
 
-    // Socket events
-
-    // Whenever the server emits 'login', log the login message
-    socket.on('login', function () {
-        connected = true;
-        log("Nachrichten in diesem Chat werden nicht gespeichert.", {prepend: true});
-        log("Diesen Chat können ALLE Nutzer sehen.", {prepend: true});
-        log("Willkommen im MyEnvoy Chat", {prepend: true});
-    });
-
-    // Whenever the server emits 'new message', update the chat body
-    socket.on('new message', function (data) {
-        addChatMessage({
-            username: data.message.username,
-            message: data.message.message
-        });
-    });
-
-    // Whenever the server emits 'typing', show the typing message
-    socket.on('typing', function (data) {
-        addChatTyping(data);
-    });
-
-    // Whenever the server emits 'stop typing', kill the typing message
-    socket.on('stop typing', function (data) {
-        removeChatTyping(data);
-    });
-
-    socket.on('online', function (data) {
-        showAsOnline(data);
-    });
-
-    setInterval(function () {
-        socket.emit('online', username);
-    }, 2000);
 });
+
+function onStatus(status) {
+    if (status === Strophe.Status.CONNECTING) {
+        console.log('Strophe is connecting.');
+    } else if (status === Strophe.Status.CONNFAIL) {
+        console.log('Strophe failed to connect.');
+    } else if (status === Strophe.Status.DISCONNECTING) {
+        console.log('Strophe is disconnecting.');
+    } else if (status === Strophe.Status.DISCONNECTED) {
+        console.log('Strophe is disconnected.');
+    } else if (status === Strophe.Status.ATTACHED) {
+        console.log('Strophe is attached.');
+
+        connection.addHandler(onMessage, null, 'message', null, null, null);
+        connection.send($pres().tree());
+    }
+}
+
+function onMessage(msg) {
+    var from = msg.getAttribute('from');
+    var type = msg.getAttribute('type');
+    var elems = msg.getElementsByTagName('body');
+
+    var composing = msg.getElementsByTagName('composing');
+    var paused = msg.getElementsByTagName('paused');
+
+    if (type === 'chat' && elems.length > 0) {
+        var body = elems[0];
+        var msg = storeMessage(from, Strophe.getText(body));
+        var name = getNameFromJid(from);
+        appendMessage(name, msg);
+        if (heads.indexOf(name) === -1) {
+            heads.push(name);
+            headMsgCount.push(0);
+            saveStorage('prosody_heads', heads);
+            saveStorage('prosody_heads_count', headMsgCount);
+            updateRoster();
+        }
+        if (chatwindows.indexOf(name) === -1) {
+            incrementHeadMsgCount(name);
+        } else if ($('div.prosody_chatwindow[data-name="' + name + '"]').hasClass('collapsed')) {
+            headMsgCount[heads.indexOf(name)]++;
+            saveStorage('prosody_heads_count', headMsgCount);
+            $('div.prosody_chatwindow[data-name="' + name + '"]').addClass('newmsg');
+        }
+        playSound();
+    } else if (type === 'chat' && composing.length > 0) {
+        console.log(from, 'tippt');
+    } else if (type === 'chat' && paused.length > 0) {
+        console.log(from, 'tippt nicht mehr');
+    }
+
+    return true;
+}
+
+function sendMessage(to, msg) {
+    connection.send(
+            $msg({to: to, type: 'chat'})
+            .cnode(Strophe.xmlElement('body', msg)).up()
+            .c('active', {xmlns: "http://jabber.org/protocol/chatstates"}));
+}
+
+function incrementHeadMsgCount(name) {
+    var head = $('div#prosody_chatbar_roster_wrapper_scroll')
+            .find('.prosody_userhead[data-name="' + name + '"]')
+            .find('span');
+    if (head.length === 0) {
+        $('div#prosody_chatbar_roster_wrapper_scroll')
+                .find('.prosody_userhead[data-name="' + name + '"]')
+                .append('<span>0</span>');
+        incrementHeadMsgCount(name);
+        return;
+    }
+    headMsgCount[heads.indexOf(name)]++;
+    saveStorage('prosody_heads_count', headMsgCount);
+    head.html(headMsgCount[heads.indexOf(name)]);
+}
+
+function storeMessage(from, msg) {
+    var msgs = getStorage('prosody_messages');
+
+    if (msgs === null) {
+        msgs = [];
+    }
+
+    var msg = {
+        from: getNameFromJid(from),
+        otherusr: getNameFromJid(from),
+        time: Date.now(),
+        msg: msg
+    };
+
+    msgs.push(msg);
+
+    saveStorage('prosody_messages', msgs);
+    return msg;
+}
+
+function openChatWindow(name, jid) {
+    if (chatwindows.indexOf(name) === -1) {
+        chatwindows.push(name);
+        if (collapsedwins.length < chatwindows.length) {
+            collapsedwins.push(false);
+        }
+
+        $('div#prosody_chatwindow_container').append('<div class="prosody_chatwindow '
+                + (collapsedwins[chatwindows.indexOf(name)] ? 'collapsed' : '')
+                + (headMsgCount[heads.indexOf(name)] > 0 ? ' newmsg' : ' ')
+                + '" data-name="' + name + '">\n\
+                <div class="prosody_chatwindow_head">\n\
+                    <span class="prosody_chatwindow_name">' + name + '</span>\n\
+                    <span class="prosody_chatwindow_close genericon genericon-close-alt" data-name="' + name + '"></span>\n\
+                </div>\n\
+                <div class="prosody_chatwindow_content">\n\
+                    <div class="prosody_chatwindow_scroll"></div>\n\
+                </div>\n\
+                <div class="prosody_chatwindow_newmsg">\n\
+                    <input class="prosody_chatwindow_newmsg_input" data-to="' + jid + '" type="text" placeholder="...">\n\
+                </div>\n\
+            </div>');
+        saveStorage('prosody_windows', chatwindows);
+        saveStorage('prosody_collapsed', collapsedwins);
+        loadMessagesFromStorage(name);
+    }
+}
+
+function loadMessagesFromStorage(name) {
+    var msgs = getStorage('prosody_messages');
+
+    for (var i = 0; i < msgs.length; i++) {
+        if (msgs[i].from === name) {
+            appendMessage(name, msgs[i]);
+        } else if (msgs[i].from === getNameFromJid(prosodyJid)) {
+            appendMessage(name, msgs[i], true);
+        }
+    }
+}
+
+function appendMessage(name, msg, me = false) {
+    if (chatwindows.indexOf(name) !== -1) {
+        var el = $('div.prosody_chatwindow[data-name="' + name + '"]')
+                .find('div.prosody_chatwindow_content')
+                .find('div.prosody_chatwindow_scroll');
+        var html = '<div class="mes_message_wrapper">\n';
+        if (me === false) {
+            html += '<div class="mes_message_head"><img src="/de/upload/userpic/?size=32&name=' + name + '"></div>\n';
+        }
+        html += '<div class="mes_message ' + (me ? 'mes_me' : '') + '">\n\
+                                <div class="mes_message_content">' + msg.msg + '</div>\n\
+                                <div class="mes_message_footer">' + getTimeString(msg.time) + '</div>\n\
+                            </div>\n\
+                        </div>';
+        el.append(html);
+        scrollToEnd(el);
+}
+}
+
+function scrollToEnd(el) {
+    el.scrollTop(el.prop('scrollHeight'));
+}
+
+function getTimeString(stamp) {
+    var date = new Date(stamp);
+
+    var month = "0" + (date.getMonth() + 1);
+    var day = "0" + date.getDate();
+    var year = date.getFullYear();
+    var hours = "0" + date.getHours();
+    var minutes = "0" + date.getMinutes();
+
+    return day.substr(day.length - 2) + '.' + month.substr(month.lengh - 2) + '.' + year + ' ' + hours.substr(hours.length - 2) + ':' + minutes.substr(minutes.length - 2);
+}
+
+function saveStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function getStorage(key) {
+    var val = localStorage.getItem(key);
+    if (val === null)
+        return null;
+    return JSON.parse(val);
+}
+
+function updateRoster() {
+    for (var i = 0; i < heads.length; i++) {
+        var name = heads[i];
+        var jid = name + '@' + host;
+
+        var el = $('div#prosody_chatbar_roster_wrapper_scroll').has('.prosody_userhead[data-jid="' + jid + '"]');
+
+        if (el.length === 0) {
+            var content = '<div class="prosody_userhead" data-name="' + name + '" data-jid="' + jid + '" data-toggle="tooltip" data-placement="left" title="" data-original-title="' + name + '">\n\
+                                <img src="/de/upload/userpic/?size=32&name=' + name + '">\n';
+            if (headMsgCount[i] > 0 && !collapsedwins[chatwindows.indexOf(name)]) {
+                content += '<span>' + headMsgCount[i] + '</span>';
+            }
+            content += '</div>';
+            $('div#prosody_chatbar_roster_wrapper_scroll').append(content);
+        }
+    }
+}
+
+function getNameFromJid(jid) {
+    return jid.split('@')[0];
+}
+
+var audioElement = null;
+
+function playSound() {
+    if (audioElement === null) {
+        audioElement = new Audio('');
+        document.body.appendChild(audioElement);
+    }
+
+    // get mediatype
+    var canPlayType = audioElement.canPlayType('audio/wav');
+    if (canPlayType.match(/maybe|probably/i)) {
+        audioElement.src = '/js/notification.wav';
+    }
+
+    // play if mp3 is downloaded
+    audioElement.addEventListener('canplay', function () {
+        audioElement.play();
+    }, false);
+}

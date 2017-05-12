@@ -16,4 +16,11 @@ abstract class Controller extends Famework_Controller {
         $this->_view->addJS(HTTP_ROOT . 'js/main.js');
     }
 
+    public function includeStdJs() {
+        $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/strophe.min.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/jquery.cookie.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/chat.js');
+    }
+
 }

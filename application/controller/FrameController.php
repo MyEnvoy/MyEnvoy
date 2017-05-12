@@ -23,9 +23,12 @@ class FrameController extends Famework_Controller implements Famework_View_Frame
                 <h1><a href="/<?php echo APPLICATION_LANG ?>" class="noa">MyEnvoy</a></h1>
             </div>
             <?php
+        else:
+            ProsodyChat::prebind($this->_view->user);
+            ProsodyChat::render();
         endif;
-        
-        if(Famework_Registry::getEnv() === Famework::ENV_DEV) {
+
+        if (Famework_Registry::getEnv() === Famework::ENV_DEV) {
             echo '<style>div#dashboard_header_container {background-color: #f2dede !important;}</style>';
         }
     }

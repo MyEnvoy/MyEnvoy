@@ -53,3 +53,6 @@
         <a class="noa text_light" href="/<?php echo APPLICATION_LANG; ?>/tos">Impressum</a>
     </footer>
 </div>
+<script>
+    localStorage.clear();
+</script>
