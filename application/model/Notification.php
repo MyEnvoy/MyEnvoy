@@ -37,6 +37,7 @@ class Notification {
 
     const TYPE_NEW_COMMENT = 1;
     const TYPE_MENTIONED = 2;
+    const TYPE_NEW_FOLLOWER = 3;
 
     public function getType() {
         return (int) $this->getWhatever('type');
@@ -54,7 +55,8 @@ class Notification {
         if ($this->_link_templates === NULL) {
             $this->_link_templates = array(
                 self::TYPE_NEW_COMMENT => '/%s/post/show?id=%s',
-                self::TYPE_MENTIONED => '/%s/post/show?id=%s'
+                self::TYPE_MENTIONED => '/%s/post/show?id=%s',
+                self::TYPE_NEW_FOLLOWER => '/%s/user/%s'
             );
         }
 
@@ -82,6 +84,8 @@ class Notification {
                 return 'genericon-comment';
             case self::TYPE_MENTIONED:
                 return 'genericon-quote';
+            case self::TYPE_NEW_FOLLOWER:
+                return 'genericon-link';
         }
     }
 

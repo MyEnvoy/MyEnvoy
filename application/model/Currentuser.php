@@ -3,7 +3,6 @@
 use Famework\Registry\Famework_Registry;
 use Famework\Session\Famework_Session;
 use Famework\Request\Famework_Request;
-
 use Api\Jwt;
 
 class Currentuser extends User {
@@ -43,6 +42,21 @@ class Currentuser extends User {
         return new Currentuser($uid);
     }
 
+    public static function isNotActivated($name) {
+        $db = Famework_Registry::getDb();
+        $stm = $db->prepare('SELECT id FROM user '
+                . ' JOIN user_data ud ON ud.user_id = user.id '
+                . 'WHERE name = :name AND activated = 0 AND host_gid IS NULL LIMIT 1');
+        $stm->bindParam(':name', $name);
+        $stm->execute();
+
+        if (count($stm->fetchAll()) === 1) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
     public static function getIdByName($name) {
         $stm = Famework_Registry::getDb()->prepare('SELECT id FROM user WHERE name = ? AND host_gid IS NULL LIMIT 1');
         $stm->execute(array($name));
@@ -68,11 +82,11 @@ class Currentuser extends User {
 
         return new Currentuser($uid);
     }
-    
+
     public static function getEnsuredLoggedInUserByJwt($token) {
         $jwt = new Jwt();
         $decToken = $jwt->decode($token);
-        
+
         return new Currentuser((int) $decToken->uid);
     }
 

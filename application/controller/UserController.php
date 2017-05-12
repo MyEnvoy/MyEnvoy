@@ -22,6 +22,7 @@ class UserController extends Controller {
 
     public function indexAction() {
         $this->_view->user = Currentuser::getEnsureLoggedInUser(FALSE);
+        $this->_view->title(t('user_index_unknown_profile'));
 
         // get username from URL via famework
         $famework = Famework_Registry::get('\famework_sys');
@@ -30,6 +31,13 @@ class UserController extends Controller {
 
         if (preg_match('/^[a-z0-9.]{3,40}$/', $username) !== 1) {
             $this->_view->error = TRUE;
+        }
+
+        if (preg_match('/^[0-9]{1,11}$/', $username) === 1 &&
+                ($tempUsr = Otheruser::getLocalById($username)) !== NULL) {
+            $username = $tempUsr->getName();
+            $this->_view->addHeadElement(sprintf('<link rel="canonical" href="/%s/user/%s"/>', APPLICATION_LANG, $username));
+            $this->_view->error = FALSE;
         }
 
         if ($this->_view->user !== NULL) {
@@ -69,6 +77,9 @@ class UserController extends Controller {
 
         $otheruser = new Otheruser($user_id, $this->_view->user->getId());
         $otheruser->follow($this->_view->user);
+        
+        $notification = new Notification();
+        $notification->add($otheruser, Notification::TYPE_NEW_FOLLOWER, 'notification_type_follower', $this->_view->user->getId());
 
         Famework_Request::redirect('/' . APPLICATION_LANG . '/user/' . $otheruser->getFullQualifiedName());
     }
