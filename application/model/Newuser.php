@@ -71,6 +71,26 @@ class Newuser extends User {
         return TRUE;
     }
 
+    public static function createProsodyAccount($name) {
+        $user = Otheruser::getLocalByName($name, NULL);
+        $uid = $user->getId();
+
+        $stm = Famework_Registry::getDb()->prepare('SELECT xmpp_pwd FROM user_data WHERE user_id = ?');
+        $stm->execute(array($uid));
+
+        $xmpp_pwd = $stm->fetch()['xmpp_pwd'];
+
+        $prosody = new Prosody();
+        if ($prosody->createUser($user->getName() . '@' . Server::getMyHost(), $xmpp_pwd)) {
+            Userinfo::log($uid, Userinfo::MESSAGE_CREATE_PROSODY_ACCOUNT);
+            return TRUE;
+        }
+
+        Log::err('FATAL: Failed to create Prosody account for user #' . $uid);
+
+        return FALSE;
+    }
+
     public static function validatePassword($pwd, $name) {
         // https://www.youtube.com/watch?v=zUM7i8fsf0g
         // prevents from worst pattern
@@ -148,9 +168,11 @@ class Newuser extends User {
         $idstm->execute(array($name, $gid));
         $myid = (int) $idstm->fetch()['id'];
 
-        $stm1 = $db->prepare('INSERT INTO user_data (user_id, email, pwd, salt, hash, priv_key_enc) VALUES (?, ?, ?, ?, ?, ?)');
+        $xmpp_pwd = hash('sha512', uniqid('xmpp', TRUE));
+
+        $stm1 = $db->prepare('INSERT INTO user_data (user_id, email, pwd, salt, hash, priv_key_enc, xmpp_pwd) VALUES (?, ?, ?, ?, ?, ?, ?)');
         $stm1->execute(array(
-            $myid, $email, $pwdAsHash, $salt, $hash, $priv_key_enc
+            $myid, $email, $pwdAsHash, $salt, $hash, $priv_key_enc, $xmpp_pwd
         ));
 
         // setup dependencies

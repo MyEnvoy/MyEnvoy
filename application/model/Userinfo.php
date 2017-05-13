@@ -13,6 +13,7 @@ class Userinfo {
     const MESSAGE_ACTIVATE_ACCOUNT = 'account_activation';
     const MESSAGE_LOGIN_BLOCKED = 'login_blocked';
     const MESSAGE_PWD_CHANGED = 'pwd_changed';
+    const MESSAGE_CREATE_PROSODY_ACCOUNT = 'prosody_created';
     const MESSAGE_API_LOGIN_SUCCESS = 'api_login';
     const MESSAGE_API_LOGIN_FAIL = 'api_fail';
     const MESSAGE_API_LOGIN_BLOCKED = 'api_blocked';

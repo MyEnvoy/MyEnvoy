@@ -19,8 +19,14 @@ class UploadController extends Controller {
     public function userpicAction() {
         $this->_paramHandler->bindMethods(Paramhandler::GET);
 
-        $userid = $this->_paramHandler->getInt('id');
+        $userid = $this->_paramHandler->getInt('id', FALSE);
         $size = $this->_paramHandler->getInt('size');
+
+        if ($userid === NULL) {
+            $username = $this->_paramHandler->getValue('name');
+            $user = Otheruser::getLocalByName($username, $this->_user->getId());
+            $userid = $user->getId();
+        }
 
         try {
             if (!empty($this->_user) && $userid !== $this->_user->getId()) {
@@ -40,6 +46,8 @@ class UploadController extends Controller {
         if (is_readable($path) === TRUE) {
             header('Content-type: image/jpeg');
             imagejpeg(imagecreatefromjpeg($path));
+        } else if (isset($username)) {
+            header('Location: ' . Server::getRootLink() . 'img/profile256.png', TRUE, 302);
         } else {
             header('HTTP/1.0 404 Not Found', TRUE, 404);
         }

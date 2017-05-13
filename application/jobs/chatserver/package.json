@@ -1,9 +1,0 @@
-{
-    "name": "MyEnvoy-chat-server",
-    "varsion": "1.0.0",
-    "description": "The MyEnvoy chat server",
-    "author": "Fabian Maier",
-    "dependencies": {
-        "express": "^4.14.0", "socket.io": "^1.7.2"
-    }
-}

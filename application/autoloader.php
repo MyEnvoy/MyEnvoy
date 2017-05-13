@@ -7,6 +7,7 @@ spl_autoload_register(function ($class) {
     $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR;
     $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR . 'traits' . DIRECTORY_SEPARATOR;
     $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR;
+    $paths[] = APPLICATION_PATH . 'model' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR;
 
     if (strpos($class, '\\') !== FALSE) {
         // remove namesapce

@@ -163,7 +163,8 @@ class PostController extends Controller {
     public function showAction() {
         $this->_view->addJS(HTTP_ROOT . 'js/jquery-2.1.4.min.js');
         $this->_view->addJS(HTTP_ROOT . 'js/comment.js');
-        $this->_view->addJS(HTTP_ROOT . 'js/dropdown.js');
+        $this->_view->addJS(HTTP_ROOT . 'js/popover.min.js');
+        $this->includeStdJs();
         $this->_view->addCSS(HTTP_ROOT . APPLICATION_LANG . '/style/custom');
 
         $this->_view->title('Post@MyEnvoy');
