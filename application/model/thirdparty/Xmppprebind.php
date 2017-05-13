@@ -80,7 +80,9 @@ class XmppPrebind {
         $this->jabberHost = $jabberHost;
         $this->boshUri = $boshUri;
         $this->resource = $resource;
-
+        var_dump_pre($jabberHost);
+        var_dump_pre($boshUri);
+        var_dump_pre($resource);
         /*
          * The client MUST generate a large, random, positive integer for the initial 'rid' (see Security Considerations)
          * and then increment that value by one for each subsequent request. The client MUST take care to choose an
