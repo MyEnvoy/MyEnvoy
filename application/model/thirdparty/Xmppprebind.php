@@ -134,6 +134,7 @@ class XmppPrebind {
         $this->maxpause = $body->getAttribute('maxpause');
 
         if (empty($body->firstChild) || empty($body->firstChild->firstChild)) {
+            var_dump_pre($body);
             throw new XmppPrebindConnectionException("Child not found in response from server.");
         }
 
