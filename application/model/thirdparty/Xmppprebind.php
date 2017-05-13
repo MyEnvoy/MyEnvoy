@@ -6,6 +6,7 @@ use Exception;
 use DOMDocument;
 use Auth_SASL;
 use Auth_SASL_Common;
+use Log;
 
 /**
  * XMPP Prebind for PHP
@@ -114,12 +115,15 @@ class XmppPrebind {
 
         $response = $this->sendInitialConnection();
         if (empty($response)) {
+            Log::err($response);
             throw new XmppPrebindConnectionException("No response from server.");
         }
 
         $body = self::getBodyFromXml($response);
-        if (empty($body))
+        if (empty($body)) {
+            Log::err($body);
             throw new XmppPrebindConnectionException("No body could be found in response from server.");
+        }
         $this->sid = $body->getAttribute('sid');
 
         // set the Bosh Attributes
@@ -134,6 +138,7 @@ class XmppPrebind {
         $this->maxpause = $body->getAttribute('maxpause');
 
         if (empty($body->firstChild) || empty($body->firstChild->firstChild)) {
+            Log::err($body);
             throw new XmppPrebindConnectionException("Child not found in response from server.");
         }
 
