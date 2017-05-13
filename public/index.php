@@ -134,6 +134,11 @@ if ($lang !== NULL) {
         $famework->truncateRequest();
     }
 } else {
+    // construct?
+    if($config->getValue('myenvoy', 'under_construction') == 1) {
+        Famework_Request::redirect('/under_construction.php', Famework_Request::CODE_TEMPORARYREDIRECT);
+    }
+    
     // check if page is found
     if ($famework->getController() !== NULL) {
         $default = $config->getValue('myenvoy', 'default_lang');
