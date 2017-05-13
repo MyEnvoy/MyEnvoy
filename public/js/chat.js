@@ -4,7 +4,7 @@ var connection = null;
 var heads = getStorage('prosody_heads') || [];
 var headMsgCount = getStorage('prosody_heads_count') || [];
 
-var host = window.location.hostname;
+var host = window.location.hostname.replace('www.', '');
 
 var chatwindows = [];
 var collapsedwins = getStorage('prosody_collapsed') || [];
