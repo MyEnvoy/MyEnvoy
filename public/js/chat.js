@@ -49,7 +49,10 @@ $(document).ready(function () {
         headMsgCount[heads.indexOf(name)] = 0;
         saveStorage('prosody_heads_count', headMsgCount);
         openChatWindow(name, $(this).data('jid'));
-        $('div.prosody_chatwindow[data-name="' + name + '"]').removeClass('collapsed');
+
+        var chatwin = $('div.prosody_chatwindow[data-name="' + name + '"]');
+        chatwin.removeClass('collapsed');
+        chatwin.find('div.prosody_chatwindow_newmsg').find('input').focus();
         collapsedwins[chatwindows.indexOf(name)] = false;
         saveStorage('prosody_collapsed', collapsedwins);
     });
@@ -81,6 +84,11 @@ $(document).ready(function () {
         $('div.prosody_chatwindow[data-name="' + name + '"]').removeClass('newmsg');
         collapsedwins[chatwindows.indexOf(name)] = !collapsedwins[chatwindows.indexOf(name)];
         saveStorage('prosody_collapsed', collapsedwins);
+        if (!collapsedwins[chatwindows.indexOf(name)]) {
+            parent.find('div.prosody_chatwindow_newmsg').find('input').focus();
+            headMsgCount[heads.indexOf(name)] = 0;
+            saveStorage('prosody_heads_count', headMsgCount);
+        }
     });
 
     $(document).on('keydown', 'input.prosody_chatwindow_newmsg_input', function (e) {
@@ -296,6 +304,9 @@ function loadMessagesFromStorage(name) {
 
 function appendMessage(name, msg, me = false) {
     if (chatwindows.indexOf(name) !== -1) {
+        if(me) {
+            msg.msg = escapeHtml(msg.msg);
+        }
         var el = $('div.prosody_chatwindow[data-name="' + name + '"]')
                 .find('div.prosody_chatwindow_content')
                 .find('div.prosody_chatwindow_scroll');
@@ -304,13 +315,26 @@ function appendMessage(name, msg, me = false) {
             html += '<div class="mes_message_head"><img src="/de/upload/userpic/?size=32&name=' + name + '"></div>\n';
         }
         html += '<div class="mes_message ' + (me ? 'mes_me' : '') + '">\n\
-                                <div class="mes_message_content">' + msg.msg + '</div>\n\
+                                <div class="mes_message_content">' + msgFormat(msg.msg) + '</div>\n\
                                 <div class="mes_message_footer">' + getTimeString(msg.time) + '</div>\n\
                             </div>\n\
                         </div>';
         el.append(html);
         scrollToEnd(el);
 }
+}
+
+function msgFormat(msg) {
+    return msg.replace(/(https?:\/\/?[\d\w\.-]+\.[\w\.]{2,6}[^\s\]\[\<\>]*\/?)/gi, '<a target="_blank" href="$1">$1</a>');
+}
+
+function escapeHtml(text) {
+    return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 }
 
 function scrollToEnd(el) {
