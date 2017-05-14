@@ -271,7 +271,9 @@ div#prosody_chatbar_roster {float: left;width: 52px;overflow: hidden;}
 div#prosody_chatbar_roster_controller {border-bottom: 1px solid #e5e5e5;padding: 8px 10px;}
 span#prosody_chatbar_roster_controller_btn {font-size: 32px;cursor: pointer;}
 span#prosody_chatbar_roster_controller_btn:hover {color: #337ab7;}
-div#prosody_chatbar_roster_wrapper {height: 100%;border-right: 1px solid #e5e5e5;box-sizing: border-box;padding-top: 10px;}
+div#prosody_chatbar_roster_wrapper {border-right: 1px solid #e5e5e5;height: 100%;box-sizing: border-box;padding-top: 10px;}
+div#prosody_chatbar_roster_offline {display: none;position: relative;border-right: 1px solid #e5e5e5;text-align: center;padding: 10px 0px;color: red;}
+div#prosody_chatbar_roster_offline.show {display: block;}
 div#prosody_chatbar_search {float: right;flex: 1;}
 div#prosody_chatbar_search_wrapper {}
 input#prosody_chatbar_search_input {border-radius: 0px;height: 49px;}

@@ -13,6 +13,12 @@ $(document).ready(function () {
 
     connection = new Strophe.Connection('/http-bind');
 
+    if(typeof prosodyJid === 'undefined') {
+        $('div#prosody_chatbar_container').addClass('collapsed');
+        $('div#prosody_chatbar_roster_offline').addClass('show');
+        return;
+    }
+
     connection.attach(prosodyJid,
             prosodySid,
             prosodyRid,

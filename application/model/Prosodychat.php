@@ -18,6 +18,9 @@ class ProsodyChat {
                     <div id="prosody_chatbar_roster_controller">
                         <span id="prosody_chatbar_roster_controller_btn" class="genericon genericon-comment"></span>
                     </div>
+                    <div id="prosody_chatbar_roster_offline">
+                        <span class="genericon genericon-spam" data-toggle="tooltip" data-placement="bottom" data-original-title="Server offline"></span>
+                    </div>
                     <div id="prosody_chatbar_roster_wrapper">
                         <div id="prosody_chatbar_roster_wrapper_scroll">
                             <!-- Space for user heads -->
@@ -43,17 +46,23 @@ class ProsodyChat {
     }
 
     public static function prebind(Currentuser $user) {
-        $prebind = new XmppPrebind(Server::getMyHost(), Server::getRootLink() . 'http-bind', 'MyEnvoyWeb');
-        $prebind->connect($user->getName(), $user->getXmppPwd());
-        $prebind->auth();
-        $prebindData = $prebind->getSessionInfo();
-        ?>
-        <script>
-            var prosodyJid = "<?php echo $prebindData['jid']; ?>";
-            var prosodySid = "<?php echo $prebindData['sid']; ?>";
-            var prosodyRid = "<?php echo $prebindData['rid']; ?>";
-        </script>
-        <?php
+        try {
+            $prebind = new XmppPrebind(Server::getMyHost(), Server::getRootLink() . 'http-bind', 'MyEnvoyWeb');
+            $prebind->connect($user->getName(), $user->getXmppPwd());
+            $prebind->auth();
+            $prebindData = $prebind->getSessionInfo();
+            ?>
+            <script>
+                var prosodyJid = "<?php echo $prebindData['jid']; ?>";
+                var prosodySid = "<?php echo $prebindData['sid']; ?>";
+                var prosodyRid = "<?php echo $prebindData['rid']; ?>";
+            </script>
+            <?php
+        } catch (Exception $e) {
+            return FALSE;
+        }
+
+        return TRUE;
     }
 
 }
