@@ -5,7 +5,7 @@ use Famework\View\Famework_View_Frame_Controller;
 class AdminframeController implements Famework_View_Frame_Controller {
 
     public function __construct($view) {
-        $view->addCSS('http://fonts.googleapis.com/icon?family=Material+Icons');
+        $view->addCSS('https://fonts.googleapis.com/icon?family=Material+Icons');
         $view->addCSS('https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css');
         $view->addMeta('viewport', 'width=device-width, initial-scale=1.0');
         $view->addCSS(HTTP_ROOT . 'css/admin.css');
