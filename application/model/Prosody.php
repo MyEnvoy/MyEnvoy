@@ -69,6 +69,19 @@ class Prosody {
 
         return FALSE;
     }
+    
+    public function countActiveUser($host) {
+        $res = $this->runCmd(sprintf('c2s:show("%s")', $host));
+        
+        if(count($res) === 1) {
+            return 0;
+        }
+        
+        $res = array_slice($res, 1);
+        $res = array_slice($res, 0, -1);
+        
+        return count($res);
+    }
 
     /**
      * Change the password of a user
