@@ -21,3 +21,5 @@ Famework_Registry::set('\famework_config', $config);
 Famework_Registry::set('\famework_sys', $famework);
 
 $db = Famework_Registry::getDb();
+
+Log::init();

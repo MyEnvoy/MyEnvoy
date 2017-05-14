@@ -14,8 +14,11 @@ class Log {
 
     public static function info($message) {
         if (!empty(self::$_log_normal)) {
-            $message = sprintf('%s [INFO] %s\n', date('Y-m-d H:i:s'), $message);
+            $message = sprintf('%s [INFO] %s', date('Y-m-d H:i:s'), $message . PHP_EOL);
             self::writeToLog(self::$_log_normal, $message);
+            if (php_sapi_name() === 'cli') {
+                print $message;
+            }
         }
     }
 
@@ -23,6 +26,9 @@ class Log {
         if (!empty(self::$_log_error)) {
             $message = sprintf('%s [ERROR] %s', date('Y-m-d H:i:s'), $message . PHP_EOL);
             self::writeToLog(self::$_log_error, $message);
+            if (php_sapi_name() === 'cli') {
+                echo $message;
+            }
         }
     }
 
