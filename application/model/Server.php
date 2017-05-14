@@ -20,7 +20,7 @@ class Server {
         if (APPLICATION_HTTPS === TRUE) {
             $protocoll = 'https://';
         }
-        return $protocoll . self::getMyHost() . '/';
+        return $protocoll . 'www.' . self::getMyHost() . '/';
     }
 
     public static function getClientIP() {
