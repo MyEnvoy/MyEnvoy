@@ -52,7 +52,8 @@ class AdminController extends Famework_Controller {
 
     public function logoutDoAction() {
         $this->_view->ignoreView();
-        header('Location: ' . (APPLICATION_HTTPS ? 'https' : 'http') . '://logout:logout@' . Server::getMyHost() . '/admin/index', TRUE, 302);
+        $protocol = (APPLICATION_HTTPS ? 'https' : 'http') . '://';
+        header('Location: ' . str_replace($protocol, $protocol . 'logout:logout@', Server::getRootLink()) . 'admin/index', TRUE, 302);
     }
 
 }
