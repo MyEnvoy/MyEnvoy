@@ -96,7 +96,7 @@ $(document).ready(function () {
             var to = $(this).data('to');
             var val = $(this).val();
             sendMessage(to, val);
-            storeMessage(getNameFromJid(prosodyJid), val);
+            storeMessage(prosodyJid, to, val);
             var msg = {
                 time: Date.now(),
                 msg: val
@@ -183,6 +183,7 @@ function onStatus(status) {
 }
 
 function onMessage(msg) {
+    var to = msg.getAttribute('to');
     var from = msg.getAttribute('from');
     var type = msg.getAttribute('type');
     var elems = msg.getElementsByTagName('body');
@@ -192,7 +193,7 @@ function onMessage(msg) {
 
     if (type === 'chat' && elems.length > 0) {
         var body = elems[0];
-        var msg = storeMessage(from, Strophe.getText(body));
+        var msg = storeMessage(from, to, Strophe.getText(body));
         var name = getNameFromJid(from);
         appendMessage(name, msg);
         if (heads.indexOf(name) === -1) {
@@ -242,7 +243,7 @@ function incrementHeadMsgCount(name) {
     head.html(headMsgCount[heads.indexOf(name)]);
 }
 
-function storeMessage(from, msg) {
+function storeMessage(from, to, msg) {
     var msgs = getStorage('prosody_messages');
 
     if (msgs === null) {
@@ -251,7 +252,7 @@ function storeMessage(from, msg) {
 
     var msg = {
         from: getNameFromJid(from),
-        otherusr: getNameFromJid(from),
+        to: getNameFromJid(to),
         time: Date.now(),
         msg: msg
     };
@@ -291,12 +292,13 @@ function openChatWindow(name, jid) {
 }
 
 function loadMessagesFromStorage(name) {
-    var msgs = getStorage('prosody_messages');
+    var msgs = getStorage('prosody_messages') || [];
 
     for (var i = 0; i < msgs.length; i++) {
         if (msgs[i].from === name) {
             appendMessage(name, msgs[i]);
-        } else if (msgs[i].from === getNameFromJid(prosodyJid)) {
+        } else if (msgs[i].from === getNameFromJid(prosodyJid)
+                && msgs[i].to === name) {
             appendMessage(name, msgs[i], true);
         }
     }
@@ -304,7 +306,7 @@ function loadMessagesFromStorage(name) {
 
 function appendMessage(name, msg, me = false) {
     if (chatwindows.indexOf(name) !== -1) {
-        if(me) {
+        if (me) {
             msg.msg = escapeHtml(msg.msg);
         }
         var el = $('div.prosody_chatwindow[data-name="' + name + '"]')
