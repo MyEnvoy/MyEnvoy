@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     connection = new Strophe.Connection('/http-bind');
 
-    if(typeof prosodyJid === 'undefined') {
+    if (typeof prosodyJid === 'undefined') {
         $('div#prosody_chatbar_container').addClass('collapsed');
         $('div#prosody_chatbar_roster_offline').addClass('show');
         return;
@@ -145,7 +145,7 @@ $(document).ready(function () {
                                 </div>\n\
                                 <div class="col one"></div>\n\
                                 <div class="col eight dashboard_search_username">\n\
-                                    <a class="text_bold prosody_userhead_searchres" data-name="' + json[i].name + '">' + json[i].name + '</a>\n\
+                                    <a class="text_bold prosody_userhead_searchres" data-name="' + json[i].plain_name + '">' + json[i].name + '</a>\n\
                                 </div>\n\
                             </div>\n\
                         </div>';

@@ -84,7 +84,8 @@ class DashboardController extends Controller {
             $result[] = array('name' => Security::wbrusername($otheruser->getName(), TRUE),
                 'icon' => $otheruser->getPictureUrl(Currentuser::PIC_SMALL),
                 'server' => Server::getMyHost(),
-                'url' => '/' . APPLICATION_LANG . '/user/' . $otheruser->getName());
+                'url' => '/' . APPLICATION_LANG . '/user/' . $otheruser->getName(),
+                'plain_name' => $otheruser->getName());
         }
 
         echo json_encode($result);
