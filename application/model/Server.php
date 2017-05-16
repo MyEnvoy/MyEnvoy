@@ -50,34 +50,18 @@ class Server {
         $memoryTotal = NULL;
         $memoryFree = NULL;
 
-        if (is_readable("/proc/meminfo")) {
-            $stats = file_get_contents("/proc/meminfo");
-            if ($stats !== FALSE) {
-                // Separate lines
-                $stats = str_replace(array('\r\n', '\n\r', '\r'), PHP_EOL, $stats);
-                $stats = explode(PHP_EOL, $stats);
-                // Separate values and find correct lines for total and free mem
-                foreach ($stats as $statLine) {
-                    $statLineData = explode(':', trim($statLine));
+        exec('free --si -b', $output);
+        if (count($output) >= 3) {
+            try {
+                $statsTotal = $output[1];
+                $statsTotal = explode(' ', $statsTotal);
+                $memoryTotal = $statsTotal[4];
 
-                    // Total memory
-                    if (count($statLineData) === 2 && trim($statLineData[0]) === "MemTotal") {
-                        $memoryTotal = trim($statLineData[1]);
-                        $memoryTotal = explode(" ", $memoryTotal);
-                        $memoryTotal = $memoryTotal[0];
-                        $memoryTotal *= 1000;  // convert from kbytes to bytes
-                    }
-                    // Free memory
-                    if (count($statLineData) === 2 && trim($statLineData[0]) === "MemFree") {
-                        $memoryFree = trim($statLineData[1]);
-                        $memoryFree = explode(" ", $memoryFree);
-                        $memoryFree = $memoryFree[0];
-                        $memoryFree *= 1000;  // convert from kbytes to bytes
-                    }
-                    if ($memoryFree !== NULL && $memoryTotal !== NULL) {
-                        break;
-                    }
-                }
+                $statsFree = $output[2];
+                $statsFree = explode(' ', $statsFree);
+                $memoryFree = $statsFree[count($statsFree) - 1];
+            } catch (Exception $e) {
+                // no result
             }
         }
 
