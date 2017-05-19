@@ -69,17 +69,17 @@ class Prosody {
 
         return FALSE;
     }
-    
+
     public function countActiveUser($host) {
         $res = $this->runCmd(sprintf('c2s:show("%s")', $host));
-        
-        if(count($res) === 1) {
+
+        if (count($res) === 1) {
             return 0;
         }
-        
+
         $res = array_slice($res, 1);
         $res = array_slice($res, 0, -1);
-        
+
         return count($res);
     }
 
@@ -89,6 +89,8 @@ class Prosody {
      * @param string $pwd
      */
     public function setPasswort($jid, $pwd) {
+        $pwd = str_replace('"', '\\"', $pwd);
+
         $res = $this->runCmd(sprintf('user:password("%s", "%s")', $jid, $pwd));
 
         if (strpos($res[0], 'OK:') === 3) {

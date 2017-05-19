@@ -350,6 +350,9 @@ class Currentuser extends User {
         $upd = $this->_db->prepare('UPDATE user_data SET xmpp_pwd = ? WHERE user_id = ?');
         $upd->execute(array($pwd, $this->getId()));
         
+        $prosody = new Prosody();
+        $prosody->setPasswort($this->getName() . '@' . Server::getMyHost(), $pwd);
+        
         Userinfo::log($this->getId(), Userinfo::MESSAGE_XMPP_PWD_CHANGED);
     }
 
