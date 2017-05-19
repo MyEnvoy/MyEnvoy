@@ -94,6 +94,23 @@
                             <a onclick="jsconfirm('/<?php echo APPLICATION_LANG; ?>/settings/picture.remove', '<?php echo t('settings_jsconfirm'); ?>');" class="noa btn btn_danger"><?php echo t('settings_general_pic_delete'); ?></a>
                         </div>
                     </div>
+                    <h4 class="margin2"><?php echo t('settings_general_resetxmpppwd_h'); ?></h4>
+                    <form method="post" action="/<?php echo APPLICATION_LANG; ?>/settings/xmpp.do">
+                        <div class="row margin2 form_group horizontal_form">
+                            <label for="acc_pwd" class="col three right_txt"><?php echo t('settings_general_pwd'); ?></label>
+                            <input type="password" class="col six" id="acc_pwd" name="acc_pwd" placeholder="<?php echo t('settings_general_pwd'); ?>" pattern=".{8,}" required>
+                        </div>
+                        <div class="row form_group horizontal_form">
+                            <label for="xmpp_pwd" class="col three right_txt"><?php echo t('settings_general_xmpppwd'); ?></label>
+                            <input type="password" class="col six" id="xmpp_pwd" name="xmpp_pwd" placeholder="<?php echo t('settings_general_xmpppwd'); ?>" pattern=".{8,}" required
+                                   data-placement="top" data-toggle="popover" data-trigger="hover" data-content="<?php echo t('register_pwd_hint'); ?>">
+                        </div>
+                        <div class="row form_group horizontal_form">
+                            <div class="col nine">
+                                <input type="submit" class="btn btn_danger right" value="<?php echo t('settings_save_btn'); ?>">
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

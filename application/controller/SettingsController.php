@@ -81,6 +81,25 @@ class SettingsController extends Controller {
         }
     }
 
+    public function xmppDoAction() {
+        $this->_paramHandler->bindMethods(Paramhandler::POST);
+
+        $accountPwd = $this->_paramHandler->getValue('acc_pwd', TRUE, 8);
+        $xmppPwd = $this->_paramHandler->getValue('xmpp_pwd', TRUE, 8);
+
+        if (User::generatePasswordHash($accountPwd, $this->_view->user->getSalt()) !== $this->_view->user->getPwdHash()) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings?error=1');
+        }
+
+        if (Newuser::validatePassword($xmppPwd, $this->_view->user->getName()) !== TRUE) {
+            Famework_Request::redirect('/' . APPLICATION_LANG . '/settings?error=' . RegisterController::ERR_BAD_PASSWORD);
+        }
+
+        $this->_view->user->setXmppPwd($xmppPwd);
+        
+        Famework_Request::redirect('/' . APPLICATION_LANG . '/settings');
+    }
+
     public function logAction() {
         $this->_view->activeTab = self::LOG_TAB;
     }

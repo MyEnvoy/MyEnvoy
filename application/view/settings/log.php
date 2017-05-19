@@ -21,6 +21,7 @@
                                         echo '<span class="genericon genericon-warning" style="color: orange;"></span>';
                                         break;
                                     case Userinfo::MESSAGE_PWD_CHANGED:
+                                    case Userinfo::MESSAGE_XMPP_PWD_CHANGED:
                                         echo '<span class="genericon genericon-refresh"></span>';
                                         break;
                                     case Userinfo::MESSAGE_LOGIN_SUCCESS:

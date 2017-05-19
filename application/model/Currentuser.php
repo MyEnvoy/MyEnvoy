@@ -129,7 +129,7 @@ class Currentuser extends User {
     public function getSalt() {
         return $this->getWhatever('salt', self::DB_USER_DATA);
     }
-    
+
     public function getXmppPwd() {
         return $this->getWhatever('xmpp_pwd', self::DB_USER_DATA);
     }
@@ -344,6 +344,13 @@ class Currentuser extends User {
 
         $stm = $this->_db->prepare('UPDATE user SET status = ? WHERE id = ?');
         $stm->execute(array($status, $this->getId()));
+    }
+
+    public function setXmppPwd($pwd) {
+        $upd = $this->_db->prepare('UPDATE user_data SET xmpp_pwd = ? WHERE user_id = ?');
+        $upd->execute(array($pwd, $this->getId()));
+        
+        Userinfo::log($this->getId(), Userinfo::MESSAGE_XMPP_PWD_CHANGED);
     }
 
     /**
