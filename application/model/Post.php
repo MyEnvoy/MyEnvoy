@@ -256,7 +256,12 @@ class Post implements JsonSerializable {
             <div class="col ten">
                 <div class="row dashboard_post_text">
                     <p>
-                        <?php echo $this->replaceMentions($this->replaceLinks(Security::htmloutput($this->getContent()))); ?>
+                        <?php
+                        echo $this->replaceMentions(
+                                $this->replaceLinks(
+                                        $this->replaceStyle(
+                                                Security::htmloutput($this->getContent()))));
+                        ?>
                     </p>
                 </div>
             </div>
@@ -453,6 +458,22 @@ class Post implements JsonSerializable {
         return $text;
     }
 
+    private function replaceStyle($text) {
+        // replace markdown bold
+        $text = preg_replace('/\*\*(.+)\*\*/', '<b>$1</b>', $text);
+        // replace markdown list
+        $text = preg_replace_callback('/^\*(.+)[\R\n]/m', function ($reg) {
+            return sprintf('<ul><li>%s</li></ul>', trim($reg[1]));
+        }, $text);
+        // replace markdown h1
+        $text = preg_replace('/#\s?(.+)[\R\n]/', '<h4>$1</h4>', $text);
+        // replace inline code
+        $text = preg_replace('/```(.+)```/', '<code>$1</code>', $text);
+        // replace new line
+        $text = str_replace("\n", '<br>', $text);
+        return $text;
+    }
+
     private function getYoutubeVideoLinks($note) {
         $res = array();
         preg_match_all('/((http:|https:)\/\/[^\s]+)/', $note, $link_array);
@@ -516,7 +537,7 @@ class Post implements JsonSerializable {
             return $this->getMotherPost()->getMotherPost();
         }
     }
-    
+
     private $_jsonAdditionals = array();
 
     public function addJsonData($name, $value) {
@@ -525,17 +546,17 @@ class Post implements JsonSerializable {
 
     public function jsonSerialize() {
         $res = new stdClass();
-        
+
         $res->id = $this->getId();
         $res->owner = Otheruser::getLocalById($this->getOwnerId());
         $res->countFavs = $this->countFavs();
         $res->creationTime = (new DateTime($this->getCreationTime()))->getTimestamp();
         $res->body = $this->getContent();
-        
+
         foreach ($this->_jsonAdditionals as $key => $value) {
             $res->$key = $value;
         }
-        
+
         return $res;
     }
 

@@ -177,6 +177,8 @@ div.dashboard_post_user {margin-left: 4px;margin-top: 3px;font-weight: bold;font
 div.dashboard_post_time {margin-top: 5px;margin-left: 4px;}
 div.dashboard_post_text {font-size: 14px;line-height: 19px;}
 div.dashboard_post_text p {text-align: left;}
+div.dashboard_post_text ul {margin-left: 30px;}
+div.dashboard_post_text code {background-color: #f2f3f3;border-radius: 3px;padding: 2px 0.2em;}
 div.dashboard_post_container hr {margin: 13px 10px 8px 10px;}
 div.dashboard_post_footer .genericon {margin-top: -2px;}
 
