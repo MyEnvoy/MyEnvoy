@@ -71,16 +71,26 @@ class Prosody {
     }
 
     public function countActiveUser($host) {
+        return count($this->listActiveUser($host));
+    }
+
+    public function listActiveUser($host) {
         $res = $this->runCmd(sprintf('c2s:show("%s")', $host));
 
         if (count($res) === 1) {
-            return 0;
+            return array();
         }
 
         $res = array_slice($res, 1);
         $res = array_slice($res, 0, -1);
 
-        return count($res);
+        foreach ($res as &$user) {
+            $user = preg_replace('/^\|\s+/', '', $user);
+            $user = preg_replace('/\s+/', '', $user);
+            $user = preg_replace('/-available\(\d+\)$/', '', $user);
+        }
+
+        return $res;
     }
 
     /**

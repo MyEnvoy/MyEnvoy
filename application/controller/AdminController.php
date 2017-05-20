@@ -45,6 +45,7 @@ class AdminController extends Famework_Controller {
         try {
             $prosoy = new Prosody();
             $this->_view->uptime = $prosoy->getServerStartupTime();
+            $this->_view->onlineUsersList = $prosoy->listActiveUser(Server::getMyHost());
         } catch (Exception $e) {
             $this->_view->uptime = '<span class="red-text">DOWN (!)</span>';
         }
