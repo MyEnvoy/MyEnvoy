@@ -59,6 +59,8 @@ class ProsodyChat {
             </script>
             <?php
         } catch (Exception $e) {
+            $msg = sprintf('%s in %s on line %d', $e->getMessage(), $e->getFile(), + $e->getLine());
+            Log::err($msg);
             return FALSE;
         }
 
