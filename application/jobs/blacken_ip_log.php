@@ -5,7 +5,7 @@ require __DIR__ . '/bootstrap_job.php';
 Log::info('[BLACKEN_IP_LOG_JOB] Executing "blacken_ip_log" ...');
 
 // select log entries from one week ago
-$relevant = $db->prepare('SELECT * FROM user_log WHERE datetime < DATE_SUB(NOW(), INTERVAL 6 DAY)');
+$relevant = $db->prepare('SELECT * FROM user_log WHERE datetime > DATE_SUB(NOW(), INTERVAL 14 DAY) AND datetime < DATE_SUB(NOW(), INTERVAL 6 DAY)');
 $relevant->execute();
 
 $count = $relevant->rowCount();
