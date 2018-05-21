@@ -10,11 +10,13 @@
     <div id="dashboard_central_container">
         <div class="dashboard_realsize_container">
 
-            <h1 id="impressum-nutzungsbedingungen-und-datenschutz">Impressum, Nutzungsbedingungen und Datenschutz</h1>
+            <h1 id="impressum-nutzungsbedingungen-und-datenschutz">Impressum und Nutzungsbedingungen</h1>
+            
+            <a href="/de/tos/privacy">Zur Datenschutzerklärung</a>
 
 
 
-            <h2 id="betreiberinformationen-gemäß-5-tmg">Betreiberinformationen gemäß § 5 TMG</h2>
+            <h2 id="betreiberinformationen-gemäß-5-tmg">Betreiberinformationen</h2>
 
             <p>Fabian Maier <br>
                 Lenbachstraße 7 <br>
@@ -78,7 +80,7 @@ miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
 
 
 
-            <h2 id="5-datenschutz">5. Datenschutz</h2>
+            <!--<h2 id="5-datenschutz">5. Datenschutz</h2>
 
             <p>Dem Betreiber ist es wichtig, die Daten der Nutzer zu schützen. Es werden <br>
                 keinerlei Daten durch den Anbieter ausgewertet oder an dritte Personen <br>
@@ -91,7 +93,7 @@ miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
                 <li>IP-Adresse und Zeitpunkt der letzten Anmeldung</li>
             </ul>
 
-            <p>Für Daten, die <!--an andere Diaspora-Pods oder--> an externe Dienste wie Twitter <br>
+            <p>Für Daten, die //an andere Diaspora-Pods oder// an externe Dienste wie Twitter <br>
                 gesendet werden, kann der Betreiber keinerlei Aussagen treffen. Hier sind die <br>
                 Datenschutzbestimmungen der jeweiligen Plattform zu beachten.</p>
 
@@ -99,6 +101,7 @@ miteinander zu teilen, Informationen auszutauschen und Spaß zu haben.</p>-->
                 ausschließen, dass Daten durch Sicherheitslücken und Angriffe auf die Systeme <br>
                 abgegriffen werden. Im Falle eines Datenverlustes wird der Anbieter die Nutzer <br>
                 darüber informieren.</p>
+            -->
 
             <h2 id="hinweise">Hinweise</h2>
 

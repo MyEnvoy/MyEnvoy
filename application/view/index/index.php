@@ -50,7 +50,8 @@
         </div>
     </div>
     <footer>
-        <a class="noa text_light" href="/<?php echo APPLICATION_LANG; ?>/tos">Impressum</a>
+        <a class="noa text_light" href="/<?php echo APPLICATION_LANG; ?>/tos">Impressum</a><br>
+        <a class="noa text_light" href="/<?php echo APPLICATION_LANG; ?>/tos/privacy">Datenschutzerklärung</a>
     </footer>
 </div>
 <script>
