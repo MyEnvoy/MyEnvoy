@@ -44,6 +44,7 @@ class Post implements JsonSerializable {
         $stm->bindParam(':pid', $postID, PDO::PARAM_INT);
         $stm->bindParam(':content', $content);
         $stm->execute();
+        $thisPostID = $db->lastInsertId();
 
         // public posts are sent to all groups
         if (in_array($user->getPublicGroupId(), $groupIDs)) {
@@ -54,7 +55,6 @@ class Post implements JsonSerializable {
             }
         }
 
-        $thisPostID = $db->lastInsertId();
         $stmt = $db->prepare('INSERT IGNORE INTO user_posts_data (post_id, group_id) VALUES (:pid, :grip)');
         foreach ($groupIDs as $grip) {
             $stmt->bindParam(':pid', $thisPostID, PDO::PARAM_INT);
